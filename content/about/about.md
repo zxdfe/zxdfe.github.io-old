@@ -6,6 +6,3 @@ draft: true
 - TEST
 - hugo
 - just to do
-- testhhhh
-- test
-- hhhhhyy
