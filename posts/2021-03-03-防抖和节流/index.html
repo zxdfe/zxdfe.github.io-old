@@ -1,0 +1,216 @@
+<!doctype html><html lang=en data-theme><head><title>| 防抖和节流</title><meta charset=utf-8><meta name=generator content="Hugo 0.81.0"><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name=description content><link rel=stylesheet href=http://zxdfe.github.io/css/style.min.d98386e9809c4644e290afb256e8aad6d2ae6b1aefe82c504efd652e6642708d.css integrity="sha256-2YOG6YCcRkTikK+yVuiq1tKuaxrv6CxQTv1lLmZCcI0=" crossorigin=anonymous type=text/css><link rel=stylesheet href=http://zxdfe.github.io/css/markupHighlight.min.f798cbda9aaa38f89eb38be6414bd082cfd71a6780375cbf67b6d2fb2b96491e.css integrity="sha256-95jL2pqqOPies4vmQUvQgs/XGmeAN1y/Z7bS+yuWSR4=" crossorigin=anonymous type=text/css><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" crossorigin=anonymous><link rel="shortcut icon" href=http://zxdfe.github.iofavicon.ico type=image/x-icon><link rel=apple-touch-icon sizes=180x180 href=http://zxdfe.github.ioapple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=http://zxdfe.github.iofavicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=http://zxdfe.github.iofavicon-16x16.png><link rel=canonical href=http://zxdfe.github.io/posts/2021-03-03-%E9%98%B2%E6%8A%96%E5%92%8C%E8%8A%82%E6%B5%81/><script type=text/javascript src=http://zxdfe.github.io/js/anatole-header.min.0c05c0a90d28c968a1cad4fb31abd0b8e1264e788ccefed022ae1d3b6f627514.js integrity="sha256-DAXAqQ0oyWihytT7MavQuOEmTniMzv7QIq4dO29idRQ=" crossorigin=anonymous></script><script type=text/javascript src=http://zxdfe.github.io/js/anatole-theme-switcher.min.8ef71e0fd43f21a303733dbbecae5438b791d2b826c68a9883bd7aa459a076d2.js integrity="sha256-jvceD9Q/IaMDcz277K5UOLeR0rgmxoqYg716pFmgdtI=" crossorigin=anonymous></script><meta name=twitter:card content="summary"><meta name=twitter:title content="防抖和节流"><meta name=twitter:description content="防抖与节流应用场景 防抖: 事件响应函数(doSomething)在一段时间后(300ms)才执行,如果这段时间内再次调用,则重新计算 在一定的时间间隔内,将多次触发变成一次触发. 防抖应用场景: // setTimeout
+ Scroll事件滚动触发 // 停止滚动后,判断是否到达页面底部 搜索框输入查询 表单验证 按钮提交事件 浏览器窗口缩放,resize事件  节流: 持续的触发事件,每隔一段时间, 只执行一次; 减少一段时间的触发频率 // 时间戳,定时器
+ 时间戳写法 第一次立即执行 定时器写法 第一次不执行, 最后一次执行 合并 第一次进入立即执行,最后一次也执行  应用
+ DOM元素的拖拽功能实现,每个一秒干嘛干嘛 射击游戏类,每隔一秒射击 计算鼠标移动距离 监听scroll滚动事件  防抖函数 debounce 1. 普通版本  function debounce(func,delay){ let timerId return function(){ // 每次点击的时候,清楚上一个定时器,重新计时  clearTimeout(timerId) timerId = setTimeout(() => { func.apply(this,arguments) // 如果setTimeout不是箭头函数  }, delay); } } // https://www.30secondsofcode.org/js/s/debounce const debounce = (fn, ms = 0) => { let timeoutId; return function(."></head><body><div class="sidebar animated fadeInDown"><div class=logo-title><div class=title><img src=http://zxdfe.github.io alt="profile picture"><h3 title><a href=/></a></h3><div class=description><p></p></div></div></div><ul class=social-links></ul><div class=footer><div class=by_farbox>&copy; 2021</div></div></div><div class=main><div class="page-top animated fadeInDown"><a role=button class=navbar-burger data-target=navMenu aria-label=menu aria-expanded=false><span aria-hidden=true></span><span aria-hidden=true></span><span aria-hidden=true></span></a><ul class=nav id=navMenu><li class=theme-switch-item><a class=theme-switch title="Switch Theme"><i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></li></ul></div><div class=autopagerize_page_element><div class=content><div class="post animated fadeInDown"><div class=post-content><div class=post-title><h3>防抖和节流</h3></div><h2 id=防抖与节流应用场景>防抖与节流应用场景</h2><p>防抖: 事件响应函数(doSomething)在一段时间后(300ms)才执行,如果这段时间内再次调用,则重新计算
+在一定的时间间隔内,将多次触发变成一次触发.
+防抖应用场景: // setTimeout</p><ol><li>Scroll事件滚动触发 // 停止滚动后,判断是否到达页面底部</li><li>搜索框输入查询</li><li>表单验证</li><li>按钮提交事件</li><li>浏览器窗口缩放,resize事件</li></ol><p>节流: 持续的触发事件,每隔一段时间, 只执行一次; 减少一段时间的触发频率 // 时间戳,定时器</p><ol><li>时间戳写法 第一次立即执行</li><li>定时器写法 第一次不执行, 最后一次执行</li><li>合并 第一次进入立即执行,最后一次也执行</li></ol><p>应用</p><ol><li>DOM元素的拖拽功能实现,每个一秒干嘛干嘛</li><li>射击游戏类,每隔一秒射击</li><li>计算鼠标移动距离</li><li>监听scroll滚动事件</li></ol><h2 id=防抖函数-debounce>防抖函数 debounce</h2><h3 id=1-普通版本>1. 普通版本 </h3><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#66d9ef>function</span> <span style=color:#a6e22e>debounce</span>(<span style=color:#a6e22e>func</span>,<span style=color:#a6e22e>delay</span>){
+    <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>timerId</span>
+    <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>function</span>(){
+        <span style=color:#75715e>// 每次点击的时候,清楚上一个定时器,重新计时
+</span><span style=color:#75715e></span>        <span style=color:#a6e22e>clearTimeout</span>(<span style=color:#a6e22e>timerId</span>)
+
+        <span style=color:#a6e22e>timerId</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>setTimeout</span>(() =&gt; {
+            <span style=color:#a6e22e>func</span>.<span style=color:#a6e22e>apply</span>(<span style=color:#66d9ef>this</span>,<span style=color:#a6e22e>arguments</span>)  <span style=color:#75715e>// 如果setTimeout不是箭头函数
+</span><span style=color:#75715e></span>        }, <span style=color:#a6e22e>delay</span>);
+    }
+}
+</code></pre></div><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-js data-lang=js><span style=color:#75715e>// https://www.30secondsofcode.org/js/s/debounce
+</span><span style=color:#75715e></span><span style=color:#66d9ef>const</span> <span style=color:#a6e22e>debounce</span> <span style=color:#f92672>=</span> (<span style=color:#a6e22e>fn</span>, <span style=color:#a6e22e>ms</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>) =&gt; {
+  <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>timeoutId</span>;
+  <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>function</span>(...<span style=color:#a6e22e>args</span>) {
+    <span style=color:#a6e22e>clearTimeout</span>(<span style=color:#a6e22e>timeoutId</span>);
+    <span style=color:#a6e22e>timeoutId</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>setTimeout</span>(() =&gt; <span style=color:#a6e22e>fn</span>.<span style=color:#a6e22e>apply</span>(<span style=color:#66d9ef>this</span>, <span style=color:#a6e22e>args</span>), <span style=color:#a6e22e>ms</span>);
+  };
+};
+</code></pre></div><h3 id=2-普通去箭头函数版>2. 普通去箭头函数版</h3><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#75715e>// 如果setTimeout不是箭头函数,需要绑定this,arguments
+</span><span style=color:#75715e></span><span style=color:#66d9ef>function</span> <span style=color:#a6e22e>debounce</span>(<span style=color:#a6e22e>func</span>,<span style=color:#a6e22e>delay</span>){
+    <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>timerId</span>,<span style=color:#a6e22e>context</span>,<span style=color:#a6e22e>args</span>
+    <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>function</span>(){
+        <span style=color:#a6e22e>context</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>this</span>
+        <span style=color:#a6e22e>args</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>arguments</span>
+        <span style=color:#a6e22e>clearTimeout</span>(<span style=color:#a6e22e>timerId</span>)
+
+        <span style=color:#a6e22e>timerId</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>setTimeout</span>(<span style=color:#66d9ef>function</span>(){
+            <span style=color:#a6e22e>func</span>.<span style=color:#a6e22e>apply</span>(<span style=color:#a6e22e>context</span>,<span style=color:#a6e22e>args</span>)
+        }, <span style=color:#a6e22e>delay</span>);
+    }
+}
+</code></pre></div><h3 id=3-立即执行的防抖函数>3. 立即执行的防抖函数</h3><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#75715e>// 2.优化版,场景:表单提交 submit,第一次点击立即提交,之后点击多次,只执行一次
+</span><span style=color:#75715e></span><span style=color:#66d9ef>function</span> <span style=color:#a6e22e>debounce</span>(<span style=color:#a6e22e>func</span>,<span style=color:#a6e22e>delay</span>,<span style=color:#a6e22e>immediate</span>){
+    <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>timerId</span>
+    <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>function</span>(){
+
+        <span style=color:#a6e22e>clearTimeout</span>(<span style=color:#a6e22e>timerId</span>)
+        <span style=color:#66d9ef>if</span>(<span style=color:#a6e22e>immediate</span>){
+            <span style=color:#75715e>// 如果没有定时器,立即执行,
+</span><span style=color:#75715e></span>            <span style=color:#75715e>// 同时执行后还要做延迟
+</span><span style=color:#75715e></span>            <span style=color:#66d9ef>if</span>(<span style=color:#f92672>!</span><span style=color:#a6e22e>timerId</span>) <span style=color:#a6e22e>func</span>.<span style=color:#a6e22e>apply</span>(<span style=color:#66d9ef>this</span>,<span style=color:#a6e22e>arguments</span>)
+            <span style=color:#a6e22e>timerId</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>setTimeout</span>(() =&gt; {
+                <span style=color:#a6e22e>timerId</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>null</span>
+            }, <span style=color:#a6e22e>delay</span>);
+
+        }<span style=color:#66d9ef>else</span>{
+            <span style=color:#a6e22e>timerId</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>setTimeout</span>(() =&gt; {
+                <span style=color:#a6e22e>func</span>.<span style=color:#a6e22e>apply</span>(<span style=color:#66d9ef>this</span>,<span style=color:#a6e22e>arguments</span>)  <span style=color:#75715e>// 如果setTimeout不是箭头函数
+</span><span style=color:#75715e></span>            }, <span style=color:#a6e22e>delay</span>);
+        }
+    }
+}
+</code></pre></div><h2 id=节流函数-throttle>节流函数 throttle</h2><h3 id=1-时间戳版第一次立即执行>1. 时间戳版,第一次立即执行</h3><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#66d9ef>function</span> <span style=color:#a6e22e>throttle</span>(<span style=color:#a6e22e>func</span>,<span style=color:#a6e22e>delay</span>){
+    <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>previous</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>
+    <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>function</span>(){
+        <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>now</span> <span style=color:#f92672>=</span> Date.<span style=color:#a6e22e>now</span>()<span style=color:#f92672>||+</span><span style=color:#66d9ef>new</span> Date()<span style=color:#f92672>||</span><span style=color:#66d9ef>new</span> Date().<span style=color:#a6e22e>getTime</span>()<span style=color:#f92672>||</span><span style=color:#66d9ef>new</span> Date().<span style=color:#a6e22e>valueOf</span>()
+        <span style=color:#75715e>// 如果两次事件间隔大于等于设定延迟
+</span><span style=color:#75715e></span>        <span style=color:#66d9ef>if</span>(<span style=color:#a6e22e>now</span><span style=color:#f92672>-</span><span style=color:#a6e22e>previous</span> <span style=color:#f92672>&gt;=</span> <span style=color:#a6e22e>delay</span>){
+          <span style=color:#75715e>// 这里this,arguments是否绑定对,
+</span><span style=color:#75715e></span>          <span style=color:#75715e>// 验证一下,不对要在前面声明args = arguments!
+</span><span style=color:#75715e></span>            <span style=color:#a6e22e>func</span>.<span style=color:#a6e22e>apply</span>(<span style=color:#66d9ef>this</span>,<span style=color:#a6e22e>arguments</span>)  
+            <span style=color:#a6e22e>previous</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>now</span> <span style=color:#75715e>// 将当前时间记录,作为下一次计时起点
+</span><span style=color:#75715e></span>        }
+    }
+}
+</code></pre></div><h3 id=2-定时器版本-第一次不立即执行的节流函数>2. 定时器版本, 第一次不立即执行的节流函数</h3><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#66d9ef>function</span> <span style=color:#a6e22e>throttle</span>(<span style=color:#a6e22e>func</span>,<span style=color:#a6e22e>delay</span>){
+    <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>timerId</span>
+    <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>function</span>(){  <span style=color:#75715e>// 闭包的方式返回一次函数,闭包的应用
+</span><span style=color:#75715e></span>        <span style=color:#66d9ef>if</span>(<span style=color:#f92672>!</span><span style=color:#a6e22e>timerId</span>){ <span style=color:#75715e>// 第一次没值,不立即触发,delay延迟之后触发
+</span><span style=color:#75715e></span>            <span style=color:#a6e22e>timerId</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>setTimeout</span>(() =&gt; {
+                <span style=color:#a6e22e>func</span>.<span style=color:#a6e22e>apply</span>(<span style=color:#66d9ef>this</span>,<span style=color:#a6e22e>arguments</span>)
+                <span style=color:#a6e22e>timerId</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>null</span> <span style=color:#75715e>// 延迟之后置空,让下一次继续能再执行
+</span><span style=color:#75715e></span>            }, <span style=color:#a6e22e>delay</span>);
+        }
+    }
+}
+</code></pre></div><h3 id=3-时间戳定时器版本-爪哇教育>3. 时间戳+定时器版本 爪哇教育</h3><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#75715e>// 有bug,待完善
+</span><span style=color:#75715e></span><span style=color:#66d9ef>function</span> <span style=color:#a6e22e>throttle</span>(<span style=color:#a6e22e>func</span>, <span style=color:#a6e22e>delay</span>){
+    <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>timer</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>null</span>
+    <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>startTime</span> <span style=color:#f92672>=</span> Date.<span style=color:#a6e22e>now</span>()
+    <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>function</span>(){ <span style=color:#75715e>// 闭包的方式返回一个函数
+</span><span style=color:#75715e></span>        <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>curTime</span> <span style=color:#f92672>=</span> Date.<span style=color:#a6e22e>now</span>()
+        <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>remaining</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>delay</span> <span style=color:#f92672>-</span> (<span style=color:#a6e22e>curTime</span><span style=color:#f92672>-</span><span style=color:#a6e22e>startTime</span>) <span style=color:#75715e>// 完整间隔,减: 本次间隔已经过去了多久
+</span><span style=color:#75715e></span>        <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>context</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>this</span>  <span style=color:#75715e>// 感觉不需要替换 
+</span><span style=color:#75715e></span>        <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>args</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>arguments</span><span style=color:#75715e>// 同上
+</span><span style=color:#75715e></span>        <span style=color:#a6e22e>clearTimeout</span>(<span style=color:#a6e22e>timer</span>)
+        <span style=color:#66d9ef>if</span>(<span style=color:#a6e22e>remaining</span> <span style=color:#f92672>&lt;=</span> <span style=color:#ae81ff>0</span>){ <span style=color:#75715e>// 当两次事件时间间隔已经大于设置时间delay
+</span><span style=color:#75715e></span>            <span style=color:#a6e22e>func</span>.<span style=color:#a6e22e>apply</span>(<span style=color:#a6e22e>context</span>,<span style=color:#a6e22e>args</span>)
+            <span style=color:#a6e22e>startTime</span> <span style=color:#f92672>=</span> Date.<span style=color:#a6e22e>now</span>()
+        }<span style=color:#66d9ef>else</span> <span style=color:#66d9ef>if</span>(<span style=color:#f92672>!</span><span style=color:#a6e22e>timer</span>){
+            <span style=color:#a6e22e>timer</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>setTimeout</span>(<span style=color:#a6e22e>func</span>,<span style=color:#a6e22e>remaining</span>) <span style=color:#75715e>// 这里不能直接传func! bug点,应该参考下面,传later
+</span><span style=color:#75715e></span>        }
+    }
+}
+
+</code></pre></div><h3 id=4-时间戳定时器>4. 时间戳+定时器</h3><p>鼠标移入能立刻执行，停止触发的时候还能再执行一次</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-js data-lang=js><span style=color:#66d9ef>function</span> <span style=color:#a6e22e>throttle</span>(<span style=color:#a6e22e>func</span>, <span style=color:#a6e22e>wait</span>){
+    <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>context</span>, <span style=color:#a6e22e>args</span>, <span style=color:#a6e22e>timerId</span>
+    <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>previous</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>; <span style=color:#75715e>// 时间戳
+</span><span style=color:#75715e></span>
+    <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>later</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>function</span>() {
+        <span style=color:#a6e22e>previous</span> <span style=color:#f92672>=</span> <span style=color:#f92672>+</span><span style=color:#66d9ef>new</span> Date();
+        <span style=color:#a6e22e>timerId</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>null</span>;
+        <span style=color:#a6e22e>func</span>.<span style=color:#a6e22e>apply</span>(<span style=color:#a6e22e>context</span>, <span style=color:#a6e22e>args</span>)
+    }
+    <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>throttled</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>function</span>(){
+        <span style=color:#a6e22e>context</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>this</span>  <span style=color:#75715e>// 可以不用
+</span><span style=color:#75715e></span>        <span style=color:#a6e22e>args</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>arguments</span> <span style=color:#75715e>// 同上
+</span><span style=color:#75715e></span>        <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>now</span> <span style=color:#f92672>=</span> Date.<span style=color:#a6e22e>now</span>() <span style=color:#f92672>||</span> <span style=color:#f92672>+</span><span style=color:#66d9ef>new</span> Date()<span style=color:#f92672>||</span><span style=color:#66d9ef>new</span> Date().<span style=color:#a6e22e>getTime</span>()<span style=color:#f92672>||</span><span style=color:#66d9ef>new</span> Date().<span style=color:#a6e22e>valueOf</span>()
+         <span style=color:#75715e>//下次触发 func 剩余的时间
+</span><span style=color:#75715e></span>        <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>remaining</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>wait</span> <span style=color:#f92672>-</span> (<span style=color:#a6e22e>now</span> <span style=color:#f92672>-</span> <span style=color:#a6e22e>previous</span>);
+            <span style=color:#75715e>// 如果没有剩余的时间了或者改了系统时间 (再执行等待时修改?比如10s中内)
+</span><span style=color:#75715e></span>        <span style=color:#66d9ef>if</span>(<span style=color:#a6e22e>remaining</span> <span style=color:#f92672>&lt;=</span> <span style=color:#ae81ff>0</span> <span style=color:#f92672>||</span> <span style=color:#a6e22e>remaining</span> <span style=color:#f92672>&gt;</span> <span style=color:#a6e22e>wait</span>){ <span style=color:#75715e>// 第一次立即执行代码逻辑
+</span><span style=color:#75715e></span>            <span style=color:#66d9ef>if</span>(<span style=color:#a6e22e>timerId</span>){  <span style=color:#75715e>// 下面的影响上面的
+</span><span style=color:#75715e></span>                <span style=color:#a6e22e>clearTimeout</span>(<span style=color:#a6e22e>timerId</span>)
+                <span style=color:#a6e22e>timerId</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>null</span> <span style=color:#75715e>// why
+</span><span style=color:#75715e></span>            }
+            <span style=color:#a6e22e>previous</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>now</span>
+            <span style=color:#a6e22e>func</span>.<span style=color:#a6e22e>apply</span>(<span style=color:#a6e22e>context</span>,<span style=color:#a6e22e>args</span>)
+        }<span style=color:#66d9ef>else</span> <span style=color:#66d9ef>if</span>(<span style=color:#f92672>!</span><span style=color:#a6e22e>timerId</span>){ <span style=color:#75715e>// 第一次没值,不立即触发,delay延迟之后触发
+</span><span style=color:#75715e></span>            <span style=color:#75715e>// timerId = setTimeout(() =&gt; {
+</span><span style=color:#75715e></span>            <span style=color:#75715e>//     previous = Date.now() // ? 两边的相互影响
+</span><span style=color:#75715e></span>            <span style=color:#75715e>//     func.apply(this,arguments)
+</span><span style=color:#75715e></span>            <span style=color:#75715e>//     timerId = null // 延迟之后置空,让下一次继续能再执行
+</span><span style=color:#75715e></span>            <span style=color:#75715e>// }, remaining);
+</span><span style=color:#75715e></span>            <span style=color:#a6e22e>timerId</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>setTimeout</span>(<span style=color:#a6e22e>later</span>,<span style=color:#a6e22e>remaining</span>);
+        }
+    }
+    <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>throttled</span>
+}
+</code></pre></div><h3 id=5-options版本-参考underscore-可配置版>5. options版本 参考underscore 可配置版</h3><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#66d9ef>function</span> <span style=color:#a6e22e>throttle</span>(<span style=color:#a6e22e>func</span>, <span style=color:#a6e22e>wait</span>, <span style=color:#a6e22e>options</span>) {
+    <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>timerId</span>, <span style=color:#a6e22e>context</span>, <span style=color:#a6e22e>args</span>;
+    <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>previous</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
+    <span style=color:#66d9ef>if</span> (<span style=color:#f92672>!</span><span style=color:#a6e22e>options</span>) <span style=color:#a6e22e>options</span> <span style=color:#f92672>=</span> {};
+
+    <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>later</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>function</span>() {
+        <span style=color:#a6e22e>previous</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>options</span>.<span style=color:#a6e22e>leading</span> <span style=color:#f92672>===</span> <span style=color:#66d9ef>false</span> <span style=color:#f92672>?</span> <span style=color:#ae81ff>0</span> <span style=color:#f92672>:</span> <span style=color:#66d9ef>new</span> Date().<span style=color:#a6e22e>getTime</span>();
+        <span style=color:#a6e22e>timerId</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>null</span>;
+        <span style=color:#a6e22e>func</span>.<span style=color:#a6e22e>apply</span>(<span style=color:#a6e22e>context</span>, <span style=color:#a6e22e>args</span>);
+        <span style=color:#66d9ef>if</span> (<span style=color:#f92672>!</span><span style=color:#a6e22e>timerId</span>) <span style=color:#a6e22e>context</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>args</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>null</span>;
+    };
+
+    <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>throttled</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>function</span>() {
+        <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>now</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> Date().<span style=color:#a6e22e>getTime</span>();
+        <span style=color:#66d9ef>if</span> (<span style=color:#f92672>!</span><span style=color:#a6e22e>previous</span> <span style=color:#f92672>&amp;&amp;</span> <span style=color:#a6e22e>options</span>.<span style=color:#a6e22e>leading</span> <span style=color:#f92672>===</span> <span style=color:#66d9ef>false</span>) <span style=color:#a6e22e>previous</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>now</span>;
+        <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>remaining</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>wait</span> <span style=color:#f92672>-</span> (<span style=color:#a6e22e>now</span> <span style=color:#f92672>-</span> <span style=color:#a6e22e>previous</span>);
+        <span style=color:#a6e22e>context</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>this</span>;
+        <span style=color:#a6e22e>args</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>arguments</span>;
+        <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>remaining</span> <span style=color:#f92672>&lt;=</span> <span style=color:#ae81ff>0</span> <span style=color:#f92672>||</span> <span style=color:#a6e22e>remaining</span> <span style=color:#f92672>&gt;</span> <span style=color:#a6e22e>wait</span>) {
+            <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>timerId</span>) {
+            <span style=color:#75715e>// 因为定时器并不是准确的时间，很可能你设置了2秒
+</span><span style=color:#75715e></span>            <span style=color:#75715e>// 但是他需要2.2秒才触发，这时候就会进入这个条件
+</span><span style=color:#75715e></span>                <span style=color:#a6e22e>clearTimeout</span>(<span style=color:#a6e22e>timerId</span>);
+                <span style=color:#a6e22e>timerId</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>null</span>;
+            }
+            <span style=color:#a6e22e>previous</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>now</span>;
+            <span style=color:#a6e22e>func</span>.<span style=color:#a6e22e>apply</span>(<span style=color:#a6e22e>context</span>, <span style=color:#a6e22e>args</span>);
+            <span style=color:#66d9ef>if</span> (<span style=color:#f92672>!</span><span style=color:#a6e22e>timerId</span>) <span style=color:#a6e22e>context</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>args</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>null</span>;
+        } <span style=color:#66d9ef>else</span> <span style=color:#66d9ef>if</span> (<span style=color:#f92672>!</span><span style=color:#a6e22e>timerId</span> <span style=color:#f92672>&amp;&amp;</span> <span style=color:#a6e22e>options</span>.<span style=color:#a6e22e>trailing</span> <span style=color:#f92672>!==</span> <span style=color:#66d9ef>false</span>) {
+            <span style=color:#a6e22e>timerId</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>setTimeout</span>(<span style=color:#a6e22e>later</span>, <span style=color:#a6e22e>remaining</span>);
+        }
+    };
+    <span style=color:#75715e>// 取消
+</span><span style=color:#75715e></span>    <span style=color:#a6e22e>throttled</span>.<span style=color:#a6e22e>cancel</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>function</span>() {
+        <span style=color:#a6e22e>clearTimeout</span>(<span style=color:#a6e22e>timerId</span>);
+        <span style=color:#a6e22e>previous</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
+        <span style=color:#a6e22e>timerId</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>null</span>;
+    }
+    <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>throttled</span>;
+}
+</code></pre></div><h3 id=6-underscorejs中throttle函数>6. underscore.js中throttle函数</h3><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript>  <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>throttle</span>(<span style=color:#a6e22e>func</span>, <span style=color:#a6e22e>wait</span>, <span style=color:#a6e22e>options</span>) {
+    <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>timeout</span>, <span style=color:#a6e22e>context</span>, <span style=color:#a6e22e>args</span>, <span style=color:#a6e22e>result</span>;
+    <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>previous</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
+    <span style=color:#66d9ef>if</span> (<span style=color:#f92672>!</span><span style=color:#a6e22e>options</span>) <span style=color:#a6e22e>options</span> <span style=color:#f92672>=</span> {};
+
+    <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>later</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>function</span>() {
+      <span style=color:#a6e22e>previous</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>options</span>.<span style=color:#a6e22e>leading</span> <span style=color:#f92672>===</span> <span style=color:#66d9ef>false</span> <span style=color:#f92672>?</span> <span style=color:#ae81ff>0</span> <span style=color:#f92672>:</span> <span style=color:#a6e22e>now</span>();
+      <span style=color:#a6e22e>timeout</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>null</span>;
+      <span style=color:#a6e22e>result</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>func</span>.<span style=color:#a6e22e>apply</span>(<span style=color:#a6e22e>context</span>, <span style=color:#a6e22e>args</span>);
+      <span style=color:#66d9ef>if</span> (<span style=color:#f92672>!</span><span style=color:#a6e22e>timeout</span>) <span style=color:#a6e22e>context</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>args</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>null</span>;
+    };
+
+    <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>throttled</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>function</span>() {
+      <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>_now</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>now</span>();
+      <span style=color:#66d9ef>if</span> (<span style=color:#f92672>!</span><span style=color:#a6e22e>previous</span> <span style=color:#f92672>&amp;&amp;</span> <span style=color:#a6e22e>options</span>.<span style=color:#a6e22e>leading</span> <span style=color:#f92672>===</span> <span style=color:#66d9ef>false</span>) <span style=color:#a6e22e>previous</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>_now</span>;
+      <span style=color:#66d9ef>var</span> <span style=color:#a6e22e>remaining</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>wait</span> <span style=color:#f92672>-</span> (<span style=color:#a6e22e>_now</span> <span style=color:#f92672>-</span> <span style=color:#a6e22e>previous</span>);
+      <span style=color:#a6e22e>context</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>this</span>;
+      <span style=color:#a6e22e>args</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>arguments</span>;
+      <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>remaining</span> <span style=color:#f92672>&lt;=</span> <span style=color:#ae81ff>0</span> <span style=color:#f92672>||</span> <span style=color:#a6e22e>remaining</span> <span style=color:#f92672>&gt;</span> <span style=color:#a6e22e>wait</span>) {
+        <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>timeout</span>) {
+          <span style=color:#a6e22e>clearTimeout</span>(<span style=color:#a6e22e>timeout</span>);
+          <span style=color:#a6e22e>timeout</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>null</span>;
+        }
+        <span style=color:#a6e22e>previous</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>_now</span>;
+        <span style=color:#a6e22e>result</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>func</span>.<span style=color:#a6e22e>apply</span>(<span style=color:#a6e22e>context</span>, <span style=color:#a6e22e>args</span>);
+        <span style=color:#66d9ef>if</span> (<span style=color:#f92672>!</span><span style=color:#a6e22e>timeout</span>) <span style=color:#a6e22e>context</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>args</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>null</span>;
+      } <span style=color:#66d9ef>else</span> <span style=color:#66d9ef>if</span> (<span style=color:#f92672>!</span><span style=color:#a6e22e>timeout</span> <span style=color:#f92672>&amp;&amp;</span> <span style=color:#a6e22e>options</span>.<span style=color:#a6e22e>trailing</span> <span style=color:#f92672>!==</span> <span style=color:#66d9ef>false</span>) {
+        <span style=color:#a6e22e>timeout</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>setTimeout</span>(<span style=color:#a6e22e>later</span>, <span style=color:#a6e22e>remaining</span>);
+      }
+      <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>result</span>;
+    };
+
+    <span style=color:#a6e22e>throttled</span>.<span style=color:#a6e22e>cancel</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>function</span>() {
+      <span style=color:#a6e22e>clearTimeout</span>(<span style=color:#a6e22e>timeout</span>);
+      <span style=color:#a6e22e>previous</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>0</span>;
+      <span style=color:#a6e22e>timeout</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>context</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>args</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>null</span>;
+    };
+
+    <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>throttled</span>;
+  }
+</code></pre></div></div><div class=post-footer><div class=info></div></div></div></div></div></div><script type=text/javascript src=http://zxdfe.github.io/js/medium-zoom.min.2d6fd0be87fa98f0c9b4dc2536b312bbca48757f584f6ea1f394abc9bcc38fbc.js integrity="sha256-LW/Qvof6mPDJtNwlNrMSu8pIdX9YT26h85SrybzDj7w=" crossorigin=anonymous></script></body></html>
