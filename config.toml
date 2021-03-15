@@ -1,4 +1,4 @@
 baseURL = "http://zxdfe.github.io"
 languageCode = "en-us"
 title = "Zxd's Blog"
-theme = "novela"
+theme = "anatole"
