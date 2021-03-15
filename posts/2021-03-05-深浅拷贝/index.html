@@ -1,415 +1,644 @@
-<!doctype html><html lang=en data-theme><head><title>| 深浅拷贝</title><meta charset=utf-8><meta name=generator content="Hugo 0.81.0"><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name=description content><link rel=stylesheet href=http://zxdfe.github.io/css/style.min.d98386e9809c4644e290afb256e8aad6d2ae6b1aefe82c504efd652e6642708d.css integrity="sha256-2YOG6YCcRkTikK+yVuiq1tKuaxrv6CxQTv1lLmZCcI0=" crossorigin=anonymous type=text/css><link rel=stylesheet href=http://zxdfe.github.io/css/markupHighlight.min.f798cbda9aaa38f89eb38be6414bd082cfd71a6780375cbf67b6d2fb2b96491e.css integrity="sha256-95jL2pqqOPies4vmQUvQgs/XGmeAN1y/Z7bS+yuWSR4=" crossorigin=anonymous type=text/css><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" crossorigin=anonymous><link rel="shortcut icon" href=http://zxdfe.github.iofavicon.ico type=image/x-icon><link rel=apple-touch-icon sizes=180x180 href=http://zxdfe.github.ioapple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=http://zxdfe.github.iofavicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=http://zxdfe.github.iofavicon-16x16.png><link rel=canonical href=http://zxdfe.github.io/posts/2021-03-05-%E6%B7%B1%E6%B5%85%E6%8B%B7%E8%B4%9D/><script type=text/javascript src=http://zxdfe.github.io/js/anatole-header.min.0c05c0a90d28c968a1cad4fb31abd0b8e1264e788ccefed022ae1d3b6f627514.js integrity="sha256-DAXAqQ0oyWihytT7MavQuOEmTniMzv7QIq4dO29idRQ=" crossorigin=anonymous></script><script type=text/javascript src=http://zxdfe.github.io/js/anatole-theme-switcher.min.8ef71e0fd43f21a303733dbbecae5438b791d2b826c68a9883bd7aa459a076d2.js integrity="sha256-jvceD9Q/IaMDcz277K5UOLeR0rgmxoqYg716pFmgdtI=" crossorigin=anonymous></script><meta name=twitter:card content="summary"><meta name=twitter:title content="深浅拷贝"><meta name=twitter:description content="拷贝一个很多嵌套的对象怎么实现? 写成怎样的深拷贝才算合格  浅拷贝 创建一个新的对象，来接受要重新复制或引用的对象值。 (只能复制一层)
+<!DOCTYPE html>
+<html lang="en" data-theme=""><head>
+    <title>  | 深浅拷贝 </title>
+
+    
+    <meta charset="utf-8"><meta name="generator" content="Hugo 0.79.1" /><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+    <meta name="description" content="">
+    
+    <link rel="stylesheet"
+          href="http://zxdfe.github.io/css/style.min.632053cf9f355189adf9c13322ca0fc44922cb5d98277ed289dff13e3aa7f061.css"
+          integrity="sha256-YyBTz581UYmt&#43;cEzIsoPxEkiy12YJ37Sid/xPjqn8GE="
+          crossorigin="anonymous"
+          type="text/css">
+    
+    <link rel="stylesheet"
+        href="http://zxdfe.github.io/css/markupHighlight.min.cc84ed683057cc175ddfa738ea6ba2d5c882b95cb64f50bf9be918cb3791887b.css"
+        integrity="sha256-zITtaDBXzBdd36c46mui1ciCuVy2T1C/m&#43;kYyzeRiHs="
+        crossorigin="anonymous"
+        type="text/css">
+    
+    <link rel="stylesheet" 
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" 
+    integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" 
+    crossorigin="anonymous" />
+
+    
+    <link rel="shortcut icon" href="http://zxdfe.github.iofavicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" sizes="180x180" href="http://zxdfe.github.ioapple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="http://zxdfe.github.iofavicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="http://zxdfe.github.iofavicon-16x16.png">
+
+    <link rel="canonical" href="http://zxdfe.github.io/posts/2021-03-05-%E6%B7%B1%E6%B5%85%E6%8B%B7%E8%B4%9D/">
+
+    
+    
+    
+    
+    <script type="text/javascript"
+            src="http://zxdfe.github.io/js/anatole-header.min.d8599ee07b7d3f11bafbac30657ccc591e8d7fd36a9f580cd4c09e24e0e4a971.js"
+            integrity="sha256-2Fme4Ht9PxG6&#43;6wwZXzMWR6Nf9Nqn1gM1MCeJODkqXE="
+            crossorigin="anonymous"></script>
+
+
+    
+        
+        
+        <script type="text/javascript"
+                src="http://zxdfe.github.io/js/anatole-theme-switcher.min.e289e9ebb2a4e7a7f895859c8a2b0da2de1ec73f22cea58d8475aa0597023837.js"
+                integrity="sha256-4onp67Kk56f4lYWciisNot4exz8izqWNhHWqBZcCODc="
+                crossorigin="anonymous"></script>
+    
+    <meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="深浅拷贝"/>
+<meta name="twitter:description" content="拷贝一个很多嵌套的对象怎么实现? 写成怎样的深拷贝才算合格  浅拷贝 创建一个新的对象，来接受要重新复制或引用的对象值。 (只能复制一层)
  如果对象属性是基本的数据类型，复制的就是基本类型的值给新对象； 如果属性是引用数据类型，复制的就是内存中的地址，如果其中一个对象改变了这个内存中的地址，就会影响另一个对象  1. Object.assign() 用于对象的合并 **Object.assign()**** **将源对象（source）的所有可枚举属性，复制到目标对象（target）。它将返回目标对象。 ES6中object的一个方法, 第一个参数是拷贝的目标对象, 后面的参数是拷贝的来源对象(也可以是多个来源) Object.assign(target,...sources)
-let target = {} let source = { a: { b : 1 }} Object.assign(target, source) console.log(target) // {a: {b: 1}}  const target = { a: 1, b: 2 }; const source = { b: 4, c: 5 }; const returnedTarget = Object.assign(target, source); console.log(target); // expected output: Object { a: 1, b: 4, c: 5 }  console."></head><body><div class="sidebar animated fadeInDown"><div class=logo-title><div class=title><img src=http://zxdfe.github.io alt="profile picture"><h3 title><a href=/></a></h3><div class=description><p></p></div></div></div><ul class=social-links></ul><div class=footer><div class=by_farbox>&copy; 2021</div></div></div><div class=main><div class="page-top animated fadeInDown"><a role=button class=navbar-burger data-target=navMenu aria-label=menu aria-expanded=false><span aria-hidden=true></span><span aria-hidden=true></span><span aria-hidden=true></span></a><ul class=nav id=navMenu><li class=theme-switch-item><a class=theme-switch title="Switch Theme"><i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></li></ul></div><div class=autopagerize_page_element><div class=content><div class="post animated fadeInDown"><div class=post-content><div class=post-title><h3>深浅拷贝</h3></div><ol><li>拷贝一个很多嵌套的对象怎么实现?</li><li>写成怎样的深拷贝才算合格</li></ol><h2 id=浅拷贝>浅拷贝</h2><p>创建一个新的对象，来接受要重新复制或引用的对象值。 (只能复制一层)</p><ul><li>如果对象属性是基本的数据类型，复制的就是基本类型的值给新对象；</li><li>如果属性是引用数据类型，复制的就是内存中的地址，如果其中一个对象改变了这个内存中的地址，就会影响另一个对象</li></ul><h3 id=1-objectassign-用于对象的合并>1. Object.assign() 用于对象的合并</h3><p><code>**Object.assign()**</code>** **将源对象（source）的所有可枚举属性，复制到目标对象（target）。它将返回目标对象。
+let target = {} let source = { a: { b : 1 }} Object.assign(target, source) console.log(target) // {a: {b: 1}}  const target = { a: 1, b: 2 }; const source = { b: 4, c: 5 }; const returnedTarget = Object.assign(target, source); console.log(target); // expected output: Object { a: 1, b: 4, c: 5 }  console."/>
+
+
+    
+
+</head>
+<body><div class="sidebar animated fadeInDown ">
+    <div class="logo-title">
+        <div class="title">
+            <img src="http://zxdfe.github.io" alt="profile picture">
+            <h3 title=""><a href="/"></a></h3>
+            <div class="description">
+                <p></p>
+            </div>
+        </div>
+    </div>
+    <ul class="social-links">
+        
+    </ul>
+    <div class="footer">
+        <div class="by_farbox">&copy;   2021 </div>
+    </div>
+</div>
+<div class="main">
+    <div class="page-top  animated fadeInDown ">
+    <a role="button" class="navbar-burger" data-target="navMenu" aria-label="menu" aria-expanded="false">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+    </a>
+    <ul class="nav" id="navMenu">
+        
+        
+        
+        
+            <li class="theme-switch-item">
+                <a class="theme-switch" title="Switch Theme">
+                    <i class="fas fa-adjust fa-fw" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+    </ul>
+</div>
+
+    <div class="autopagerize_page_element">
+        <div class="content">
+    <div class="post  animated fadeInDown ">
+        <div class="post-content">
+            
+            <div class="post-title">
+                <h3>深浅拷贝</h3>
+                
+            </div>
+
+            <ol>
+<li>拷贝一个很多嵌套的对象怎么实现?</li>
+<li>写成怎样的深拷贝才算合格</li>
+</ol>
+<h2 id="浅拷贝">浅拷贝</h2>
+<p>创建一个新的对象，来接受要重新复制或引用的对象值。 (只能复制一层)</p>
+<ul>
+<li>如果对象属性是基本的数据类型，复制的就是基本类型的值给新对象；</li>
+<li>如果属性是引用数据类型，复制的就是内存中的地址，如果其中一个对象改变了这个内存中的地址，就会影响另一个对象</li>
+</ul>
+<h3 id="1-objectassign-用于对象的合并">1. Object.assign() 用于对象的合并</h3>
+<p><code>**Object.assign()**</code>** **将源对象（source）的所有可枚举属性，复制到目标对象（target）。它将返回目标对象。
 ES6中object的一个方法, 第一个参数是拷贝的目标对象, 后面的参数是拷贝的来源对象(也可以是多个来源)
-<code>Object.assign(target,...sources)</code></p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#66d9ef>let</span> <span style=color:#a6e22e>target</span> <span style=color:#f92672>=</span> {}
-<span style=color:#66d9ef>let</span> <span style=color:#a6e22e>source</span> <span style=color:#f92672>=</span> { <span style=color:#a6e22e>a</span><span style=color:#f92672>:</span> { <span style=color:#a6e22e>b</span> <span style=color:#f92672>:</span> <span style=color:#ae81ff>1</span> }}
-Object.<span style=color:#a6e22e>assign</span>(<span style=color:#a6e22e>target</span>, <span style=color:#a6e22e>source</span>)
-<span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>target</span>) <span style=color:#75715e>// {a: {b: 1}}
-</span><span style=color:#75715e></span>
+<code>Object.assign(target,...sources)</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#66d9ef">let</span> <span style="color:#a6e22e">target</span> <span style="color:#f92672">=</span> {}
+<span style="color:#66d9ef">let</span> <span style="color:#a6e22e">source</span> <span style="color:#f92672">=</span> { <span style="color:#a6e22e">a</span><span style="color:#f92672">:</span> { <span style="color:#a6e22e">b</span> <span style="color:#f92672">:</span> <span style="color:#ae81ff">1</span> }}
+Object.<span style="color:#a6e22e">assign</span>(<span style="color:#a6e22e">target</span>, <span style="color:#a6e22e">source</span>)
+<span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">target</span>) <span style="color:#75715e">// {a: {b: 1}}
+</span><span style="color:#75715e"></span>
 
-</code></pre></div><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#66d9ef>const</span> <span style=color:#a6e22e>target</span> <span style=color:#f92672>=</span> { <span style=color:#a6e22e>a</span><span style=color:#f92672>:</span> <span style=color:#ae81ff>1</span>, <span style=color:#a6e22e>b</span><span style=color:#f92672>:</span> <span style=color:#ae81ff>2</span> };
-<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>source</span> <span style=color:#f92672>=</span> { <span style=color:#a6e22e>b</span><span style=color:#f92672>:</span> <span style=color:#ae81ff>4</span>, <span style=color:#a6e22e>c</span><span style=color:#f92672>:</span> <span style=color:#ae81ff>5</span> };
+</code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">target</span> <span style="color:#f92672">=</span> { <span style="color:#a6e22e">a</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">b</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">2</span> };
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">source</span> <span style="color:#f92672">=</span> { <span style="color:#a6e22e">b</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">4</span>, <span style="color:#a6e22e">c</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">5</span> };
 
-<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>returnedTarget</span> <span style=color:#f92672>=</span> Object.<span style=color:#a6e22e>assign</span>(<span style=color:#a6e22e>target</span>, <span style=color:#a6e22e>source</span>);
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">returnedTarget</span> <span style="color:#f92672">=</span> Object.<span style="color:#a6e22e">assign</span>(<span style="color:#a6e22e">target</span>, <span style="color:#a6e22e">source</span>);
 
-<span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>target</span>);
-<span style=color:#75715e>// expected output: Object { a: 1, b: 4, c: 5 }
-</span><span style=color:#75715e></span>
-<span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>returnedTarget</span>);
-<span style=color:#75715e>// expected output: Object { a: 1, b: 4, c: 5 }
-</span></code></pre></div><h3 id=2-扩展运算符>2. 扩展运算符</h3><p><strong><code>let cloneObj = {...obj}</code> <code>let newArr = [...arr]</code></strong></p><blockquote><p>cmd+E 代码块</p></blockquote><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#75715e>/* 对象的拷贝 */</span>
-<span style=color:#66d9ef>let</span> <span style=color:#a6e22e>obj</span> <span style=color:#f92672>=</span> {<span style=color:#a6e22e>a</span><span style=color:#f92672>:</span><span style=color:#ae81ff>1</span>, <span style=color:#a6e22e>b</span><span style=color:#f92672>:</span>{<span style=color:#a6e22e>c</span><span style=color:#f92672>:</span><span style=color:#ae81ff>1</span>}}
-<span style=color:#66d9ef>let</span> <span style=color:#a6e22e>obj2</span> <span style=color:#f92672>=</span> {...<span style=color:#a6e22e>obj</span>}
-<span style=color:#a6e22e>obj</span>.<span style=color:#a6e22e>a</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>2</span>
-<span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>obj</span>) <span style=color:#75715e>//  { a: 2, b: { c: 1 } }
-</span><span style=color:#75715e></span><span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>obj2</span>) <span style=color:#75715e>// { a: 1, b: { c: 1 } }
-</span><span style=color:#75715e></span><span style=color:#a6e22e>obj</span>.<span style=color:#a6e22e>b</span>.<span style=color:#a6e22e>c</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>2</span>
-<span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>obj</span>)  <span style=color:#75715e>// { a: 2, b: { c: 2 } }
-</span><span style=color:#75715e></span><span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>obj2</span>) <span style=color:#75715e>// // { a: 1, b: { c: 2 } }
-</span><span style=color:#75715e></span>
-<span style=color:#75715e>/* 数组的拷贝 */</span>
-<span style=color:#66d9ef>let</span> <span style=color:#a6e22e>arr</span> <span style=color:#f92672>=</span> [<span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>2</span>, <span style=color:#ae81ff>3</span>]
-<span style=color:#66d9ef>let</span> <span style=color:#a6e22e>newArr</span> <span style=color:#f92672>=</span> [...<span style=color:#a6e22e>arr</span>]  <span style=color:#75715e>// 跟arr.slice() 效果一样
-</span><span style=color:#75715e></span><span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>newArr</span>) <span style=color:#75715e>// [ 1, 2, 3 ]
-</span><span style=color:#75715e></span><span style=color:#a6e22e>arr</span>[<span style=color:#ae81ff>2</span>] <span style=color:#f92672>=</span> <span style=color:#ae81ff>5</span>
-<span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>arr</span>)   <span style=color:#75715e>// [ 1, 2, 5 ]
-</span><span style=color:#75715e></span><span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>newArr</span>) <span style=color:#75715e>// [ 1, 2, 3 ]
-</span></code></pre></div><p>扩展运算符和Object.assign都只能是浅拷贝，<code>但是如果属性都是基本类型的值，使用扩展运算符浅拷贝更加方便</code></p><h3 id=3-concat-拷贝数组>3. concat 拷贝数组</h3><p>**<code>Array.concat()</code>**方法用于合并两个或多个数组。此方法不会更改现有数组，而是<code>返回一个新数组</code></p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#66d9ef>let</span> <span style=color:#a6e22e>arr</span> <span style=color:#f92672>=</span> [<span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>2</span>, <span style=color:#ae81ff>3</span>]
-<span style=color:#66d9ef>let</span> <span style=color:#a6e22e>newArr</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>arr</span>.<span style=color:#a6e22e>concat</span>()
-<span style=color:#a6e22e>newArr</span>[<span style=color:#ae81ff>1</span>] <span style=color:#f92672>=</span> <span style=color:#ae81ff>100</span>
-<span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>arr</span>) <span style=color:#75715e>// [1, 2, 3]
-</span><span style=color:#75715e></span><span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>newArr</span>) <span style=color:#75715e>// [1, 100, 3]
-</span></code></pre></div><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#66d9ef>const</span> <span style=color:#a6e22e>array1</span> <span style=color:#f92672>=</span> [<span style=color:#e6db74>&#39;a&#39;</span>, <span style=color:#e6db74>&#39;b&#39;</span>, <span style=color:#e6db74>&#39;c&#39;</span>];
-<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>array2</span> <span style=color:#f92672>=</span> [<span style=color:#e6db74>&#39;d&#39;</span>, <span style=color:#e6db74>&#39;e&#39;</span>, <span style=color:#e6db74>&#39;f&#39;</span>];
-<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>array3</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>array1</span>.<span style=color:#a6e22e>concat</span>(<span style=color:#a6e22e>array2</span>);
+<span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">target</span>);
+<span style="color:#75715e">// expected output: Object { a: 1, b: 4, c: 5 }
+</span><span style="color:#75715e"></span>
+<span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">returnedTarget</span>);
+<span style="color:#75715e">// expected output: Object { a: 1, b: 4, c: 5 }
+</span></code></pre></div><h3 id="2-扩展运算符">2. 扩展运算符</h3>
+<p><strong><code>let cloneObj = {...obj}</code>  <code>let newArr = [...arr]</code></strong></p>
+<blockquote>
+<p>cmd+E 代码块</p>
+</blockquote>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#75715e">/* 对象的拷贝 */</span>
+<span style="color:#66d9ef">let</span> <span style="color:#a6e22e">obj</span> <span style="color:#f92672">=</span> {<span style="color:#a6e22e">a</span><span style="color:#f92672">:</span><span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">b</span><span style="color:#f92672">:</span>{<span style="color:#a6e22e">c</span><span style="color:#f92672">:</span><span style="color:#ae81ff">1</span>}}
+<span style="color:#66d9ef">let</span> <span style="color:#a6e22e">obj2</span> <span style="color:#f92672">=</span> {...<span style="color:#a6e22e">obj</span>}
+<span style="color:#a6e22e">obj</span>.<span style="color:#a6e22e">a</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>
+<span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">obj</span>) <span style="color:#75715e">//  { a: 2, b: { c: 1 } }
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">obj2</span>) <span style="color:#75715e">// { a: 1, b: { c: 1 } }
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">obj</span>.<span style="color:#a6e22e">b</span>.<span style="color:#a6e22e">c</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>
+<span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">obj</span>)  <span style="color:#75715e">// { a: 2, b: { c: 2 } }
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">obj2</span>) <span style="color:#75715e">// // { a: 1, b: { c: 2 } }
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">/* 数组的拷贝 */</span>
+<span style="color:#66d9ef">let</span> <span style="color:#a6e22e">arr</span> <span style="color:#f92672">=</span> [<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>]
+<span style="color:#66d9ef">let</span> <span style="color:#a6e22e">newArr</span> <span style="color:#f92672">=</span> [...<span style="color:#a6e22e">arr</span>]  <span style="color:#75715e">// 跟arr.slice() 效果一样
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">newArr</span>) <span style="color:#75715e">// [ 1, 2, 3 ]
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">arr</span>[<span style="color:#ae81ff">2</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">5</span>
+<span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">arr</span>)   <span style="color:#75715e">// [ 1, 2, 5 ]
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">newArr</span>) <span style="color:#75715e">// [ 1, 2, 3 ]
+</span></code></pre></div><p>扩展运算符和Object.assign都只能是浅拷贝，<code>但是如果属性都是基本类型的值，使用扩展运算符浅拷贝更加方便</code></p>
+<h3 id="3-concat-拷贝数组">3. concat 拷贝数组</h3>
+<p>**<code>Array.concat()</code>**方法用于合并两个或多个数组。此方法不会更改现有数组，而是<code>返回一个新数组</code></p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#66d9ef">let</span> <span style="color:#a6e22e">arr</span> <span style="color:#f92672">=</span> [<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>]
+<span style="color:#66d9ef">let</span> <span style="color:#a6e22e">newArr</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">arr</span>.<span style="color:#a6e22e">concat</span>()
+<span style="color:#a6e22e">newArr</span>[<span style="color:#ae81ff">1</span>] <span style="color:#f92672">=</span> <span style="color:#ae81ff">100</span>
+<span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">arr</span>) <span style="color:#75715e">// [1, 2, 3]
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">newArr</span>) <span style="color:#75715e">// [1, 100, 3]
+</span></code></pre></div><div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">array1</span> <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;a&#39;</span>, <span style="color:#e6db74">&#39;b&#39;</span>, <span style="color:#e6db74">&#39;c&#39;</span>];
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">array2</span> <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;d&#39;</span>, <span style="color:#e6db74">&#39;e&#39;</span>, <span style="color:#e6db74">&#39;f&#39;</span>];
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">array3</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">array1</span>.<span style="color:#a6e22e">concat</span>(<span style="color:#a6e22e">array2</span>);
 
-<span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>array3</span>);
-<span style=color:#75715e>// expected output: Array [&#34;a&#34;, &#34;b&#34;, &#34;c&#34;, &#34;d&#34;, &#34;e&#34;, &#34;f&#34;]
-</span><span style=color:#75715e></span>
-<span style=color:#75715e>// ---连接三个数组---
-</span><span style=color:#75715e></span><span style=color:#66d9ef>var</span> <span style=color:#a6e22e>num1</span> <span style=color:#f92672>=</span> [<span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>2</span>, <span style=color:#ae81ff>3</span>],
-    <span style=color:#a6e22e>num2</span> <span style=color:#f92672>=</span> [<span style=color:#ae81ff>4</span>, <span style=color:#ae81ff>5</span>, <span style=color:#ae81ff>6</span>],
-    <span style=color:#a6e22e>num3</span> <span style=color:#f92672>=</span> [<span style=color:#ae81ff>7</span>, <span style=color:#ae81ff>8</span>, <span style=color:#ae81ff>9</span>];
+<span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">array3</span>);
+<span style="color:#75715e">// expected output: Array [&#34;a&#34;, &#34;b&#34;, &#34;c&#34;, &#34;d&#34;, &#34;e&#34;, &#34;f&#34;]
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">// ---连接三个数组---
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">num1</span> <span style="color:#f92672">=</span> [<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>],
+    <span style="color:#a6e22e">num2</span> <span style="color:#f92672">=</span> [<span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">5</span>, <span style="color:#ae81ff">6</span>],
+    <span style="color:#a6e22e">num3</span> <span style="color:#f92672">=</span> [<span style="color:#ae81ff">7</span>, <span style="color:#ae81ff">8</span>, <span style="color:#ae81ff">9</span>];
 
-<span style=color:#66d9ef>var</span> <span style=color:#a6e22e>nums</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>num1</span>.<span style=color:#a6e22e>concat</span>(<span style=color:#a6e22e>num2</span>, <span style=color:#a6e22e>num3</span>);
+<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">nums</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">num1</span>.<span style="color:#a6e22e">concat</span>(<span style="color:#a6e22e">num2</span>, <span style="color:#a6e22e">num3</span>);
 
-<span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>nums</span>);
-<span style=color:#75715e>// results in [1, 2, 3, 4, 5, 6, 7, 8, 9]
-</span><span style=color:#75715e></span>
-<span style=color:#75715e>// --将值连接到数组--
-</span><span style=color:#75715e></span><span style=color:#66d9ef>var</span> <span style=color:#a6e22e>alpha</span> <span style=color:#f92672>=</span> [<span style=color:#e6db74>&#39;a&#39;</span>, <span style=color:#e6db74>&#39;b&#39;</span>, <span style=color:#e6db74>&#39;c&#39;</span>];
+<span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">nums</span>);
+<span style="color:#75715e">// results in [1, 2, 3, 4, 5, 6, 7, 8, 9]
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">// --将值连接到数组--
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">var</span> <span style="color:#a6e22e">alpha</span> <span style="color:#f92672">=</span> [<span style="color:#e6db74">&#39;a&#39;</span>, <span style="color:#e6db74">&#39;b&#39;</span>, <span style="color:#e6db74">&#39;c&#39;</span>];
 
-<span style=color:#66d9ef>var</span> <span style=color:#a6e22e>alphaNumeric</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>alpha</span>.<span style=color:#a6e22e>concat</span>(<span style=color:#ae81ff>1</span>, [<span style=color:#ae81ff>2</span>, <span style=color:#ae81ff>3</span>]);
+<span style="color:#66d9ef">var</span> <span style="color:#a6e22e">alphaNumeric</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">alpha</span>.<span style="color:#a6e22e">concat</span>(<span style="color:#ae81ff">1</span>, [<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>]);
 
-<span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>alphaNumeric</span>);
-<span style=color:#75715e>// results in [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, 1, 2, 3]
-</span></code></pre></div><h3 id=4-slice-拷贝数组>4. slice 拷贝数组</h3><p><code>**slice()**</code> 方法返回一个新的数组对象，这一对象是一个由 <code>begin</code> 和 <code>end</code> 决定的原数组的<strong>浅拷贝</strong>（包括 <code>begin</code>，不包括<code>end</code>）。原始数组不会被改变。</p><blockquote><p>arr.slice(begin, end)</p></blockquote><ul><li><strong>begin</strong> : 提取起始处的索引（从 <code>0</code> 开始），从该索引开始提取原数组元素</li><li><strong>end:</strong> 提取终止处的索引（从 <code>0</code> 开始），在该索引处结束提取原数组元素。<code>slice</code> 会提取原数组中索引从 <code>begin</code> 到 <code>end</code> 的所有元素（包含 <code>begin</code>，但不包含 <code>end</code>）<ul><li>如果 <code>end</code> 被省略，则 <code>slice</code> 会一直提取到原数组末尾</li></ul></li></ul><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#66d9ef>let</span> <span style=color:#a6e22e>arr</span> <span style=color:#f92672>=</span> [<span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>2</span>, {<span style=color:#a6e22e>val</span><span style=color:#f92672>:</span><span style=color:#ae81ff>4</span>}]
-<span style=color:#66d9ef>let</span> <span style=color:#a6e22e>newArr</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>arr</span>.<span style=color:#a6e22e>slice</span>()   <span style=color:#75715e>// newArr  [1, 2, {val:4}]
-</span><span style=color:#75715e></span><span style=color:#a6e22e>newArr</span>(<span style=color:#ae81ff>2</span>).<span style=color:#a6e22e>val</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>1000</span> 
-<span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>arr</span>) <span style=color:#75715e>// 浅拷贝,会影响原数组中的val(引用类型)  [1, 2, {val:1000}]
-</span></code></pre></div><ul><li><p>如果该元素是个对象引用 （不是实际的对象），<code>slice</code> 会拷贝这个对象引用到新的数组里。两个对象引用都引用了同一个对象。如果被引用的对象发生改变，则新的和原来的数组中的这个元素也会发生改变。</p></li><li><p>对于字符串、数字及布尔值来说（不是 <a href=https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String><code>String</code></a>、<a href=https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Number><code>Number</code></a> 或者 <a href=https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Boolean><code>Boolean</code></a> 对象），<code>slice</code> 会拷贝这些值到新的数组里。在别的数组里修改这些字符串或数字或是布尔值，将不会影响另一个数组。</p></li></ul><h3 id=5-手写实现一个浅拷贝>5. 手写实现一个浅拷贝</h3><p><a href=https://www.zhihu.com/question/56841737>null和undefined区别</a>
-思路:</p><ol><li>对基础类型做一个最基本的拷贝</li><li>对引用类型开辟一个新的存储，并且拷贝一层对象属性。</li></ol><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#75715e>// Array.isArray(target)判断是否是数组 IE8不支持
-</span><span style=color:#75715e>// toString.call(target) === &#39;[object Array]&#39;
-</span><span style=color:#75715e></span><span style=color:#66d9ef>const</span> <span style=color:#a6e22e>shallowClone</span> <span style=color:#f92672>=</span> (<span style=color:#a6e22e>target</span>) =&gt; {
-    <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>target</span> <span style=color:#f92672>!=</span> <span style=color:#66d9ef>null</span> <span style=color:#f92672>&amp;&amp;</span> (<span style=color:#66d9ef>typeof</span> <span style=color:#a6e22e>target</span> <span style=color:#f92672>===</span> <span style=color:#e6db74>&#39;object&#39;</span><span style=color:#f92672>||</span> <span style=color:#66d9ef>typeof</span> <span style=color:#a6e22e>target</span> <span style=color:#f92672>===</span> <span style=color:#e6db74>&#39;function&#39;</span>)) {
-      <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>cloneTarget</span> <span style=color:#f92672>=</span> Array.<span style=color:#a6e22e>isArray</span>(<span style=color:#a6e22e>target</span>) <span style=color:#f92672>?</span> []<span style=color:#f92672>:</span> {};
-      <span style=color:#66d9ef>for</span> (<span style=color:#66d9ef>let</span> <span style=color:#a6e22e>prop</span> <span style=color:#66d9ef>in</span> <span style=color:#a6e22e>target</span>) { <span style=color:#75715e>// 浅拷贝只遍历第一层
-</span><span style=color:#75715e></span>        <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>target</span>.<span style=color:#a6e22e>hasOwnProperty</span>(<span style=color:#a6e22e>prop</span>)) {
-            <span style=color:#a6e22e>cloneTarget</span>[<span style=color:#a6e22e>prop</span>] <span style=color:#f92672>=</span> <span style=color:#a6e22e>target</span>[<span style=color:#a6e22e>prop</span>];<span style=color:#75715e>//  [1,2]
-</span><span style=color:#75715e></span>         }
+<span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">alphaNumeric</span>);
+<span style="color:#75715e">// results in [&#39;a&#39;, &#39;b&#39;, &#39;c&#39;, 1, 2, 3]
+</span></code></pre></div><h3 id="4-slice-拷贝数组">4. slice 拷贝数组</h3>
+<p><code>**slice()**</code> 方法返回一个新的数组对象，这一对象是一个由 <code>begin</code> 和 <code>end</code> 决定的原数组的<strong>浅拷贝</strong>（包括 <code>begin</code>，不包括<code>end</code>）。原始数组不会被改变。</p>
+<blockquote>
+<p>arr.slice(begin, end)</p>
+</blockquote>
+<ul>
+<li><strong>begin</strong> : 提取起始处的索引（从 <code>0</code> 开始），从该索引开始提取原数组元素</li>
+<li><strong>end:</strong> 提取终止处的索引（从 <code>0</code> 开始），在该索引处结束提取原数组元素。<code>slice</code> 会提取原数组中索引从 <code>begin</code> 到 <code>end</code> 的所有元素（包含 <code>begin</code>，但不包含 <code>end</code>）
+<ul>
+<li>如果 <code>end</code> 被省略，则 <code>slice</code> 会一直提取到原数组末尾</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#66d9ef">let</span> <span style="color:#a6e22e">arr</span> <span style="color:#f92672">=</span> [<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, {<span style="color:#a6e22e">val</span><span style="color:#f92672">:</span><span style="color:#ae81ff">4</span>}]
+<span style="color:#66d9ef">let</span> <span style="color:#a6e22e">newArr</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">arr</span>.<span style="color:#a6e22e">slice</span>()   <span style="color:#75715e">// newArr  [1, 2, {val:4}]
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">newArr</span>(<span style="color:#ae81ff">2</span>).<span style="color:#a6e22e">val</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">1000</span> 
+<span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">arr</span>) <span style="color:#75715e">// 浅拷贝,会影响原数组中的val(引用类型)  [1, 2, {val:1000}]
+</span></code></pre></div><ul>
+<li>
+<p>如果该元素是个对象引用 （不是实际的对象），<code>slice</code> 会拷贝这个对象引用到新的数组里。两个对象引用都引用了同一个对象。如果被引用的对象发生改变，则新的和原来的数组中的这个元素也会发生改变。</p>
+</li>
+<li>
+<p>对于字符串、数字及布尔值来说（不是 <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/String"><code>String</code></a>、<a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Number"><code>Number</code></a> 或者 <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Boolean"><code>Boolean</code></a> 对象），<code>slice</code> 会拷贝这些值到新的数组里。在别的数组里修改这些字符串或数字或是布尔值，将不会影响另一个数组。</p>
+</li>
+</ul>
+<h3 id="5-手写实现一个浅拷贝">5. 手写实现一个浅拷贝</h3>
+<p><a href="https://www.zhihu.com/question/56841737">null和undefined区别</a>
+思路:</p>
+<ol>
+<li>对基础类型做一个最基本的拷贝</li>
+<li>对引用类型开辟一个新的存储，并且拷贝一层对象属性。</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#75715e">// Array.isArray(target)判断是否是数组 IE8不支持
+</span><span style="color:#75715e">// toString.call(target) === &#39;[object Array]&#39;
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">shallowClone</span> <span style="color:#f92672">=</span> (<span style="color:#a6e22e">target</span>) =&gt; {
+    <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">target</span> <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">&amp;&amp;</span> (<span style="color:#66d9ef">typeof</span> <span style="color:#a6e22e">target</span> <span style="color:#f92672">===</span> <span style="color:#e6db74">&#39;object&#39;</span><span style="color:#f92672">||</span> <span style="color:#66d9ef">typeof</span> <span style="color:#a6e22e">target</span> <span style="color:#f92672">===</span> <span style="color:#e6db74">&#39;function&#39;</span>)) {
+      <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">cloneTarget</span> <span style="color:#f92672">=</span> Array.<span style="color:#a6e22e">isArray</span>(<span style="color:#a6e22e">target</span>) <span style="color:#f92672">?</span> []<span style="color:#f92672">:</span> {};
+      <span style="color:#66d9ef">for</span> (<span style="color:#66d9ef">let</span> <span style="color:#a6e22e">prop</span> <span style="color:#66d9ef">in</span> <span style="color:#a6e22e">target</span>) { <span style="color:#75715e">// 浅拷贝只遍历第一层
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">target</span>.<span style="color:#a6e22e">hasOwnProperty</span>(<span style="color:#a6e22e">prop</span>)) {
+            <span style="color:#a6e22e">cloneTarget</span>[<span style="color:#a6e22e">prop</span>] <span style="color:#f92672">=</span> <span style="color:#a6e22e">target</span>[<span style="color:#a6e22e">prop</span>];<span style="color:#75715e">//  [1,2]
+</span><span style="color:#75715e"></span>         }
       }
-      <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>cloneTarget</span>;
-    } <span style=color:#66d9ef>else</span> {
-      <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>target</span>;
+      <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">cloneTarget</span>;
+    } <span style="color:#66d9ef">else</span> {
+      <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">target</span>;
     }
 }
 
-<span style=color:#75715e>// let a = [1,2, [3, 4]]
-</span><span style=color:#75715e></span><span style=color:#66d9ef>let</span> <span style=color:#a6e22e>a</span> <span style=color:#f92672>=</span> {<span style=color:#a6e22e>name</span><span style=color:#f92672>:</span><span style=color:#e6db74>&#39;ha ha&#39;</span>,<span style=color:#a6e22e>c</span><span style=color:#f92672>:</span>{<span style=color:#a6e22e>name</span><span style=color:#f92672>:</span>{<span style=color:#a6e22e>yo</span><span style=color:#f92672>:</span><span style=color:#e6db74>&#39;xi xi&#39;</span>}}}
-<span style=color:#66d9ef>let</span> <span style=color:#a6e22e>b</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>shallowClone</span>(<span style=color:#a6e22e>a</span>)
-<span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>b</span>)
-</code></pre></div><h2 id=深拷贝>深拷贝</h2><h3 id=1-jsonparsejsonstringify>1. JSON.parse(JSON.stringify())</h3><p>把一个对象序列化成JSON的字符串，并将对象里面的内容转换成字符串,，最后再用JSON.parse()的方法将JSON字符串生成一个新的对象。</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#66d9ef>let</span> <span style=color:#a6e22e>obj1</span> <span style=color:#f92672>=</span> { <span style=color:#a6e22e>a</span><span style=color:#f92672>:</span> <span style=color:#ae81ff>1</span>, <span style=color:#a6e22e>b</span><span style=color:#f92672>:</span>[<span style=color:#ae81ff>1</span>, <span style=color:#ae81ff>2</span>, <span style=color:#ae81ff>3</span>]}
-<span style=color:#66d9ef>let</span> <span style=color:#a6e22e>str</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>JSON</span>.<span style=color:#a6e22e>stringify</span>(<span style=color:#a6e22e>obj1</span>)
-<span style=color:#66d9ef>let</span> <span style=color:#a6e22e>obj2</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>JSON</span>.<span style=color:#a6e22e>parse</span>(<span style=color:#a6e22e>str</span>)
-<span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>obj2</span>)  <span style=color:#75715e>//  a: 1, b: [ 1, 2, 3 ] }
-</span><span style=color:#75715e></span><span style=color:#a6e22e>obj1</span>.<span style=color:#a6e22e>a</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>2</span>
-<span style=color:#a6e22e>obj2</span>.<span style=color:#a6e22e>b</span>.<span style=color:#a6e22e>push</span>(<span style=color:#ae81ff>4</span>)
-<span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>obj1</span>)    <span style=color:#75715e>// { a: 2, b: [ 1, 2, 3 ] }  
-</span><span style=color:#75715e></span><span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>obj2</span>)   <span style=color:#75715e>// { a: 1, b: [ 1, 2, 3, 4 ]}  obj2  obj1相互不影响
-</span></code></pre></div><p>缺陷:</p><ol><li>拷贝的对象的值中如果有<strong>函数，undefined，symbol</strong>，经过JSON.stringify序列化后的字符串中,这个键值对会<strong>丢失</strong></li><li>拷贝<strong>Date</strong>引用类型会变成<strong>字符串</strong></li><li><strong>无法拷贝不可枚举的属性</strong></li><li><strong>无法拷贝对象的原型链</strong></li><li><strong>拷贝RegExp 引用类型会变成空对象</strong></li><li>对象中含有NaN、 Infinity以及 -Infinity, JSON序列化的结果会变成null</li><li>无法拷贝对象的循环引用, 即对象成环(obj(key) = obj)</li></ol><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#66d9ef>function</span> <span style=color:#a6e22e>Obj</span>() { 
-  <span style=color:#66d9ef>this</span>.<span style=color:#a6e22e>func</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>function</span> () { <span style=color:#a6e22e>alert</span>(<span style=color:#ae81ff>1</span>) }; 
-  <span style=color:#66d9ef>this</span>.<span style=color:#a6e22e>obj</span> <span style=color:#f92672>=</span> {<span style=color:#a6e22e>a</span><span style=color:#f92672>:</span><span style=color:#ae81ff>1</span>};
-  <span style=color:#66d9ef>this</span>.<span style=color:#a6e22e>arr</span> <span style=color:#f92672>=</span> [<span style=color:#ae81ff>1</span>,<span style=color:#ae81ff>2</span>,<span style=color:#ae81ff>3</span>];
-  <span style=color:#66d9ef>this</span>.<span style=color:#a6e22e>und</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>undefined</span>; 
-  <span style=color:#66d9ef>this</span>.<span style=color:#a6e22e>reg</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>/123/</span>; 
-  <span style=color:#66d9ef>this</span>.<span style=color:#a6e22e>date</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> Date(<span style=color:#ae81ff>0</span>); 
-  <span style=color:#66d9ef>this</span>.<span style=color:#66d9ef>NaN</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>NaN</span>;
-  <span style=color:#66d9ef>this</span>.<span style=color:#a6e22e>infinity</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>Infinity</span>;
-  <span style=color:#66d9ef>this</span>.<span style=color:#a6e22e>sym</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>Symbol</span>(<span style=color:#ae81ff>1</span>);
+<span style="color:#75715e">// let a = [1,2, [3, 4]]
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">let</span> <span style="color:#a6e22e">a</span> <span style="color:#f92672">=</span> {<span style="color:#a6e22e">name</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#39;ha ha&#39;</span>,<span style="color:#a6e22e">c</span><span style="color:#f92672">:</span>{<span style="color:#a6e22e">name</span><span style="color:#f92672">:</span>{<span style="color:#a6e22e">yo</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#39;xi xi&#39;</span>}}}
+<span style="color:#66d9ef">let</span> <span style="color:#a6e22e">b</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">shallowClone</span>(<span style="color:#a6e22e">a</span>)
+<span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">b</span>)
+</code></pre></div><h2 id="深拷贝">深拷贝</h2>
+<h3 id="1-jsonparsejsonstringify">1. JSON.parse(JSON.stringify())</h3>
+<p>把一个对象序列化成JSON的字符串，并将对象里面的内容转换成字符串,，最后再用JSON.parse()的方法将JSON字符串生成一个新的对象。</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#66d9ef">let</span> <span style="color:#a6e22e">obj1</span> <span style="color:#f92672">=</span> { <span style="color:#a6e22e">a</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1</span>, <span style="color:#a6e22e">b</span><span style="color:#f92672">:</span>[<span style="color:#ae81ff">1</span>, <span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">3</span>]}
+<span style="color:#66d9ef">let</span> <span style="color:#a6e22e">str</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">JSON</span>.<span style="color:#a6e22e">stringify</span>(<span style="color:#a6e22e">obj1</span>)
+<span style="color:#66d9ef">let</span> <span style="color:#a6e22e">obj2</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">JSON</span>.<span style="color:#a6e22e">parse</span>(<span style="color:#a6e22e">str</span>)
+<span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">obj2</span>)  <span style="color:#75715e">//  a: 1, b: [ 1, 2, 3 ] }
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">obj1</span>.<span style="color:#a6e22e">a</span> <span style="color:#f92672">=</span> <span style="color:#ae81ff">2</span>
+<span style="color:#a6e22e">obj2</span>.<span style="color:#a6e22e">b</span>.<span style="color:#a6e22e">push</span>(<span style="color:#ae81ff">4</span>)
+<span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">obj1</span>)    <span style="color:#75715e">// { a: 2, b: [ 1, 2, 3 ] }  
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">obj2</span>)   <span style="color:#75715e">// { a: 1, b: [ 1, 2, 3, 4 ]}  obj2  obj1相互不影响
+</span></code></pre></div><p>缺陷:</p>
+<ol>
+<li>拷贝的对象的值中如果有<strong>函数，undefined，symbol</strong>，经过JSON.stringify序列化后的字符串中,这个键值对会<strong>丢失</strong></li>
+<li>拷贝<strong>Date</strong>引用类型会变成<strong>字符串</strong></li>
+<li><strong>无法拷贝不可枚举的属性</strong></li>
+<li><strong>无法拷贝对象的原型链</strong></li>
+<li><strong>拷贝RegExp 引用类型会变成空对象</strong></li>
+<li>对象中含有NaN、 Infinity以及 -Infinity, JSON序列化的结果会变成null</li>
+<li>无法拷贝对象的循环引用, 即对象成环(obj(key) = obj)</li>
+</ol>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">Obj</span>() { 
+  <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">func</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">function</span> () { <span style="color:#a6e22e">alert</span>(<span style="color:#ae81ff">1</span>) }; 
+  <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">obj</span> <span style="color:#f92672">=</span> {<span style="color:#a6e22e">a</span><span style="color:#f92672">:</span><span style="color:#ae81ff">1</span>};
+  <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">arr</span> <span style="color:#f92672">=</span> [<span style="color:#ae81ff">1</span>,<span style="color:#ae81ff">2</span>,<span style="color:#ae81ff">3</span>];
+  <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">und</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">undefined</span>; 
+  <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">reg</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">/123/</span>; 
+  <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">date</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> Date(<span style="color:#ae81ff">0</span>); 
+  <span style="color:#66d9ef">this</span>.<span style="color:#66d9ef">NaN</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">NaN</span>;
+  <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">infinity</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">Infinity</span>;
+  <span style="color:#66d9ef">this</span>.<span style="color:#a6e22e">sym</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">Symbol</span>(<span style="color:#ae81ff">1</span>);
 } 
-<span style=color:#66d9ef>let</span> <span style=color:#a6e22e>obj1</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>Obj</span>();
-Object.<span style=color:#a6e22e>defineProperty</span>(<span style=color:#a6e22e>obj1</span>,<span style=color:#e6db74>&#39;innumerable&#39;</span>,{ 
-  <span style=color:#a6e22e>enumerable</span><span style=color:#f92672>:</span><span style=color:#66d9ef>false</span>,
-  <span style=color:#a6e22e>value</span><span style=color:#f92672>:</span><span style=color:#e6db74>&#39;innumerable&#39;</span>
+<span style="color:#66d9ef">let</span> <span style="color:#a6e22e">obj1</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Obj</span>();
+Object.<span style="color:#a6e22e">defineProperty</span>(<span style="color:#a6e22e">obj1</span>,<span style="color:#e6db74">&#39;innumerable&#39;</span>,{ 
+  <span style="color:#a6e22e">enumerable</span><span style="color:#f92672">:</span><span style="color:#66d9ef">false</span>,
+  <span style="color:#a6e22e">value</span><span style="color:#f92672">:</span><span style="color:#e6db74">&#39;innumerable&#39;</span>
 });
-<span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#e6db74>&#39;obj1&#39;</span>,<span style=color:#a6e22e>obj1</span>);
-<span style=color:#66d9ef>let</span> <span style=color:#a6e22e>str</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>JSON</span>.<span style=color:#a6e22e>stringify</span>(<span style=color:#a6e22e>obj1</span>);
-<span style=color:#66d9ef>let</span> <span style=color:#a6e22e>obj2</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>JSON</span>.<span style=color:#a6e22e>parse</span>(<span style=color:#a6e22e>str</span>);
-<span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#e6db74>&#39;obj2&#39;</span>,<span style=color:#a6e22e>obj2</span>);
+<span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#39;obj1&#39;</span>,<span style="color:#a6e22e">obj1</span>);
+<span style="color:#66d9ef">let</span> <span style="color:#a6e22e">str</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">JSON</span>.<span style="color:#a6e22e">stringify</span>(<span style="color:#a6e22e">obj1</span>);
+<span style="color:#66d9ef">let</span> <span style="color:#a6e22e">obj2</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">JSON</span>.<span style="color:#a6e22e">parse</span>(<span style="color:#a6e22e">str</span>);
+<span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#39;obj2&#39;</span>,<span style="color:#a6e22e">obj2</span>);
 </code></pre></div><p>上述代码执行结果:
-<img src="https://cdn.nlark.com/yuque/0/2021/png/302528/1615038697505-5eb4ed43-7aa1-4497-b200-3b2fd7c1d688.png#align=left&display=inline&height=384&margin=%5Bobject%20Object%5D&name=image.png&originHeight=768&originWidth=1100&size=340521&status=done&style=none&width=550" alt=image.png></p><h3 id=2-基础版本手写递归实现并考虑数组-未处理循环引用>2. 基础版本(手写递归实现,并考虑数组) 未处理循环引用</h3><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#75715e>// 判断数组
-</span><span style=color:#75715e></span><span style=color:#66d9ef>const</span> <span style=color:#a6e22e>isObject</span> <span style=color:#f92672>=</span> (<span style=color:#a6e22e>obj</span>)=&gt;{
-    <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>type</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>typeof</span> <span style=color:#a6e22e>obj</span>;
-    <span style=color:#66d9ef>return</span> (<span style=color:#a6e22e>type</span> <span style=color:#f92672>===</span> <span style=color:#e6db74>&#39;function&#39;</span> <span style=color:#f92672>||</span> <span style=color:#a6e22e>type</span> <span style=color:#f92672>===</span> <span style=color:#e6db74>&#39;object&#39;</span> ) <span style=color:#f92672>&amp;&amp;</span> <span style=color:#f92672>!!</span><span style=color:#a6e22e>obj</span>;  <span style=color:#75715e>// !!null
-</span><span style=color:#75715e></span>}
+<img src="https://cdn.nlark.com/yuque/0/2021/png/302528/1615038697505-5eb4ed43-7aa1-4497-b200-3b2fd7c1d688.png#align=left&amp;display=inline&amp;height=384&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=768&amp;originWidth=1100&amp;size=340521&amp;status=done&amp;style=none&amp;width=550" alt="image.png"></p>
+<h3 id="2-基础版本手写递归实现并考虑数组-未处理循环引用">2. 基础版本(手写递归实现,并考虑数组) 未处理循环引用</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#75715e">// 判断数组
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">isObject</span> <span style="color:#f92672">=</span> (<span style="color:#a6e22e">obj</span>)=&gt;{
+    <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">type</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">typeof</span> <span style="color:#a6e22e">obj</span>;
+    <span style="color:#66d9ef">return</span> (<span style="color:#a6e22e">type</span> <span style="color:#f92672">===</span> <span style="color:#e6db74">&#39;function&#39;</span> <span style="color:#f92672">||</span> <span style="color:#a6e22e">type</span> <span style="color:#f92672">===</span> <span style="color:#e6db74">&#39;object&#39;</span> ) <span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">!!</span><span style="color:#a6e22e">obj</span>;  <span style="color:#75715e">// !!null
+</span><span style="color:#75715e"></span>}
 
-<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>deepClone</span> <span style=color:#f92672>=</span> (<span style=color:#a6e22e>target</span>) =&gt;{
-    <span style=color:#66d9ef>if</span>(<span style=color:#a6e22e>isObject</span>(<span style=color:#a6e22e>target</span>)){
-        <span style=color:#75715e>// 考虑数组
-</span><span style=color:#75715e></span>        <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>cloneObj</span> <span style=color:#f92672>=</span> Array.<span style=color:#a6e22e>isArray</span>(<span style=color:#a6e22e>target</span>) <span style=color:#f92672>?</span> [] <span style=color:#f92672>:</span> {}
-        <span style=color:#66d9ef>for</span>(<span style=color:#66d9ef>let</span> <span style=color:#a6e22e>key</span> <span style=color:#66d9ef>in</span> <span style=color:#a6e22e>target</span>){
-            <span style=color:#a6e22e>cloneObj</span>[<span style=color:#a6e22e>key</span>] <span style=color:#f92672>=</span> <span style=color:#a6e22e>deepClone</span>(<span style=color:#a6e22e>target</span>[<span style=color:#a6e22e>key</span>])
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">deepClone</span> <span style="color:#f92672">=</span> (<span style="color:#a6e22e">target</span>) =&gt;{
+    <span style="color:#66d9ef">if</span>(<span style="color:#a6e22e">isObject</span>(<span style="color:#a6e22e">target</span>)){
+        <span style="color:#75715e">// 考虑数组
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">cloneObj</span> <span style="color:#f92672">=</span> Array.<span style="color:#a6e22e">isArray</span>(<span style="color:#a6e22e">target</span>) <span style="color:#f92672">?</span> [] <span style="color:#f92672">:</span> {}
+        <span style="color:#66d9ef">for</span>(<span style="color:#66d9ef">let</span> <span style="color:#a6e22e">key</span> <span style="color:#66d9ef">in</span> <span style="color:#a6e22e">target</span>){
+            <span style="color:#a6e22e">cloneObj</span>[<span style="color:#a6e22e">key</span>] <span style="color:#f92672">=</span> <span style="color:#a6e22e">deepClone</span>(<span style="color:#a6e22e">target</span>[<span style="color:#a6e22e">key</span>])
         }
-        <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>cloneObj</span>
-    }<span style=color:#66d9ef>else</span>{
-        <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>target</span>
+        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">cloneObj</span>
+    }<span style="color:#66d9ef">else</span>{
+        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">target</span>
     }
 }
-</code></pre></div><p>缺陷</p><ol><li>上述deepClone不能复制不可枚举的属性以及Symbol类型</li><li>对象的属性里面成环, 循环引用没有解决</li></ol><p>测试</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#66d9ef>const</span> <span style=color:#a6e22e>target</span> <span style=color:#f92672>=</span> {
-    <span style=color:#a6e22e>field1</span><span style=color:#f92672>:</span> <span style=color:#ae81ff>1</span>,
-    <span style=color:#a6e22e>field2</span><span style=color:#f92672>:</span> <span style=color:#66d9ef>undefined</span>,
-    <span style=color:#a6e22e>field3</span><span style=color:#f92672>:</span> {
-        <span style=color:#a6e22e>child</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#39;child&#39;</span>
+</code></pre></div><p>缺陷</p>
+<ol>
+<li>上述deepClone不能复制不可枚举的属性以及Symbol类型</li>
+<li>对象的属性里面成环, 循环引用没有解决</li>
+</ol>
+<p>测试</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">target</span> <span style="color:#f92672">=</span> {
+    <span style="color:#a6e22e">field1</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1</span>,
+    <span style="color:#a6e22e">field2</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">undefined</span>,
+    <span style="color:#a6e22e">field3</span><span style="color:#f92672">:</span> {
+        <span style="color:#a6e22e">child</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;child&#39;</span>
     },
-    <span style=color:#a6e22e>field4</span><span style=color:#f92672>:</span> [<span style=color:#ae81ff>2</span>, <span style=color:#ae81ff>4</span>, <span style=color:#ae81ff>8</span>]
+    <span style="color:#a6e22e">field4</span><span style="color:#f92672">:</span> [<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">8</span>]
 };
-<span style=color:#75715e>// target.target = target  // 循环引用,call stack 溢出
-</span><span style=color:#75715e></span><span style=color:#66d9ef>const</span> <span style=color:#a6e22e>deepTarget</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>deepClone</span>(<span style=color:#a6e22e>target</span>)
-<span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>deepTarget</span>)
-<span style=color:#a6e22e>deepTarget</span>.<span style=color:#a6e22e>field3</span>.<span style=color:#a6e22e>child</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;yo&#39;</span>
-<span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>target</span>)
-<span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>deepTarget</span>)
+<span style="color:#75715e">// target.target = target  // 循环引用,call stack 溢出
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">deepTarget</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">deepClone</span>(<span style="color:#a6e22e">target</span>)
+<span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">deepTarget</span>)
+<span style="color:#a6e22e">deepTarget</span>.<span style="color:#a6e22e">field3</span>.<span style="color:#a6e22e">child</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;yo&#39;</span>
+<span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">target</span>)
+<span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">deepTarget</span>)
 </code></pre></div><p>如果要拷贝的对象存在循环引用时, 即对象的属性间接或直接的引用了自身的情况
 因为递归进入死循环导致栈内存溢出了
-<img src="https://cdn.nlark.com/yuque/0/2021/png/302528/1615042963079-b10532a3-99ac-43b0-85f2-cb7094930dfb.png#align=left&display=inline&height=280&margin=%5Bobject%20Object%5D&name=image.png&originHeight=560&originWidth=1558&size=471031&status=done&style=none&width=779" alt=image.png></p><h3 id=3-考虑dateregexp等>3. 考虑Date、RegExp等</h3><p>思路</p><ol><li>针对能够遍历对象的不可枚举属性以及 Symbol 类型，我们可以使用 Reflect.ownKeys()方法</li><li>当参数为 Date 、RegExp 类型，则直接生成一个新的实例返回</li><li>利用 WeakMap 类型作为 hash 表，（因为 WeakMap是弱引用类型，可以有效防止内存泄漏），作为检测循环引用 // lodash自己构造了一个stack</li></ol><p>ps.循环效率
-while>for>forEach>for in>for of</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#75715e>// 可继续遍历
-</span><span style=color:#75715e></span><span style=color:#66d9ef>const</span> <span style=color:#a6e22e>objectTag</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;[object Object]&#39;</span>
-<span style=color:#75715e>// const argsTag = &#39;[object Arguments]&#39;
-</span><span style=color:#75715e></span><span style=color:#66d9ef>const</span> <span style=color:#a6e22e>arrayTag</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;[object Array]&#39;</span>
-<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>mapTag</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;[object Map]&#39;</span>
-<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>setTag</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;[object Set]&#39;</span>
+<img src="https://cdn.nlark.com/yuque/0/2021/png/302528/1615042963079-b10532a3-99ac-43b0-85f2-cb7094930dfb.png#align=left&amp;display=inline&amp;height=280&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=560&amp;originWidth=1558&amp;size=471031&amp;status=done&amp;style=none&amp;width=779" alt="image.png"></p>
+<h3 id="3-考虑dateregexp等">3. 考虑Date、RegExp等</h3>
+<p>思路</p>
+<ol>
+<li>针对能够遍历对象的不可枚举属性以及 Symbol 类型，我们可以使用 Reflect.ownKeys()方法</li>
+<li>当参数为 Date 、RegExp 类型，则直接生成一个新的实例返回</li>
+<li>利用 WeakMap 类型作为 hash 表，（因为 WeakMap是弱引用类型，可以有效防止内存泄漏），作为检测循环引用 // lodash自己构造了一个stack</li>
+</ol>
+<p>ps.循环效率
+while&gt;for&gt;forEach&gt;for in&gt;for of</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#75715e">// 可继续遍历
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">objectTag</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;[object Object]&#39;</span>
+<span style="color:#75715e">// const argsTag = &#39;[object Arguments]&#39;
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">arrayTag</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;[object Array]&#39;</span>
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">mapTag</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;[object Map]&#39;</span>
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">setTag</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;[object Set]&#39;</span>
 
 
-<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>deepTags</span> <span style=color:#f92672>=</span> [<span style=color:#a6e22e>mapTag</span>,<span style=color:#a6e22e>setTag</span>,<span style=color:#a6e22e>arrayTag</span>,<span style=color:#a6e22e>objectTag</span>] <span style=color:#75715e>// argsTag不能new
-</span><span style=color:#75715e>// 不可继续遍历类型 等,还有一些不考虑了
-</span><span style=color:#75715e></span><span style=color:#66d9ef>const</span> <span style=color:#a6e22e>boolTag</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;[object Boolean]&#39;</span>
-<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>dateTag</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;[object Date]&#39;</span>
-<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>errorTag</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;[object Error]&#39;</span>
-<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>numberTag</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;[object Number]&#39;</span>
-<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>stringTag</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;[object String]&#39;</span>
-<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>regexpTag</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;[object RegExp]&#39;</span>
-<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>symbolTag</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;[object Symbol]&#39;</span>
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">deepTags</span> <span style="color:#f92672">=</span> [<span style="color:#a6e22e">mapTag</span>,<span style="color:#a6e22e">setTag</span>,<span style="color:#a6e22e">arrayTag</span>,<span style="color:#a6e22e">objectTag</span>] <span style="color:#75715e">// argsTag不能new
+</span><span style="color:#75715e">// 不可继续遍历类型 等,还有一些不考虑了
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">boolTag</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;[object Boolean]&#39;</span>
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">dateTag</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;[object Date]&#39;</span>
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">errorTag</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;[object Error]&#39;</span>
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">numberTag</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;[object Number]&#39;</span>
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">stringTag</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;[object String]&#39;</span>
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">regexpTag</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;[object RegExp]&#39;</span>
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">symbolTag</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;[object Symbol]&#39;</span>
 
-<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>funcTag</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;[object Function]&#39;</span> <span style=color:#75715e>// 新加 lodash.js中没有 //函数单拿出来
-</span><span style=color:#75715e></span>
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">funcTag</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;[object Function]&#39;</span> <span style="color:#75715e">// 新加 lodash.js中没有 //函数单拿出来
+</span><span style="color:#75715e"></span>
 
-<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>isObject</span> <span style=color:#f92672>=</span> (<span style=color:#a6e22e>obj</span>)=&gt;{
-    <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>type</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>typeof</span> <span style=color:#a6e22e>obj</span>;
-    <span style=color:#66d9ef>return</span> (<span style=color:#a6e22e>type</span> <span style=color:#f92672>===</span> <span style=color:#e6db74>&#39;function&#39;</span> <span style=color:#f92672>||</span> <span style=color:#a6e22e>type</span> <span style=color:#f92672>===</span> <span style=color:#e6db74>&#39;object&#39;</span> ) <span style=color:#f92672>&amp;&amp;</span> <span style=color:#f92672>!!</span><span style=color:#a6e22e>obj</span>;
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">isObject</span> <span style="color:#f92672">=</span> (<span style="color:#a6e22e">obj</span>)=&gt;{
+    <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">type</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">typeof</span> <span style="color:#a6e22e">obj</span>;
+    <span style="color:#66d9ef">return</span> (<span style="color:#a6e22e">type</span> <span style="color:#f92672">===</span> <span style="color:#e6db74">&#39;function&#39;</span> <span style="color:#f92672">||</span> <span style="color:#a6e22e">type</span> <span style="color:#f92672">===</span> <span style="color:#e6db74">&#39;object&#39;</span> ) <span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">!!</span><span style="color:#a6e22e">obj</span>;
 }
 
-<span style=color:#66d9ef>function</span> <span style=color:#a6e22e>getTag</span>(<span style=color:#a6e22e>value</span>) {
-    <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>value</span> <span style=color:#f92672>==</span> <span style=color:#66d9ef>null</span>) {
-      <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>value</span> <span style=color:#f92672>===</span> <span style=color:#66d9ef>undefined</span> <span style=color:#f92672>?</span> <span style=color:#e6db74>&#39;[object Undefined]&#39;</span> <span style=color:#f92672>:</span> <span style=color:#e6db74>&#39;[object Null]&#39;</span>
+<span style="color:#66d9ef">function</span> <span style="color:#a6e22e">getTag</span>(<span style="color:#a6e22e">value</span>) {
+    <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">value</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span>) {
+      <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">value</span> <span style="color:#f92672">===</span> <span style="color:#66d9ef">undefined</span> <span style="color:#f92672">?</span> <span style="color:#e6db74">&#39;[object Undefined]&#39;</span> <span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;[object Null]&#39;</span>
     }
-    <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>toString</span>.<span style=color:#a6e22e>call</span>(<span style=color:#a6e22e>value</span>)
+    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">toString</span>.<span style="color:#a6e22e">call</span>(<span style="color:#a6e22e">value</span>)
   }
 
-<span style=color:#75715e>// 克隆正则
-</span><span style=color:#75715e>//w匹配任意一个包括下划线的任何单词字符等价于[A-Za-z0-9_]
-</span><span style=color:#75715e></span><span style=color:#66d9ef>const</span> <span style=color:#a6e22e>reFlags</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>/\w*$/</span>  
-<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>cloneRegExp</span><span style=color:#f92672>=</span>(<span style=color:#a6e22e>regexp</span>) =&gt;{
-    <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>result</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>regexp</span>.<span style=color:#a6e22e>constructor</span>(<span style=color:#a6e22e>regexp</span>.<span style=color:#a6e22e>source</span>, <span style=color:#a6e22e>reFlags</span>.<span style=color:#a6e22e>exec</span>(<span style=color:#a6e22e>regexp</span>)) <span style=color:#75715e>// //返回当前匹配的文本;
-</span><span style=color:#75715e></span>    <span style=color:#a6e22e>result</span>.<span style=color:#a6e22e>lastIndex</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>regexp</span>.<span style=color:#a6e22e>lastIndex</span> <span style=color:#75715e>//表示下一次匹配的开始位置
-</span><span style=color:#75715e></span>    <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>result</span>
+<span style="color:#75715e">// 克隆正则
+</span><span style="color:#75715e">//w匹配任意一个包括下划线的任何单词字符等价于[A-Za-z0-9_]
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">reFlags</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">/\w*$/</span>  
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">cloneRegExp</span><span style="color:#f92672">=</span>(<span style="color:#a6e22e">regexp</span>) =&gt;{
+    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">result</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">regexp</span>.<span style="color:#a6e22e">constructor</span>(<span style="color:#a6e22e">regexp</span>.<span style="color:#a6e22e">source</span>, <span style="color:#a6e22e">reFlags</span>.<span style="color:#a6e22e">exec</span>(<span style="color:#a6e22e">regexp</span>)) <span style="color:#75715e">// //返回当前匹配的文本;
+</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">result</span>.<span style="color:#a6e22e">lastIndex</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">regexp</span>.<span style="color:#a6e22e">lastIndex</span> <span style="color:#75715e">//表示下一次匹配的开始位置
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">result</span>
 }
 
-<span style=color:#75715e>// 克隆Symbol
-</span><span style=color:#75715e></span><span style=color:#66d9ef>function</span> <span style=color:#a6e22e>cloneSymbol</span>(<span style=color:#a6e22e>symbol</span>) {
-    <span style=color:#66d9ef>return</span> Object(<span style=color:#a6e22e>Symbol</span>.<span style=color:#a6e22e>prototype</span>.<span style=color:#a6e22e>valueOf</span>.<span style=color:#a6e22e>call</span>(<span style=color:#a6e22e>symbol</span>))
+<span style="color:#75715e">// 克隆Symbol
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">cloneSymbol</span>(<span style="color:#a6e22e">symbol</span>) {
+    <span style="color:#66d9ef">return</span> Object(<span style="color:#a6e22e">Symbol</span>.<span style="color:#a6e22e">prototype</span>.<span style="color:#a6e22e">valueOf</span>.<span style="color:#a6e22e">call</span>(<span style="color:#a6e22e">symbol</span>))
   }
 
-<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>initCloneByTag</span> <span style=color:#f92672>=</span> (<span style=color:#a6e22e>object</span>,<span style=color:#a6e22e>tag</span>)=&gt;{
-    <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>Ctor</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>object</span>.<span style=color:#a6e22e>constructor</span> <span style=color:#75715e>// 返回创建该实例对象的Object构造函数的引用
-</span><span style=color:#75715e></span>        <span style=color:#75715e>//例如 var o = {} o.constructor === Object var a =[] a.constructor === Array 
-</span><span style=color:#75715e></span>    <span style=color:#75715e>//这里涉及到原型链， 比如o的原型链即__proto__调用内部[[prototype]]指向Object.prototype,在Object.prototy上找到了constructor属性，该属性指向Object;
-</span><span style=color:#75715e></span>    <span style=color:#66d9ef>switch</span> (<span style=color:#a6e22e>tag</span>) {
-        <span style=color:#66d9ef>case</span> <span style=color:#a6e22e>boolTag</span><span style=color:#f92672>:</span>
-        <span style=color:#66d9ef>case</span> <span style=color:#a6e22e>dateTag</span><span style=color:#f92672>:</span>
-          <span style=color:#75715e>//如果是布尔类型，调用内部ToNumber，如果是object，调用内部ToPrimitive（即先调用valueof，再调用toString）
-</span><span style=color:#75715e></span>          <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>Ctor</span>(<span style=color:#f92672>+</span><span style=color:#a6e22e>object</span>)  <span style=color:#75715e>// +转换为数字true -&gt; 1 
-</span><span style=color:#75715e></span>        <span style=color:#66d9ef>case</span> <span style=color:#a6e22e>numberTag</span><span style=color:#f92672>:</span>
-        <span style=color:#66d9ef>case</span> <span style=color:#a6e22e>stringTag</span><span style=color:#f92672>:</span>
-        <span style=color:#66d9ef>case</span> <span style=color:#a6e22e>errorTag</span><span style=color:#f92672>:</span>
-          <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>Ctor</span>(<span style=color:#a6e22e>object</span>)
-        <span style=color:#66d9ef>case</span> <span style=color:#a6e22e>regexpTag</span><span style=color:#f92672>:</span>
-          <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>cloneRegExp</span>(<span style=color:#a6e22e>object</span>)
-          <span style=color:#75715e>// Symbol 类型时
-</span><span style=color:#75715e></span>        <span style=color:#66d9ef>case</span> <span style=color:#a6e22e>symbolTag</span><span style=color:#f92672>:</span>
-          <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>cloneSymbol</span>(<span style=color:#a6e22e>object</span>)
-        <span style=color:#66d9ef>case</span> <span style=color:#a6e22e>funcTag</span><span style=color:#f92672>:</span>
-        	<span style=color:#66d9ef>return</span> <span style=color:#a6e22e>cloneFunc</span>(<span style=color:#a6e22e>object</span>)
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">initCloneByTag</span> <span style="color:#f92672">=</span> (<span style="color:#a6e22e">object</span>,<span style="color:#a6e22e">tag</span>)=&gt;{
+    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">Ctor</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">object</span>.<span style="color:#a6e22e">constructor</span> <span style="color:#75715e">// 返回创建该实例对象的Object构造函数的引用
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">//例如 var o = {} o.constructor === Object var a =[] a.constructor === Array 
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">//这里涉及到原型链， 比如o的原型链即__proto__调用内部[[prototype]]指向Object.prototype,在Object.prototy上找到了constructor属性，该属性指向Object;
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">switch</span> (<span style="color:#a6e22e">tag</span>) {
+        <span style="color:#66d9ef">case</span> <span style="color:#a6e22e">boolTag</span><span style="color:#f92672">:</span>
+        <span style="color:#66d9ef">case</span> <span style="color:#a6e22e">dateTag</span><span style="color:#f92672">:</span>
+          <span style="color:#75715e">//如果是布尔类型，调用内部ToNumber，如果是object，调用内部ToPrimitive（即先调用valueof，再调用toString）
+</span><span style="color:#75715e"></span>          <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Ctor</span>(<span style="color:#f92672">+</span><span style="color:#a6e22e">object</span>)  <span style="color:#75715e">// +转换为数字true -&gt; 1 
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">case</span> <span style="color:#a6e22e">numberTag</span><span style="color:#f92672">:</span>
+        <span style="color:#66d9ef">case</span> <span style="color:#a6e22e">stringTag</span><span style="color:#f92672">:</span>
+        <span style="color:#66d9ef">case</span> <span style="color:#a6e22e">errorTag</span><span style="color:#f92672">:</span>
+          <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Ctor</span>(<span style="color:#a6e22e">object</span>)
+        <span style="color:#66d9ef">case</span> <span style="color:#a6e22e">regexpTag</span><span style="color:#f92672">:</span>
+          <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">cloneRegExp</span>(<span style="color:#a6e22e">object</span>)
+          <span style="color:#75715e">// Symbol 类型时
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">case</span> <span style="color:#a6e22e">symbolTag</span><span style="color:#f92672">:</span>
+          <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">cloneSymbol</span>(<span style="color:#a6e22e">object</span>)
+        <span style="color:#66d9ef">case</span> <span style="color:#a6e22e">funcTag</span><span style="color:#f92672">:</span>
+        	<span style="color:#66d9ef">return</span> <span style="color:#a6e22e">cloneFunc</span>(<span style="color:#a6e22e">object</span>)
       }
 }
 
-<span style=color:#75715e>// function isPrototype(value) {
-</span><span style=color:#75715e>//     const Ctor = value &amp;&amp; value.constructor
-</span><span style=color:#75715e>//     const proto = (typeof Ctor === &#39;function&#39; &amp;&amp; Ctor.prototype) || objectProto
-</span><span style=color:#75715e></span>  
-<span style=color:#75715e>//     return value === proto
-</span><span style=color:#75715e>//   }
-</span><span style=color:#75715e></span>
-<span style=color:#75715e>// function initCloneObject(object) {
-</span><span style=color:#75715e>//     return (typeof object.constructor === &#39;function&#39; &amp;&amp; !isPrototype(object))
-</span><span style=color:#75715e>//       ? Object.create(Object.getPrototypeOf(object))
-</span><span style=color:#75715e>//       : {}
-</span><span style=color:#75715e>// }
-</span><span style=color:#75715e></span><span style=color:#66d9ef>function</span> <span style=color:#a6e22e>initCloneObj</span>(<span style=color:#a6e22e>obj</span>){
-    <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>Ctor</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>obj</span>.<span style=color:#a6e22e>constructor</span>
-    <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>Ctor</span>()
+<span style="color:#75715e">// function isPrototype(value) {
+</span><span style="color:#75715e">//     const Ctor = value &amp;&amp; value.constructor
+</span><span style="color:#75715e">//     const proto = (typeof Ctor === &#39;function&#39; &amp;&amp; Ctor.prototype) || objectProto
+</span><span style="color:#75715e"></span>  
+<span style="color:#75715e">//     return value === proto
+</span><span style="color:#75715e">//   }
+</span><span style="color:#75715e"></span>
+<span style="color:#75715e">// function initCloneObject(object) {
+</span><span style="color:#75715e">//     return (typeof object.constructor === &#39;function&#39; &amp;&amp; !isPrototype(object))
+</span><span style="color:#75715e">//       ? Object.create(Object.getPrototypeOf(object))
+</span><span style="color:#75715e">//       : {}
+</span><span style="color:#75715e">// }
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">initCloneObj</span>(<span style="color:#a6e22e">obj</span>){
+    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">Ctor</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">obj</span>.<span style="color:#a6e22e">constructor</span>
+    <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Ctor</span>()
 }
 
-  <span style=color:#75715e>// 克隆函数部分
-</span><span style=color:#75715e></span>  <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>arrayEach</span>(<span style=color:#a6e22e>array</span>, <span style=color:#a6e22e>iteratee</span>) {
-    <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>index</span> <span style=color:#f92672>=</span> <span style=color:#f92672>-</span><span style=color:#ae81ff>1</span>
-    <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>length</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>array</span>.<span style=color:#a6e22e>length</span>
+  <span style="color:#75715e">// 克隆函数部分
+</span><span style="color:#75715e"></span>  <span style="color:#66d9ef">function</span> <span style="color:#a6e22e">arrayEach</span>(<span style="color:#a6e22e">array</span>, <span style="color:#a6e22e">iteratee</span>) {
+    <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">index</span> <span style="color:#f92672">=</span> <span style="color:#f92672">-</span><span style="color:#ae81ff">1</span>
+    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">length</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">array</span>.<span style="color:#a6e22e">length</span>
   
-    <span style=color:#66d9ef>while</span> (<span style=color:#f92672>++</span><span style=color:#a6e22e>index</span> <span style=color:#f92672>&lt;</span> <span style=color:#a6e22e>length</span>) {
-    <span style=color:#75715e>//   if (iteratee(array[index], index, array) === false) {
-</span><span style=color:#75715e></span>    <span style=color:#75715e>//     break
-</span><span style=color:#75715e></span>    <span style=color:#75715e>//   }
-</span><span style=color:#75715e></span>        <span style=color:#a6e22e>iteratee</span>(<span style=color:#a6e22e>array</span>[<span style=color:#a6e22e>index</span>],<span style=color:#a6e22e>index</span>)
+    <span style="color:#66d9ef">while</span> (<span style="color:#f92672">++</span><span style="color:#a6e22e">index</span> <span style="color:#f92672">&lt;</span> <span style="color:#a6e22e">length</span>) {
+    <span style="color:#75715e">//   if (iteratee(array[index], index, array) === false) {
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">//     break
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">//   }
+</span><span style="color:#75715e"></span>        <span style="color:#a6e22e">iteratee</span>(<span style="color:#a6e22e">array</span>[<span style="color:#a6e22e">index</span>],<span style="color:#a6e22e">index</span>)
     }
-    <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>array</span>
+    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">array</span>
   }
 
-<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>deepClone</span> <span style=color:#f92672>=</span> (<span style=color:#a6e22e>target</span>, <span style=color:#a6e22e>hash</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>WeakMap</span>()) =&gt;{
-    <span style=color:#66d9ef>if</span>(<span style=color:#f92672>!</span><span style=color:#a6e22e>isObject</span>(<span style=color:#a6e22e>target</span>)) <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>target</span>
-    <span style=color:#75715e>// 循环引用的处理 // 注意!如何写惊艳面试官那篇blog中这里返回错误
-</span><span style=color:#75715e></span>    <span style=color:#66d9ef>if</span>(<span style=color:#a6e22e>hash</span>.<span style=color:#a6e22e>has</span>(<span style=color:#a6e22e>target</span>)) <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>hash</span>.<span style=color:#a6e22e>get</span>(<span style=color:#a6e22e>target</span>)
-    <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>tempTarget</span> <span style=color:#f92672>=</span> Array.<span style=color:#a6e22e>isArray</span>(<span style=color:#a6e22e>target</span>) <span style=color:#f92672>?</span> [] <span style=color:#f92672>:</span> {};
-    <span style=color:#a6e22e>hash</span>.<span style=color:#a6e22e>set</span>(<span style=color:#a6e22e>target</span>, <span style=color:#a6e22e>tempTarget</span>);
-    <span style=color:#75715e>// let allDesc = Object.getOwnPropertyDescriptors(target) // 注意有s
-</span><span style=color:#75715e></span>    <span style=color:#75715e>// let cloneTarget = Object.create(Object.getPrototypeOf(target),allDesc)
-</span><span style=color:#75715e></span>    <span style=color:#75715e>// hash.set(target,cloneTarget)
-</span><span style=color:#75715e></span>
-    <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>tag</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>getTag</span>(<span style=color:#a6e22e>target</span>)
-    <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>cloneTarget</span>
-    <span style=color:#66d9ef>if</span>(<span style=color:#a6e22e>deepTags</span>.<span style=color:#a6e22e>includes</span>(<span style=color:#a6e22e>tag</span>)){
-        <span style=color:#a6e22e>cloneTarget</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>initCloneObj</span>(<span style=color:#a6e22e>target</span>) <span style=color:#75715e>// 初始化要遍历的
-</span><span style=color:#75715e></span>    }<span style=color:#66d9ef>else</span>{
-        <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>initCloneByTag</span>(<span style=color:#a6e22e>target</span>,<span style=color:#a6e22e>tag</span>) <span style=color:#75715e>// 不可遍历类型直接走另外的了
-</span><span style=color:#75715e></span>    }
-    <span style=color:#75715e>// 处理map
-</span><span style=color:#75715e></span>    <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>tag</span> <span style=color:#f92672>==</span> <span style=color:#a6e22e>mapTag</span>) {
-        <span style=color:#a6e22e>target</span>.<span style=color:#a6e22e>forEach</span>((<span style=color:#a6e22e>value</span>, <span style=color:#a6e22e>key</span>) =&gt; {
-          <span style=color:#a6e22e>cloneTarget</span>.<span style=color:#a6e22e>set</span>(<span style=color:#a6e22e>key</span>, <span style=color:#a6e22e>deepClone</span>(<span style=color:#a6e22e>value</span>))
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">deepClone</span> <span style="color:#f92672">=</span> (<span style="color:#a6e22e">target</span>, <span style="color:#a6e22e">hash</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">WeakMap</span>()) =&gt;{
+    <span style="color:#66d9ef">if</span>(<span style="color:#f92672">!</span><span style="color:#a6e22e">isObject</span>(<span style="color:#a6e22e">target</span>)) <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">target</span>
+    <span style="color:#75715e">// 循环引用的处理 // 注意!如何写惊艳面试官那篇blog中这里返回错误
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span>(<span style="color:#a6e22e">hash</span>.<span style="color:#a6e22e">has</span>(<span style="color:#a6e22e">target</span>)) <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">hash</span>.<span style="color:#a6e22e">get</span>(<span style="color:#a6e22e">target</span>)
+    <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">tempTarget</span> <span style="color:#f92672">=</span> Array.<span style="color:#a6e22e">isArray</span>(<span style="color:#a6e22e">target</span>) <span style="color:#f92672">?</span> [] <span style="color:#f92672">:</span> {};
+    <span style="color:#a6e22e">hash</span>.<span style="color:#a6e22e">set</span>(<span style="color:#a6e22e">target</span>, <span style="color:#a6e22e">tempTarget</span>);
+    <span style="color:#75715e">// let allDesc = Object.getOwnPropertyDescriptors(target) // 注意有s
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// let cloneTarget = Object.create(Object.getPrototypeOf(target),allDesc)
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// hash.set(target,cloneTarget)
+</span><span style="color:#75715e"></span>
+    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">tag</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">getTag</span>(<span style="color:#a6e22e">target</span>)
+    <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">cloneTarget</span>
+    <span style="color:#66d9ef">if</span>(<span style="color:#a6e22e">deepTags</span>.<span style="color:#a6e22e">includes</span>(<span style="color:#a6e22e">tag</span>)){
+        <span style="color:#a6e22e">cloneTarget</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">initCloneObj</span>(<span style="color:#a6e22e">target</span>) <span style="color:#75715e">// 初始化要遍历的
+</span><span style="color:#75715e"></span>    }<span style="color:#66d9ef">else</span>{
+        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">initCloneByTag</span>(<span style="color:#a6e22e">target</span>,<span style="color:#a6e22e">tag</span>) <span style="color:#75715e">// 不可遍历类型直接走另外的了
+</span><span style="color:#75715e"></span>    }
+    <span style="color:#75715e">// 处理map
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">tag</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">mapTag</span>) {
+        <span style="color:#a6e22e">target</span>.<span style="color:#a6e22e">forEach</span>((<span style="color:#a6e22e">value</span>, <span style="color:#a6e22e">key</span>) =&gt; {
+          <span style="color:#a6e22e">cloneTarget</span>.<span style="color:#a6e22e">set</span>(<span style="color:#a6e22e">key</span>, <span style="color:#a6e22e">deepClone</span>(<span style="color:#a6e22e">value</span>))
         })
-        <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>cloneTarget</span>
+        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">cloneTarget</span>
       }
 
-    <span style=color:#75715e>// 处理set
-</span><span style=color:#75715e></span>      <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>tag</span> <span style=color:#f92672>==</span> <span style=color:#a6e22e>setTag</span>) {
-        <span style=color:#a6e22e>target</span>.<span style=color:#a6e22e>forEach</span>((<span style=color:#a6e22e>value</span>) =&gt; {
-          <span style=color:#a6e22e>cloneTarget</span>.<span style=color:#a6e22e>add</span>(<span style=color:#a6e22e>deepClone</span>(<span style=color:#a6e22e>value</span>))
+    <span style="color:#75715e">// 处理set
+</span><span style="color:#75715e"></span>      <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">tag</span> <span style="color:#f92672">==</span> <span style="color:#a6e22e">setTag</span>) {
+        <span style="color:#a6e22e">target</span>.<span style="color:#a6e22e">forEach</span>((<span style="color:#a6e22e">value</span>) =&gt; {
+          <span style="color:#a6e22e">cloneTarget</span>.<span style="color:#a6e22e">add</span>(<span style="color:#a6e22e">deepClone</span>(<span style="color:#a6e22e">value</span>))
         })
-        <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>cloneTarget</span>
+        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">cloneTarget</span>
       }
     
-      <span style=color:#75715e>// 不考虑性能,用for in, 考虑性能改写为while --&gt; arrayEach
-</span><span style=color:#75715e></span>    <span style=color:#75715e>//   if(isObject(target)){
-</span><span style=color:#75715e></span>    <span style=color:#75715e>//     // 考虑数组
-</span><span style=color:#75715e></span>    <span style=color:#75715e>//     let cloneObj = Array.isArray(target) ? [] : {}
-</span><span style=color:#75715e></span>    <span style=color:#75715e>//     for(let key in target){
-</span><span style=color:#75715e></span>    <span style=color:#75715e>//         cloneObj[key] = deepClone(target[key])
-</span><span style=color:#75715e></span>    <span style=color:#75715e>//     }
-</span><span style=color:#75715e></span>    <span style=color:#75715e>//     return cloneObj
-</span><span style=color:#75715e></span>    <span style=color:#75715e>// }
-</span><span style=color:#75715e></span>    <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>props</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>tag</span> <span style=color:#f92672>===</span> <span style=color:#a6e22e>arrayTag</span> <span style=color:#f92672>?</span> <span style=color:#66d9ef>undefined</span> <span style=color:#f92672>:</span>Object.<span style=color:#a6e22e>keys</span>(<span style=color:#a6e22e>target</span>)
-    <span style=color:#a6e22e>arrayEach</span>(<span style=color:#a6e22e>props</span> <span style=color:#f92672>||</span> <span style=color:#a6e22e>target</span>, (<span style=color:#a6e22e>subValue</span>, <span style=color:#a6e22e>key</span>) =&gt; {
-        <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>props</span>) {
-          <span style=color:#a6e22e>key</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>subValue</span>
-          <span style=color:#a6e22e>subValue</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>target</span>[<span style=color:#a6e22e>key</span>]
+      <span style="color:#75715e">// 不考虑性能,用for in, 考虑性能改写为while --&gt; arrayEach
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">//   if(isObject(target)){
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">//     // 考虑数组
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">//     let cloneObj = Array.isArray(target) ? [] : {}
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">//     for(let key in target){
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">//         cloneObj[key] = deepClone(target[key])
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">//     }
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">//     return cloneObj
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// }
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">props</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">tag</span> <span style="color:#f92672">===</span> <span style="color:#a6e22e">arrayTag</span> <span style="color:#f92672">?</span> <span style="color:#66d9ef">undefined</span> <span style="color:#f92672">:</span>Object.<span style="color:#a6e22e">keys</span>(<span style="color:#a6e22e">target</span>)
+    <span style="color:#a6e22e">arrayEach</span>(<span style="color:#a6e22e">props</span> <span style="color:#f92672">||</span> <span style="color:#a6e22e">target</span>, (<span style="color:#a6e22e">subValue</span>, <span style="color:#a6e22e">key</span>) =&gt; {
+        <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">props</span>) {
+          <span style="color:#a6e22e">key</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">subValue</span>
+          <span style="color:#a6e22e">subValue</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">target</span>[<span style="color:#a6e22e">key</span>]
         }
-        <span style=color:#75715e>// Recursively populate clone (susceptible to call stack limits). // 这里不用loadsh的方式
-</span><span style=color:#75715e></span>        <span style=color:#75715e>// assignValue(result, key, baseClone(subValue, bitmask, customizer, key, value, stack))
-</span><span style=color:#75715e></span>        <span style=color:#a6e22e>cloneTarget</span>[<span style=color:#a6e22e>key</span>] <span style=color:#f92672>=</span> <span style=color:#a6e22e>deepClone</span>(<span style=color:#a6e22e>target</span>[<span style=color:#a6e22e>key</span>],<span style=color:#a6e22e>hash</span>)
+        <span style="color:#75715e">// Recursively populate clone (susceptible to call stack limits). // 这里不用loadsh的方式
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">// assignValue(result, key, baseClone(subValue, bitmask, customizer, key, value, stack))
+</span><span style="color:#75715e"></span>        <span style="color:#a6e22e">cloneTarget</span>[<span style="color:#a6e22e">key</span>] <span style="color:#f92672">=</span> <span style="color:#a6e22e">deepClone</span>(<span style="color:#a6e22e">target</span>[<span style="color:#a6e22e">key</span>],<span style="color:#a6e22e">hash</span>)
       })
-    <span style=color:#75715e>// hash.set(target,cloneTarget) // 处理循环引用
-</span><span style=color:#75715e></span>    <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>cloneTarget</span>
+    <span style="color:#75715e">// hash.set(target,cloneTarget) // 处理循环引用
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">cloneTarget</span>
 }
-</code></pre></div><p>实现的方式主要是以Object.prototype.toString.call得到tag，再分类处理，环由stack(weakMap)解决，symbol由Object.getOwnPropertySymbols方法解决。</p><h3 id=4-木易杨>4. 木易杨</h3><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#66d9ef>function</span> <span style=color:#a6e22e>deepClone</span>(<span style=color:#a6e22e>source</span>, <span style=color:#a6e22e>hash</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>WeakMap</span>()) {
+</code></pre></div><p>实现的方式主要是以Object.prototype.toString.call得到tag，再分类处理，环由stack(weakMap)解决，symbol由Object.getOwnPropertySymbols方法解决。</p>
+<h3 id="4-木易杨">4. 木易杨</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#66d9ef">function</span> <span style="color:#a6e22e">deepClone</span>(<span style="color:#a6e22e">source</span>, <span style="color:#a6e22e">hash</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">WeakMap</span>()) {
 
-    <span style=color:#66d9ef>if</span> (<span style=color:#f92672>!</span><span style=color:#a6e22e>isObject</span>(<span style=color:#a6e22e>source</span>)) <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>source</span>; 
-    <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>hash</span>.<span style=color:#a6e22e>has</span>(<span style=color:#a6e22e>source</span>)) <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>hash</span>.<span style=color:#a6e22e>get</span>(<span style=color:#a6e22e>source</span>); 
+    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span><span style="color:#a6e22e">isObject</span>(<span style="color:#a6e22e">source</span>)) <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">source</span>; 
+    <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">hash</span>.<span style="color:#a6e22e">has</span>(<span style="color:#a6e22e">source</span>)) <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">hash</span>.<span style="color:#a6e22e">get</span>(<span style="color:#a6e22e">source</span>); 
       
-    <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>target</span> <span style=color:#f92672>=</span> Array.<span style=color:#a6e22e>isArray</span>(<span style=color:#a6e22e>source</span>) <span style=color:#f92672>?</span> [...<span style=color:#a6e22e>source</span>] <span style=color:#f92672>:</span> { ...<span style=color:#a6e22e>source</span> }; <span style=color:#75715e>// 改动 1
-</span><span style=color:#75715e></span>    <span style=color:#a6e22e>hash</span>.<span style=color:#a6e22e>set</span>(<span style=color:#a6e22e>source</span>, <span style=color:#a6e22e>target</span>);
+    <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">target</span> <span style="color:#f92672">=</span> Array.<span style="color:#a6e22e">isArray</span>(<span style="color:#a6e22e">source</span>) <span style="color:#f92672">?</span> [...<span style="color:#a6e22e">source</span>] <span style="color:#f92672">:</span> { ...<span style="color:#a6e22e">source</span> }; <span style="color:#75715e">// 改动 1
+</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">hash</span>.<span style="color:#a6e22e">set</span>(<span style="color:#a6e22e">source</span>, <span style="color:#a6e22e">target</span>);
     
-  	<span style=color:#a6e22e>Reflect</span>.<span style=color:#a6e22e>ownKeys</span>(<span style=color:#a6e22e>target</span>).<span style=color:#a6e22e>forEach</span>(<span style=color:#a6e22e>key</span> =&gt; { <span style=color:#75715e>// 改动 2
-</span><span style=color:#75715e></span>        <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>isObject</span>(<span style=color:#a6e22e>source</span>[<span style=color:#a6e22e>key</span>])) {
-            <span style=color:#a6e22e>target</span>[<span style=color:#a6e22e>key</span>] <span style=color:#f92672>=</span> <span style=color:#a6e22e>deepClone</span>(<span style=color:#a6e22e>source</span>[<span style=color:#a6e22e>key</span>], <span style=color:#a6e22e>hash</span>); 
-        } <span style=color:#66d9ef>else</span> {
-            <span style=color:#a6e22e>target</span>[<span style=color:#a6e22e>key</span>] <span style=color:#f92672>=</span> <span style=color:#a6e22e>source</span>[<span style=color:#a6e22e>key</span>];
+  	<span style="color:#a6e22e">Reflect</span>.<span style="color:#a6e22e">ownKeys</span>(<span style="color:#a6e22e">target</span>).<span style="color:#a6e22e">forEach</span>(<span style="color:#a6e22e">key</span> =&gt; { <span style="color:#75715e">// 改动 2
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">isObject</span>(<span style="color:#a6e22e">source</span>[<span style="color:#a6e22e">key</span>])) {
+            <span style="color:#a6e22e">target</span>[<span style="color:#a6e22e">key</span>] <span style="color:#f92672">=</span> <span style="color:#a6e22e">deepClone</span>(<span style="color:#a6e22e">source</span>[<span style="color:#a6e22e">key</span>], <span style="color:#a6e22e">hash</span>); 
+        } <span style="color:#66d9ef">else</span> {
+            <span style="color:#a6e22e">target</span>[<span style="color:#a6e22e">key</span>] <span style="color:#f92672">=</span> <span style="color:#a6e22e">source</span>[<span style="color:#a6e22e">key</span>];
         }  
   	});
-    <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>target</span>;
+    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">target</span>;
 }
-</code></pre></div><h3 id=5-拉勾改进版>5. 拉勾改进版</h3><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#66d9ef>const</span> <span style=color:#a6e22e>isObject</span> <span style=color:#f92672>=</span> (<span style=color:#a6e22e>obj</span>)=&gt;{
-    <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>type</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>typeof</span> <span style=color:#a6e22e>obj</span>;
-    <span style=color:#66d9ef>return</span> (<span style=color:#a6e22e>type</span> <span style=color:#f92672>===</span> <span style=color:#e6db74>&#39;function&#39;</span> <span style=color:#f92672>||</span> <span style=color:#a6e22e>type</span> <span style=color:#f92672>===</span> <span style=color:#e6db74>&#39;object&#39;</span> ) <span style=color:#f92672>&amp;&amp;</span> <span style=color:#a6e22e>obj</span><span style=color:#f92672>!=</span><span style=color:#66d9ef>null</span>;
+</code></pre></div><h3 id="5-拉勾改进版">5. 拉勾改进版</h3>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-javascript" data-lang="javascript"><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">isObject</span> <span style="color:#f92672">=</span> (<span style="color:#a6e22e">obj</span>)=&gt;{
+    <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">type</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">typeof</span> <span style="color:#a6e22e">obj</span>;
+    <span style="color:#66d9ef">return</span> (<span style="color:#a6e22e">type</span> <span style="color:#f92672">===</span> <span style="color:#e6db74">&#39;function&#39;</span> <span style="color:#f92672">||</span> <span style="color:#a6e22e">type</span> <span style="color:#f92672">===</span> <span style="color:#e6db74">&#39;object&#39;</span> ) <span style="color:#f92672">&amp;&amp;</span> <span style="color:#a6e22e">obj</span><span style="color:#f92672">!=</span><span style="color:#66d9ef">null</span>;
 }
 
-<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>getTag</span> <span style=color:#f92672>=</span> (<span style=color:#a6e22e>value</span>)=&gt;{
-    <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>value</span> <span style=color:#f92672>==</span> <span style=color:#66d9ef>null</span>) {
-      <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>value</span> <span style=color:#f92672>===</span> <span style=color:#66d9ef>undefined</span> <span style=color:#f92672>?</span> <span style=color:#e6db74>&#39;[object Undefined]&#39;</span> <span style=color:#f92672>:</span> <span style=color:#e6db74>&#39;[object Null]&#39;</span>
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">getTag</span> <span style="color:#f92672">=</span> (<span style="color:#a6e22e">value</span>)=&gt;{
+    <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">value</span> <span style="color:#f92672">==</span> <span style="color:#66d9ef">null</span>) {
+      <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">value</span> <span style="color:#f92672">===</span> <span style="color:#66d9ef">undefined</span> <span style="color:#f92672">?</span> <span style="color:#e6db74">&#39;[object Undefined]&#39;</span> <span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;[object Null]&#39;</span>
     }
-    <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>toString</span>.<span style=color:#a6e22e>call</span>(<span style=color:#a6e22e>value</span>)
+    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">toString</span>.<span style="color:#a6e22e">call</span>(<span style="color:#a6e22e">value</span>)
 }
 
-<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>dateTag</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;[object Date]&#39;</span>
-<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>errorTag</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;[object Error]&#39;</span>
-<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>regexpTag</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;[object RegExp]&#39;</span>
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">dateTag</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;[object Date]&#39;</span>
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">errorTag</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;[object Error]&#39;</span>
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">regexpTag</span> <span style="color:#f92672">=</span> <span style="color:#e6db74">&#39;[object RegExp]&#39;</span>
 
-<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>deepClone</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>function</span>(<span style=color:#a6e22e>obj</span>, <span style=color:#a6e22e>hash</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>WeakMap</span>()){
-    <span style=color:#66d9ef>if</span> (<span style=color:#f92672>!</span><span style=color:#a6e22e>isObject</span>(<span style=color:#a6e22e>obj</span>)) <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>obj</span>;  <span style=color:#75715e>// 不是对象
-</span><span style=color:#75715e></span>
-    <span style=color:#75715e>// 正则,Date
-</span><span style=color:#75715e></span>    <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>tag</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>getTag</span>(<span style=color:#a6e22e>target</span>)
-    <span style=color:#66d9ef>if</span>(<span style=color:#a6e22e>tag</span> <span style=color:#f92672>===</span> <span style=color:#a6e22e>dateTag</span>) <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>new</span> Date(<span style=color:#a6e22e>obj</span>)
-    <span style=color:#66d9ef>if</span>(<span style=color:#a6e22e>tag</span> <span style=color:#f92672>===</span> <span style=color:#a6e22e>regexpTag</span>) <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>new</span> RegExp(<span style=color:#a6e22e>obj</span>)
-    <span style=color:#75715e>// 如果循环引用
-</span><span style=color:#75715e></span>    <span style=color:#66d9ef>if</span>(<span style=color:#a6e22e>hash</span>.<span style=color:#a6e22e>has</span>(<span style=color:#a6e22e>obj</span>)) <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>hash</span>.<span style=color:#a6e22e>get</span>(<span style=color:#a6e22e>obj</span>)
-    <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>allDesc</span> <span style=color:#f92672>=</span> Object.<span style=color:#a6e22e>getOwnPropertyDescriptors</span>(<span style=color:#a6e22e>obj</span>)
-    <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>cloneObj</span> <span style=color:#f92672>=</span> Object.<span style=color:#a6e22e>create</span>(Object.<span style=color:#a6e22e>getPrototypeOf</span>(<span style=color:#a6e22e>obj</span>),<span style=color:#a6e22e>allDesc</span>)
-    <span style=color:#a6e22e>hash</span>.<span style=color:#a6e22e>set</span>(<span style=color:#a6e22e>obj</span>,<span style=color:#a6e22e>cloneObj</span>)
-    <span style=color:#75715e>// 遍历
-</span><span style=color:#75715e></span>    <span style=color:#75715e>// for(let key of Reflect.ownKeys(obj)){  // of遍历数组
-</span><span style=color:#75715e></span>    <span style=color:#75715e>//     if(isObject(obj[key])){
-</span><span style=color:#75715e></span>    <span style=color:#75715e>//         cloneObj[key] = deepClone(obj[key],hash)
-</span><span style=color:#75715e></span>    <span style=color:#75715e>//     }else{
-</span><span style=color:#75715e></span>    <span style=color:#75715e>//         cloneObj[key] = obj[key];
-</span><span style=color:#75715e></span>    <span style=color:#75715e>//     }
-</span><span style=color:#75715e></span>        
-    <span style=color:#75715e>// }
-</span><span style=color:#75715e></span>    <span style=color:#75715e>// console.log(Reflect.ownKeys(obj))
-</span><span style=color:#75715e></span>    <span style=color:#a6e22e>Reflect</span>.<span style=color:#a6e22e>ownKeys</span>(<span style=color:#a6e22e>obj</span>).<span style=color:#a6e22e>forEach</span>(<span style=color:#a6e22e>key</span> =&gt; { <span style=color:#75715e>// 改动 2
-</span><span style=color:#75715e></span>        <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>isObject</span>(<span style=color:#a6e22e>obj</span>[<span style=color:#a6e22e>key</span>])) {
-            <span style=color:#a6e22e>cloneObj</span>[<span style=color:#a6e22e>key</span>] <span style=color:#f92672>=</span> <span style=color:#a6e22e>deepClone</span>(<span style=color:#a6e22e>obj</span>[<span style=color:#a6e22e>key</span>], <span style=color:#a6e22e>hash</span>); 
-        } <span style=color:#66d9ef>else</span> {
-            <span style=color:#a6e22e>cloneObj</span>[<span style=color:#a6e22e>key</span>] <span style=color:#f92672>=</span> <span style=color:#a6e22e>obj</span>[<span style=color:#a6e22e>key</span>];
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">deepClone</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">function</span>(<span style="color:#a6e22e">obj</span>, <span style="color:#a6e22e">hash</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">WeakMap</span>()){
+    <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span><span style="color:#a6e22e">isObject</span>(<span style="color:#a6e22e">obj</span>)) <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">obj</span>;  <span style="color:#75715e">// 不是对象
+</span><span style="color:#75715e"></span>
+    <span style="color:#75715e">// 正则,Date
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">const</span> <span style="color:#a6e22e">tag</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">getTag</span>(<span style="color:#a6e22e">target</span>)
+    <span style="color:#66d9ef">if</span>(<span style="color:#a6e22e">tag</span> <span style="color:#f92672">===</span> <span style="color:#a6e22e">dateTag</span>) <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> Date(<span style="color:#a6e22e">obj</span>)
+    <span style="color:#66d9ef">if</span>(<span style="color:#a6e22e">tag</span> <span style="color:#f92672">===</span> <span style="color:#a6e22e">regexpTag</span>) <span style="color:#66d9ef">return</span> <span style="color:#66d9ef">new</span> RegExp(<span style="color:#a6e22e">obj</span>)
+    <span style="color:#75715e">// 如果循环引用
+</span><span style="color:#75715e"></span>    <span style="color:#66d9ef">if</span>(<span style="color:#a6e22e">hash</span>.<span style="color:#a6e22e">has</span>(<span style="color:#a6e22e">obj</span>)) <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">hash</span>.<span style="color:#a6e22e">get</span>(<span style="color:#a6e22e">obj</span>)
+    <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">allDesc</span> <span style="color:#f92672">=</span> Object.<span style="color:#a6e22e">getOwnPropertyDescriptors</span>(<span style="color:#a6e22e">obj</span>)
+    <span style="color:#66d9ef">let</span> <span style="color:#a6e22e">cloneObj</span> <span style="color:#f92672">=</span> Object.<span style="color:#a6e22e">create</span>(Object.<span style="color:#a6e22e">getPrototypeOf</span>(<span style="color:#a6e22e">obj</span>),<span style="color:#a6e22e">allDesc</span>)
+    <span style="color:#a6e22e">hash</span>.<span style="color:#a6e22e">set</span>(<span style="color:#a6e22e">obj</span>,<span style="color:#a6e22e">cloneObj</span>)
+    <span style="color:#75715e">// 遍历
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// for(let key of Reflect.ownKeys(obj)){  // of遍历数组
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">//     if(isObject(obj[key])){
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">//         cloneObj[key] = deepClone(obj[key],hash)
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">//     }else{
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">//         cloneObj[key] = obj[key];
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">//     }
+</span><span style="color:#75715e"></span>        
+    <span style="color:#75715e">// }
+</span><span style="color:#75715e"></span>    <span style="color:#75715e">// console.log(Reflect.ownKeys(obj))
+</span><span style="color:#75715e"></span>    <span style="color:#a6e22e">Reflect</span>.<span style="color:#a6e22e">ownKeys</span>(<span style="color:#a6e22e">obj</span>).<span style="color:#a6e22e">forEach</span>(<span style="color:#a6e22e">key</span> =&gt; { <span style="color:#75715e">// 改动 2
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">isObject</span>(<span style="color:#a6e22e">obj</span>[<span style="color:#a6e22e">key</span>])) {
+            <span style="color:#a6e22e">cloneObj</span>[<span style="color:#a6e22e">key</span>] <span style="color:#f92672">=</span> <span style="color:#a6e22e">deepClone</span>(<span style="color:#a6e22e">obj</span>[<span style="color:#a6e22e">key</span>], <span style="color:#a6e22e">hash</span>); 
+        } <span style="color:#66d9ef">else</span> {
+            <span style="color:#a6e22e">cloneObj</span>[<span style="color:#a6e22e">key</span>] <span style="color:#f92672">=</span> <span style="color:#a6e22e">obj</span>[<span style="color:#a6e22e">key</span>];
         }  
   	});
-    <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>cloneObj</span>
+    <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">cloneObj</span>
 }
 
-<span style=color:#75715e>// 测试
-</span><span style=color:#75715e></span><span style=color:#66d9ef>const</span> <span style=color:#a6e22e>map</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>Map</span>();
-<span style=color:#a6e22e>map</span>.<span style=color:#a6e22e>set</span>(<span style=color:#e6db74>&#39;key&#39;</span>, <span style=color:#e6db74>&#39;value&#39;</span>);
-<span style=color:#a6e22e>map</span>.<span style=color:#a6e22e>set</span>(<span style=color:#e6db74>&#39;yohaha&#39;</span>, <span style=color:#e6db74>&#39;gtd2021&#39;</span>);
+<span style="color:#75715e">// 测试
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">map</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Map</span>();
+<span style="color:#a6e22e">map</span>.<span style="color:#a6e22e">set</span>(<span style="color:#e6db74">&#39;key&#39;</span>, <span style="color:#e6db74">&#39;value&#39;</span>);
+<span style="color:#a6e22e">map</span>.<span style="color:#a6e22e">set</span>(<span style="color:#e6db74">&#39;yohaha&#39;</span>, <span style="color:#e6db74">&#39;gtd2021&#39;</span>);
 
-<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>set</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>Set</span>();
-<span style=color:#a6e22e>set</span>.<span style=color:#a6e22e>add</span>(<span style=color:#e6db74>&#39;doyou&#39;</span>);
-<span style=color:#a6e22e>set</span>.<span style=color:#a6e22e>add</span>(<span style=color:#e6db74>&#39;fine&#39;</span>);
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">set</span> <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> <span style="color:#a6e22e">Set</span>();
+<span style="color:#a6e22e">set</span>.<span style="color:#a6e22e">add</span>(<span style="color:#e6db74">&#39;doyou&#39;</span>);
+<span style="color:#a6e22e">set</span>.<span style="color:#a6e22e">add</span>(<span style="color:#e6db74">&#39;fine&#39;</span>);
 
-<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>target</span> <span style=color:#f92672>=</span> {
-    <span style=color:#a6e22e>field1</span><span style=color:#f92672>:</span> <span style=color:#ae81ff>1</span>,
-    <span style=color:#a6e22e>field2</span><span style=color:#f92672>:</span> <span style=color:#66d9ef>undefined</span>,
-    <span style=color:#a6e22e>field3</span><span style=color:#f92672>:</span> {
-        <span style=color:#a6e22e>child</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#39;child&#39;</span>
+<span style="color:#66d9ef">const</span> <span style="color:#a6e22e">target</span> <span style="color:#f92672">=</span> {
+    <span style="color:#a6e22e">field1</span><span style="color:#f92672">:</span> <span style="color:#ae81ff">1</span>,
+    <span style="color:#a6e22e">field2</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">undefined</span>,
+    <span style="color:#a6e22e">field3</span><span style="color:#f92672">:</span> {
+        <span style="color:#a6e22e">child</span><span style="color:#f92672">:</span> <span style="color:#e6db74">&#39;child&#39;</span>
     },
-    <span style=color:#a6e22e>field4</span><span style=color:#f92672>:</span> [<span style=color:#ae81ff>2</span>, <span style=color:#ae81ff>4</span>, <span style=color:#ae81ff>8</span>],
-    <span style=color:#a6e22e>empty</span><span style=color:#f92672>:</span> <span style=color:#66d9ef>null</span>,
-    <span style=color:#a6e22e>map</span>,
-    <span style=color:#a6e22e>set</span>,
-    <span style=color:#a6e22e>bool</span><span style=color:#f92672>:</span> <span style=color:#66d9ef>new</span> Boolean(<span style=color:#66d9ef>true</span>),
-    <span style=color:#a6e22e>num</span><span style=color:#f92672>:</span> <span style=color:#66d9ef>new</span> Number(<span style=color:#ae81ff>2</span>),
-    <span style=color:#a6e22e>str</span><span style=color:#f92672>:</span> <span style=color:#66d9ef>new</span> String(<span style=color:#ae81ff>2</span>),
-    <span style=color:#a6e22e>symbol</span><span style=color:#f92672>:</span> Object(<span style=color:#a6e22e>Symbol</span>(<span style=color:#ae81ff>1</span>)),
-    <span style=color:#a6e22e>date</span><span style=color:#f92672>:</span> <span style=color:#66d9ef>new</span> Date(),
-    <span style=color:#a6e22e>target</span><span style=color:#f92672>:</span>{},
-    <span style=color:#a6e22e>reg</span><span style=color:#f92672>:</span> <span style=color:#e6db74>/\d+/</span>,
-    <span style=color:#a6e22e>error</span><span style=color:#f92672>:</span> <span style=color:#66d9ef>new</span> Error(),
-    <span style=color:#a6e22e>func1</span><span style=color:#f92672>:</span> () =&gt; {
-        <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#e6db74>&#39;fine ok&#39;</span>);
+    <span style="color:#a6e22e">field4</span><span style="color:#f92672">:</span> [<span style="color:#ae81ff">2</span>, <span style="color:#ae81ff">4</span>, <span style="color:#ae81ff">8</span>],
+    <span style="color:#a6e22e">empty</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">null</span>,
+    <span style="color:#a6e22e">map</span>,
+    <span style="color:#a6e22e">set</span>,
+    <span style="color:#a6e22e">bool</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">new</span> Boolean(<span style="color:#66d9ef">true</span>),
+    <span style="color:#a6e22e">num</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">new</span> Number(<span style="color:#ae81ff">2</span>),
+    <span style="color:#a6e22e">str</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">new</span> String(<span style="color:#ae81ff">2</span>),
+    <span style="color:#a6e22e">symbol</span><span style="color:#f92672">:</span> Object(<span style="color:#a6e22e">Symbol</span>(<span style="color:#ae81ff">1</span>)),
+    <span style="color:#a6e22e">date</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">new</span> Date(),
+    <span style="color:#a6e22e">target</span><span style="color:#f92672">:</span>{},
+    <span style="color:#a6e22e">reg</span><span style="color:#f92672">:</span> <span style="color:#e6db74">/\d+/</span>,
+    <span style="color:#a6e22e">error</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">new</span> Error(),
+    <span style="color:#a6e22e">func1</span><span style="color:#f92672">:</span> () =&gt; {
+        <span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#e6db74">&#39;fine ok&#39;</span>);
     },
-    <span style=color:#a6e22e>func2</span><span style=color:#f92672>:</span> <span style=color:#66d9ef>function</span> (<span style=color:#a6e22e>a</span>, <span style=color:#a6e22e>b</span>) {
-        <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>a</span> <span style=color:#f92672>+</span> <span style=color:#a6e22e>b</span>;
+    <span style="color:#a6e22e">func2</span><span style="color:#f92672">:</span> <span style="color:#66d9ef">function</span> (<span style="color:#a6e22e">a</span>, <span style="color:#a6e22e">b</span>) {
+        <span style="color:#66d9ef">return</span> <span style="color:#a6e22e">a</span> <span style="color:#f92672">+</span> <span style="color:#a6e22e">b</span>;
     }
 };
-<span style=color:#75715e>// target.target = target;
-</span><span style=color:#75715e></span><span style=color:#66d9ef>const</span> <span style=color:#a6e22e>deepTarget</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>deepClone</span>(<span style=color:#a6e22e>target</span>)
-<span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>deepTarget</span>)
-</code></pre></div><h4 id=heading></h4><hr><p>掘金资料
-<img src="https://cdn.nlark.com/yuque/0/2021/png/302528/1615011158345-fc6ac23c-26ca-4eb5-99e5-fc1c89c8f8b8.png#align=left&display=inline&height=629&margin=%5Bobject%20Object%5D&name=image.png&originHeight=1258&originWidth=1182&size=673762&status=done&style=none&width=591" alt=image.png></p><ul><li><p>浅拷贝是创建一个新对象，这个对象有着原始对象属性值的一份精确拷贝。如果属性是基本类型，拷贝的就是基本类型的值，如果属性是引用类型，拷贝的就是内存地址 ，所以<strong>如果其中一个对象改变了这个地址，就会影响到另一个对象</strong>。</p></li><li><p>深拷贝是将一个对象从内存中完整的拷贝一份出来,从堆内存中开辟一个新的区域存放新对象,且<strong>修改新对象不会影响原对象</strong>。</p></li></ul><h2 id=参考>参考:</h2><ol><li><a href=https://juejin.cn/post/6844904197595332622>浅拷贝与深拷贝</a></li><li><a href=https://juejin.cn/post/6844903854882947080#heading-7>基本数据类型</a></li><li><a href=https://juejin.cn/post/6844903493925371917>js 深拷贝 vs 浅拷贝</a> good!</li><li><a href=https://juejin.cn/post/6844904197595332622#heading-10>浅拷贝与深拷贝</a> good!</li><li><a href=https://juejin.cn/post/6844903929705136141>如何写出一个惊艳面试官的深拷贝?</a> good!</li><li><a href=https://github.com/moyui/BlogPosts/blob/master/2018/lodash%E6%B7%B1%E6%8B%B7%E8%B4%9D%E6%BA%90%E7%A0%81%E6%8E%A2%E7%A9%B6.md>木易杨</a> Best!</li><li><a href=https://segmentfault.com/a/1190000016672263>深拷贝的终极探索（99%的人都不知道）</a></li></ol></div><div class=post-footer><div class=info></div></div></div></div></div></div><script type=text/javascript src=http://zxdfe.github.io/js/medium-zoom.min.2d6fd0be87fa98f0c9b4dc2536b312bbca48757f584f6ea1f394abc9bcc38fbc.js integrity="sha256-LW/Qvof6mPDJtNwlNrMSu8pIdX9YT26h85SrybzDj7w=" crossorigin=anonymous></script></body></html>
+<span style="color:#75715e">// target.target = target;
+</span><span style="color:#75715e"></span><span style="color:#66d9ef">const</span> <span style="color:#a6e22e">deepTarget</span> <span style="color:#f92672">=</span> <span style="color:#a6e22e">deepClone</span>(<span style="color:#a6e22e">target</span>)
+<span style="color:#a6e22e">console</span>.<span style="color:#a6e22e">log</span>(<span style="color:#a6e22e">deepTarget</span>)
+</code></pre></div><h4 id="heading"></h4>
+<hr>
+<p>掘金资料
+<img src="https://cdn.nlark.com/yuque/0/2021/png/302528/1615011158345-fc6ac23c-26ca-4eb5-99e5-fc1c89c8f8b8.png#align=left&amp;display=inline&amp;height=629&amp;margin=%5Bobject%20Object%5D&amp;name=image.png&amp;originHeight=1258&amp;originWidth=1182&amp;size=673762&amp;status=done&amp;style=none&amp;width=591" alt="image.png"></p>
+<ul>
+<li>
+<p>浅拷贝是创建一个新对象，这个对象有着原始对象属性值的一份精确拷贝。如果属性是基本类型，拷贝的就是基本类型的值，如果属性是引用类型，拷贝的就是内存地址 ，所以<strong>如果其中一个对象改变了这个地址，就会影响到另一个对象</strong>。</p>
+</li>
+<li>
+<p>深拷贝是将一个对象从内存中完整的拷贝一份出来,从堆内存中开辟一个新的区域存放新对象,且<strong>修改新对象不会影响原对象</strong>。</p>
+</li>
+</ul>
+<h2 id="参考">参考:</h2>
+<ol>
+<li><a href="https://juejin.cn/post/6844904197595332622">浅拷贝与深拷贝</a></li>
+<li><a href="https://juejin.cn/post/6844903854882947080#heading-7">基本数据类型</a></li>
+<li><a href="https://juejin.cn/post/6844903493925371917">js 深拷贝 vs 浅拷贝</a>  good!</li>
+<li><a href="https://juejin.cn/post/6844904197595332622#heading-10">浅拷贝与深拷贝</a> good!</li>
+<li><a href="https://juejin.cn/post/6844903929705136141">如何写出一个惊艳面试官的深拷贝? </a> good!</li>
+<li><a href="https://github.com/moyui/BlogPosts/blob/master/2018/lodash%E6%B7%B1%E6%8B%B7%E8%B4%9D%E6%BA%90%E7%A0%81%E6%8E%A2%E7%A9%B6.md">木易杨</a>  Best!</li>
+<li><a href="https://segmentfault.com/a/1190000016672263">深拷贝的终极探索（99%的人都不知道）</a></li>
+</ol>
+</div>
+        <div class="post-footer">
+            <div class="info">
+                
+                
+            </div>
+        </div>
+
+        
+    </div>
+
+
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript"
+        src="http://zxdfe.github.io/js/medium-zoom.min.92f21c856129f84aeb719459b3e6ac621a3032fd7b180a18c04e1d12083f8aba.js"
+        integrity="sha256-kvIchWEp&#43;ErrcZRZs&#43;asYhowMv17GAoYwE4dEgg/iro="
+        crossorigin="anonymous"></script></body>
+
+</html>
