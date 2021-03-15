@@ -85,7 +85,7 @@ $ hexo g // hexo generate 生成静态文件 $ hexo s // 启动本地预览服�
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>http://zxdfe.github.io/posts/readme/</guid>
-      <description>进阶 JS相关  防抖节流 深浅拷贝 EventLoop  CSS </description>
+      <description>进阶 JS相关  防抖节流 深浅拷贝 EventLoop  CSS  demo  </description>
     </item>
     
   </channel>
