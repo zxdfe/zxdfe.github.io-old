@@ -1,4 +1,4 @@
-<html><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="ie=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><link rel=icon href=/images/sun.ico><link rel=stylesheet href=/scss/global.min.5b0aba504f0e8c89b8c1d8513b1113881820ca4f1bef1f94f0552bf757996be4.css><link rel=stylesheet href=/css/prism.css><link href="https://fonts.googleapis.com/css?family=Merriweather&display=swap" rel=stylesheet><title>深浅拷贝 | Zxd's Blog</title><meta name=description content="拷贝一个很多嵌套的对象怎么实现? 写成怎样的深拷贝才算合格  浅拷贝 创建一个新的对象，来接受要重新复制或引用的对象值。 (只能复制一层)
+<html><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="ie=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><link rel=icon href=/images/sun.ico><link rel=stylesheet href=/scss/global.min.6954cd1c9d9134fe6cf39f36b3fab345338030ce60d4b3a5462b9134fb8497c2.css><link rel=stylesheet href=/css/prism.css><link href="https://fonts.googleapis.com/css?family=Merriweather&display=swap" rel=stylesheet><title>深浅拷贝 | Zxd's Blog</title><meta name=description content="拷贝一个很多嵌套的对象怎么实现? 写成怎样的深拷贝才算合格  浅拷贝 创建一个新的对象，来接受要重新复制或引用的对象值。 (只能复制一层)
  如果对象属性是基本的数据类型，复制的就是基本类型的值给新对象； 如果属性是引用数据类型，复制的就是内存中的地址，如果其中一个对象改变了这个内存中的地址，就会影响另一个对象  1. Object.assign() 用于对象的合并 **Object.assign()**** **将源对象（source）的所有可枚举属性，复制到目标对象（target）。它将返回目标对象。 ES6中object的一个方法, 第一个参数是拷贝的目标对象, 后面的参数是拷贝的来源对象(也可以是多个来源) Object.assign(target,...sources)
 let target = {} let source = { a: { b : 1 }} Object.assign(target, source) console.log(target) // {a: {b: 1}}  const target = { a: 1, b: 2 }; const source = { b: 4, c: 5 }; const returnedTarget = Object.assign(target, source); console.log(target); // expected output: Object { a: 1, b: 4, c: 5 }  console."><meta property="og:title" content="深浅拷贝 | Zxd's Blog"><meta property="og:site_name" content="Zxd's Blog"><meta property="og:description" content="拷贝一个很多嵌套的对象怎么实现? 写成怎样的深拷贝才算合格  浅拷贝 创建一个新的对象，来接受要重新复制或引用的对象值。 (只能复制一层)
  如果对象属性是基本的数据类型，复制的就是基本类型的值给新对象； 如果属性是引用数据类型，复制的就是内存中的地址，如果其中一个对象改变了这个内存中的地址，就会影响另一个对象  1. Object.assign() 用于对象的合并 **Object.assign()**** **将源对象（source）的所有可枚举属性，复制到目标对象（target）。它将返回目标对象。 ES6中object的一个方法, 第一个参数是拷贝的目标对象, 后面的参数是拷贝的来源对象(也可以是多个来源) Object.assign(target,...sources)
@@ -166,7 +166,6 @@ while>for>forEach>for in>for of</p><div class=highlight><pre style=color:#f8f8f2
 <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>mapTag</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;[object Map]&#39;</span>
 <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>setTag</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;[object Set]&#39;</span>
 
-
 <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>deepTags</span> <span style=color:#f92672>=</span> [<span style=color:#a6e22e>mapTag</span>,<span style=color:#a6e22e>setTag</span>,<span style=color:#a6e22e>arrayTag</span>,<span style=color:#a6e22e>objectTag</span>] <span style=color:#75715e>// argsTag不能new
 </span><span style=color:#75715e>// 不可继续遍历类型 等,还有一些不考虑了
 </span><span style=color:#75715e></span><span style=color:#66d9ef>const</span> <span style=color:#a6e22e>boolTag</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;[object Boolean]&#39;</span>
@@ -179,7 +178,6 @@ while>for>forEach>for in>for of</p><div class=highlight><pre style=color:#f8f8f2
 
 <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>funcTag</span> <span style=color:#f92672>=</span> <span style=color:#e6db74>&#39;[object Function]&#39;</span> <span style=color:#75715e>// 新加 lodash.js中没有 //函数单拿出来
 </span><span style=color:#75715e></span>
-
 <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>isObject</span> <span style=color:#f92672>=</span> (<span style=color:#a6e22e>obj</span>)=&gt;{
     <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>type</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>typeof</span> <span style=color:#a6e22e>obj</span>;
     <span style=color:#66d9ef>return</span> (<span style=color:#a6e22e>type</span> <span style=color:#f92672>===</span> <span style=color:#e6db74>&#39;function&#39;</span> <span style=color:#f92672>||</span> <span style=color:#a6e22e>type</span> <span style=color:#f92672>===</span> <span style=color:#e6db74>&#39;object&#39;</span> ) <span style=color:#f92672>&amp;&amp;</span> <span style=color:#f92672>!!</span><span style=color:#a6e22e>obj</span>;
@@ -208,12 +206,15 @@ while>for>forEach>for in>for of</p><div class=highlight><pre style=color:#f8f8f2
 
 <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>initCloneByTag</span> <span style=color:#f92672>=</span> (<span style=color:#a6e22e>object</span>,<span style=color:#a6e22e>tag</span>)=&gt;{
     <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>Ctor</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>object</span>.<span style=color:#a6e22e>constructor</span> <span style=color:#75715e>// 返回创建该实例对象的Object构造函数的引用
-</span><span style=color:#75715e></span>        <span style=color:#75715e>//例如 var o = {} o.constructor === Object var a =[] a.constructor === Array 
-</span><span style=color:#75715e></span>    <span style=color:#75715e>//这里涉及到原型链， 比如o的原型链即__proto__调用内部[[prototype]]指向Object.prototype,在Object.prototy上找到了constructor属性，该属性指向Object;
+</span><span style=color:#75715e></span>    <span style=color:#75715e>//例如 var o = {} o.constructor === Object var a =[] a.constructor === Array 
+</span><span style=color:#75715e></span>    <span style=color:#75715e>//这里涉及到原型链， 
+</span><span style=color:#75715e></span>    <span style=color:#75715e>//比如o的原型链即__proto__调用内部[[prototype]]指向Object.prototype,
+</span><span style=color:#75715e></span>    <span style=color:#75715e>//在Object.prototy上找到了constructor属性，该属性指向Object;
 </span><span style=color:#75715e></span>    <span style=color:#66d9ef>switch</span> (<span style=color:#a6e22e>tag</span>) {
         <span style=color:#66d9ef>case</span> <span style=color:#a6e22e>boolTag</span><span style=color:#f92672>:</span>
         <span style=color:#66d9ef>case</span> <span style=color:#a6e22e>dateTag</span><span style=color:#f92672>:</span>
-          <span style=color:#75715e>//如果是布尔类型，调用内部ToNumber，如果是object，调用内部ToPrimitive（即先调用valueof，再调用toString）
+          <span style=color:#75715e>//如果是布尔类型，调用内部ToNumber，如果是object，
+</span><span style=color:#75715e></span>          <span style=color:#75715e>// 调用内部ToPrimitive（即先调用valueof，再调用toString）
 </span><span style=color:#75715e></span>          <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>Ctor</span>(<span style=color:#f92672>+</span><span style=color:#a6e22e>object</span>)  <span style=color:#75715e>// +转换为数字true -&gt; 1 
 </span><span style=color:#75715e></span>        <span style=color:#66d9ef>case</span> <span style=color:#a6e22e>numberTag</span><span style=color:#f92672>:</span>
         <span style=color:#66d9ef>case</span> <span style=color:#a6e22e>stringTag</span><span style=color:#f92672>:</span>
