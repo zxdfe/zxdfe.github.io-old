@@ -39,9 +39,7 @@
 </span><span style=color:#75715e></span><span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#66d9ef>typeof</span> <span style=color:#a6e22e>console</span>) <span style=color:#75715e>// &#39;object&#39;
 </span><span style=color:#75715e></span><span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#66d9ef>typeof</span> <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>) <span style=color:#75715e>// &#39;function&#39;
 </span></code></pre></div><p>PS. typeof null 返回object是JS存在的一个悠久的Bug
-<strong>引用类型用typeof判断的话，除了function会判断ok，其余都是object，无法判断出来</strong>
-**
-总结：<strong>判断基本数据类型可以使用typeof， 但要注意null返回object</strong></p><h3 id=2-instanceof>2. instanceof</h3><p>MDN: <strong><code>instanceof</code></strong> <strong>运算符</strong>用于检测构造函数的 <code>prototype</code> 属性是否出现在某个实例对象的原型链上。
+<strong>引用类型用typeof判断的话，除了function会判断ok，其余都是object，无法判断出来</strong></p><p>总结：<strong>判断基本数据类型可以使用typeof， 但要注意null返回object</strong></p><h3 id=2-instanceof>2. instanceof</h3><p>MDN: <strong><code>instanceof</code></strong> <strong>运算符</strong>用于检测构造函数的 <code>prototype</code> 属性是否出现在某个实例对象的原型链上。
 <strong>Syntax：</strong></p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#75715e>// object 某个实例对象
 </span><span style=color:#75715e>// constructor 某个构造函数
 </span><span style=color:#75715e></span><span style=color:#a6e22e>object</span> <span style=color:#66d9ef>instanceof</span> <span style=color:#a6e22e>constructor</span>
@@ -110,4 +108,49 @@
         <span style=color:#a6e22e>leftProto</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>leftProto</span>.<span style=color:#a6e22e>__proto__</span>
     }
 }
-</code></pre></div><hr><h2 id=reference>Reference：</h2><ol><li><a href=https://juejin.cn/post/6844903613584654344>浅谈 instanceof 和 typeof 的实现原理</a> - 原版本</li><li><a href=https://juejin.cn/post/6844904199700873223>聊一聊typeof instanceof 实现原理</a> - 抄袭上文</li></ol></article></section><div class="section narrow"><div class=footer-hr></div><div class=footer-container><div class=footer-text>© 2021 Zxd's Blog</div><div class=social-icon-outer><div class=social-icon-container></div></div></div></div></div><script src=/js/prism.js></script></body></html>
+</code></pre></div><p>总结：</p><ol><li>instanceof可以准确判断复杂引用数据类型，不能判断基础数据类型</li><li>typeof可以判断基础数据类型，引用类型中，除function外，无法判断。（注意null object）</li></ol><h3 id=3-objectprototypesostringcall>3. Object.prototype.soString.call()</h3><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-js data-lang=js>Object.<span style=color:#a6e22e>prototype</span>.<span style=color:#a6e22e>toString</span>({})       <span style=color:#75715e>// &#34;[object Object]&#34;
+</span><span style=color:#75715e></span>Object.<span style=color:#a6e22e>prototype</span>.<span style=color:#a6e22e>toString</span>.<span style=color:#a6e22e>call</span>({})  <span style=color:#75715e>// 同上结果，加上call也ok
+</span><span style=color:#75715e></span>Object.<span style=color:#a6e22e>prototype</span>.<span style=color:#a6e22e>toString</span>.<span style=color:#a6e22e>call</span>(<span style=color:#ae81ff>1</span>)    <span style=color:#75715e>// &#34;[object Number]&#34;
+</span><span style=color:#75715e></span>Object.<span style=color:#a6e22e>prototype</span>.<span style=color:#a6e22e>toString</span>.<span style=color:#a6e22e>call</span>(<span style=color:#e6db74>&#39;1&#39;</span>)  <span style=color:#75715e>// &#34;[object String]&#34;
+</span><span style=color:#75715e></span>Object.<span style=color:#a6e22e>prototype</span>.<span style=color:#a6e22e>toString</span>.<span style=color:#a6e22e>call</span>(<span style=color:#66d9ef>true</span>)  <span style=color:#75715e>// &#34;[object Boolean]&#34;
+</span><span style=color:#75715e></span>Object.<span style=color:#a6e22e>prototype</span>.<span style=color:#a6e22e>toString</span>.<span style=color:#a6e22e>call</span>(<span style=color:#66d9ef>function</span>(){})  <span style=color:#75715e>// &#34;[object Function]&#34;
+</span><span style=color:#75715e></span>Object.<span style=color:#a6e22e>prototype</span>.<span style=color:#a6e22e>toString</span>.<span style=color:#a6e22e>call</span>(<span style=color:#66d9ef>null</span>)   <span style=color:#75715e>//&#34;[object Null]&#34;
+</span><span style=color:#75715e></span>Object.<span style=color:#a6e22e>prototype</span>.<span style=color:#a6e22e>toString</span>.<span style=color:#a6e22e>call</span>(<span style=color:#66d9ef>undefined</span>) <span style=color:#75715e>//&#34;[object Undefined]&#34;
+</span><span style=color:#75715e></span>Object.<span style=color:#a6e22e>prototype</span>.<span style=color:#a6e22e>toString</span>.<span style=color:#a6e22e>call</span>(<span style=color:#e6db74>/123/g</span>)    <span style=color:#75715e>//&#34;[object RegExp]&#34;
+</span><span style=color:#75715e></span>Object.<span style=color:#a6e22e>prototype</span>.<span style=color:#a6e22e>toString</span>.<span style=color:#a6e22e>call</span>(<span style=color:#66d9ef>new</span> Date()) <span style=color:#75715e>//&#34;[object Date]&#34;
+</span><span style=color:#75715e></span>Object.<span style=color:#a6e22e>prototype</span>.<span style=color:#a6e22e>toString</span>.<span style=color:#a6e22e>call</span>([])       <span style=color:#75715e>//&#34;[object Array]&#34;
+</span><span style=color:#75715e></span>Object.<span style=color:#a6e22e>prototype</span>.<span style=color:#a6e22e>toString</span>.<span style=color:#a6e22e>call</span>(document)  <span style=color:#75715e>//&#34;[object HTMLDocument]&#34;
+</span><span style=color:#75715e></span>Object.<span style=color:#a6e22e>prototype</span>.<span style=color:#a6e22e>toString</span>.<span style=color:#a6e22e>call</span>(window)   <span style=color:#75715e>//&#34;[object Window]&#34;
+</span></code></pre></div><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-js data-lang=js> <span style=color:#66d9ef>const</span> <span style=color:#a6e22e>getType</span> <span style=color:#f92672>=</span> (<span style=color:#a6e22e>value</span>) =&gt; {
+    <span style=color:#75715e>// if(value == null) {
+</span><span style=color:#75715e></span>    <span style=color:#75715e>//   return value === undefined ? &#39;[object Undefined]&#39; : &#39;[object Null]&#39;
+</span><span style=color:#75715e></span>    <span style=color:#75715e>// }
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>return</span> Object.<span style=color:#a6e22e>prototype</span>.<span style=color:#a6e22e>toString</span>.<span style=color:#a6e22e>call</span>(<span style=color:#a6e22e>value</span>)
+  }
+
+  <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>getType</span>(<span style=color:#e6db74>&#39;&#39;</span>))
+</code></pre></div><h3 id=类型转换-object转换规则>类型转换 Object转换规则</h3><p>对象转换的规则，会先调用内置的 [ToPrimitive] 函数，其规则逻辑如下：</p><ol><li><p>如果部署了 Symbol.toPrimitive 方法，优先调用再返回；</p></li><li><p>调用 valueOf()，如果转换为基础类型，则返回；</p></li><li><p>调用 toString()，如果转换为基础类型，则返回；</p></li><li><p>如果都没有返回基础类型，会报错。</p></li></ol><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-js data-lang=js><span style=color:#66d9ef>var</span> <span style=color:#a6e22e>obj</span> <span style=color:#f92672>=</span> {
+  <span style=color:#a6e22e>value</span><span style=color:#f92672>:</span> <span style=color:#ae81ff>1</span>,
+  <span style=color:#a6e22e>valueOf</span>() {
+    <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>2</span>;
+  },
+  <span style=color:#a6e22e>toString</span>() {
+    <span style=color:#66d9ef>return</span> <span style=color:#e6db74>&#39;3&#39;</span>
+  },
+  [<span style=color:#a6e22e>Symbol</span>.<span style=color:#a6e22e>toPrimitive</span>]() {
+    <span style=color:#66d9ef>return</span> <span style=color:#ae81ff>4</span>
+  }
+}
+<span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>obj</span> <span style=color:#f92672>+</span> <span style=color:#ae81ff>1</span>); <span style=color:#75715e>// 输出5
+</span><span style=color:#75715e>// 因为有Symbol.toPrimitive，就优先执行这个；
+</span><span style=color:#75715e>// 如果Symbol.toPrimitive这段代码删掉，则执行valueOf打印结果为3；
+</span><span style=color:#75715e>// 如果valueOf也去掉，则调用toString返回&#39;31&#39;(字符串拼接)
+</span><span style=color:#75715e>// 再看两个特殊的case：
+</span><span style=color:#75715e></span><span style=color:#ae81ff>10</span> <span style=color:#f92672>+</span> {}
+<span style=color:#75715e>// &#34;10[object Object]&#34;，注意：{}会默认调用valueOf是{}，不是基础类型继续转换，调用toString,
+</span><span style=color:#75715e>// 返回结果&#34;[object Object]&#34;，于是和10进行&#39;+&#39;运算，按照字符串拼接规则来，参考&#39;+&#39;的规则C
+</span><span style=color:#75715e></span>[<span style=color:#ae81ff>1</span>,<span style=color:#ae81ff>2</span>,<span style=color:#66d9ef>undefined</span>,<span style=color:#ae81ff>4</span>,<span style=color:#ae81ff>5</span>] <span style=color:#f92672>+</span> <span style=color:#ae81ff>10</span>
+<span style=color:#75715e>// &#34;1,2,,4,510&#34;，注意[1,2,undefined,4,5]会默认先调用valueOf结果还是这个数组，
+</span><span style=color:#75715e>// 不是基础数据类型继续转换，也还是调用toString，返回&#34;1,2,,4,5&#34;，
+</span><span style=color:#75715e>// 然后再和10进行运算，还是按照字符串拼接规则，参考&#39;+&#39;的第3条规则
+</span></code></pre></div><hr><h2 id=reference>Reference：</h2><ol><li><a href=https://juejin.cn/post/6844903613584654344>浅谈 instanceof 和 typeof 的实现原理</a> - 原版本</li><li><a href=https://juejin.cn/post/6844904199700873223>聊一聊typeof instanceof 实现原理</a> - 抄袭上文</li></ol></article></section><div class="section narrow"><div class=footer-hr></div><div class=footer-container><div class=footer-text>© 2021 Zxd's Blog</div><div class=social-icon-outer><div class=social-icon-container></div></div></div></div></div><script src=/js/prism.js></script></body></html>
