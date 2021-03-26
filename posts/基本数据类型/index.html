@@ -1,0 +1,113 @@
+<html><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="ie=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><link rel=icon href=/images/sun.ico><link rel=stylesheet href=/scss/global.min.4ef81f6d2c60e02adef8b6561af7716f53a29e028e9cb6db104140a555e5edef.css><link rel=stylesheet href=/css/prism.css><link href="https://fonts.googleapis.com/css?family=Merriweather&display=swap" rel=stylesheet><title>基本数据类型 | Zxd's Blog</title><meta name=description content="基础类型  undefined Null Boolean String Number Symbol BigInt  引用类型  Object  Array RegExp Date Math Function    存储  基础类型存储在栈内存, 被引用或者拷贝时，会创建一个完全相等的变量 引用类型存储在堆内存，存储的是地址，多个引用指向同一个地址  let a = { name: 'Julia', age: 20 } function change(o) { o.age = 24 o = { name: 'Kth', age: 30 } return o } let b = change(a) // 这里没有new console.log(b) // { name: 'Kth', age: 30 } console.log(a) // { name: 'Julia', age: 24 } ps."><meta property="og:title" content="基本数据类型 | Zxd's Blog"><meta property="og:site_name" content="Zxd's Blog"><meta property="og:description" content="基础类型  undefined Null Boolean String Number Symbol BigInt  引用类型  Object  Array RegExp Date Math Function    存储  基础类型存储在栈内存, 被引用或者拷贝时，会创建一个完全相等的变量 引用类型存储在堆内存，存储的是地址，多个引用指向同一个地址  let a = { name: 'Julia', age: 20 } function change(o) { o.age = 24 o = { name: 'Kth', age: 30 } return o } let b = change(a) // 这里没有new console.log(b) // { name: 'Kth', age: 30 } console.log(a) // { name: 'Julia', age: 24 } ps."><meta property="og:url" content="http://localhost:1313/posts/%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/"><meta property="og:type" content="website"><meta property="og:locale" content="en_US"><meta property="og:image" content="http://localhost:1313/uploads/default.jpg"><meta name=twitter:card content="summary_large_image"><meta name=twitter:title content="基本数据类型 | Zxd's Blog"><link rel=canonical href=http://localhost:1313/posts/%E5%9F%BA%E6%9C%AC%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B/><meta name=twitter:description content="基础类型  undefined Null Boolean String Number Symbol BigInt  引用类型  Object  Array RegExp Date Math Function    存储  基础类型存储在栈内存, 被引用或者拷贝时，会创建一个完全相等的变量 引用类型存储在堆内存，存储的是地址，多个引用指向同一个地址  let a = { name: 'Julia', age: 20 } function change(o) { o.age = 24 o = { name: 'Kth', age: 30 } return o } let b = change(a) // 这里没有new console.log(b) // { name: 'Kth', age: 30 } console.log(a) // { name: 'Julia', age: 24 } ps."><meta name=twitter:image content="http://localhost:1313/uploads/default.jpg"><meta property="article:published_time" content="2021-03-20T23:46:00+08:00"><meta property="article:updated_time" content="2021-03-20T23:46:00+08:00"></head><body><script src=/js/initColors.js></script><div class=layout-styled><section class="section fixed-header"><div class=nav-container><a class=back-home href=/><div id=logo-desktop><span class=arrow>←</span>
+<span>Home</span></div></a><div class=nav-controls></div></div></section><section class="section narrow"><section id=articleHero class=narrow><div class=article-hero><header class=article-header><h1 class=article-hero-heading>基本数据类型</h1></header></div></section><article id=articleContent class=post-content><h3 id=基础类型>基础类型</h3><ul><li>undefined</li><li>Null</li><li>Boolean</li><li>String</li><li>Number</li><li>Symbol</li><li>BigInt</li></ul><h3 id=引用类型>引用类型</h3><ul><li>Object<ul><li>Array</li><li>RegExp</li><li>Date</li><li>Math</li><li>Function</li></ul></li></ul><h3 id=存储>存储</h3><ol><li>基础类型存储在<strong>栈内存</strong>, 被引用或者拷贝时，会创建一个完全相等的变量</li><li>引用类型存储在<strong>堆内存</strong>，存储的是地址，多个引用指向同一个地址</li></ol><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#66d9ef>let</span> <span style=color:#a6e22e>a</span> <span style=color:#f92672>=</span> {
+    <span style=color:#a6e22e>name</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#39;Julia&#39;</span>,
+    <span style=color:#a6e22e>age</span><span style=color:#f92672>:</span> <span style=color:#ae81ff>20</span>
+}
+<span style=color:#66d9ef>function</span> <span style=color:#a6e22e>change</span>(<span style=color:#a6e22e>o</span>) {
+    <span style=color:#a6e22e>o</span>.<span style=color:#a6e22e>age</span> <span style=color:#f92672>=</span> <span style=color:#ae81ff>24</span>
+    <span style=color:#a6e22e>o</span> <span style=color:#f92672>=</span> {
+        <span style=color:#a6e22e>name</span><span style=color:#f92672>:</span> <span style=color:#e6db74>&#39;Kth&#39;</span>,
+        <span style=color:#a6e22e>age</span><span style=color:#f92672>:</span> <span style=color:#ae81ff>30</span>
+    }
+    <span style=color:#66d9ef>return</span> <span style=color:#a6e22e>o</span>
+}
+
+<span style=color:#66d9ef>let</span> <span style=color:#a6e22e>b</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>change</span>(<span style=color:#a6e22e>a</span>)  <span style=color:#75715e>// 这里没有new
+</span><span style=color:#75715e></span><span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>b</span>)  <span style=color:#75715e>// { name: &#39;Kth&#39;, age: 30 }
+</span><span style=color:#75715e></span><span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>a</span>)  <span style=color:#75715e>// { name: &#39;Julia&#39;, age: 24 }
+</span></code></pre></div><p>ps. 函数传参进来的o, 传递的是对象在堆中内存地址值</p><h2 id=数据类型检测>数据类型检测</h2><h3 id=1-typeof>1. typeof</h3><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#66d9ef>typeof</span> <span style=color:#ae81ff>1</span> <span style=color:#75715e>// &#39;number&#39;
+</span><span style=color:#75715e></span><span style=color:#66d9ef>typeof</span> <span style=color:#e6db74>&#39;1&#39;</span> <span style=color:#75715e>// &#39;string&#39;
+</span><span style=color:#75715e></span><span style=color:#66d9ef>typeof</span> <span style=color:#66d9ef>undefined</span> <span style=color:#75715e>// &#39;undefined&#39;
+</span><span style=color:#75715e></span><span style=color:#66d9ef>typeof</span> <span style=color:#66d9ef>true</span> <span style=color:#75715e>// &#39;boolean&#39;
+</span><span style=color:#75715e></span><span style=color:#66d9ef>typeof</span> <span style=color:#a6e22e>Symbol</span>() <span style=color:#75715e>// &#39;symbol&#39;
+</span><span style=color:#75715e></span><span style=color:#66d9ef>typeof</span> <span style=color:#66d9ef>null</span> <span style=color:#75715e>// &#39;object&#39;
+</span><span style=color:#75715e></span><span style=color:#66d9ef>typeof</span> [] <span style=color:#75715e>// &#39;object&#39;
+</span><span style=color:#75715e></span><span style=color:#66d9ef>typeof</span> {} <span style=color:#75715e>// &#39;object&#39;
+</span><span style=color:#75715e></span><span style=color:#66d9ef>typeof</span> <span style=color:#a6e22e>console</span> <span style=color:#75715e>// &#39;object&#39;
+</span><span style=color:#75715e></span><span style=color:#66d9ef>typeof</span> <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span> <span style=color:#75715e>// &#39;function&#39;
+</span><span style=color:#75715e></span>
+<span style=color:#75715e>// console.log（）
+</span><span style=color:#75715e></span><span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#66d9ef>typeof</span> <span style=color:#ae81ff>1</span>) <span style=color:#75715e>// &#39;number&#39;
+</span><span style=color:#75715e></span><span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#66d9ef>typeof</span> <span style=color:#e6db74>&#39;1&#39;</span>) <span style=color:#75715e>// &#39;string&#39;
+</span><span style=color:#75715e></span><span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#66d9ef>typeof</span> <span style=color:#66d9ef>undefined</span>) <span style=color:#75715e>// &#39;undefined&#39;
+</span><span style=color:#75715e></span><span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#66d9ef>typeof</span> <span style=color:#66d9ef>true</span>) <span style=color:#75715e>// &#39;boolean&#39;
+</span><span style=color:#75715e></span><span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#66d9ef>typeof</span> <span style=color:#a6e22e>Symbol</span>()) <span style=color:#75715e>// &#39;symbol&#39;
+</span><span style=color:#75715e></span>
+<span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#66d9ef>typeof</span> <span style=color:#66d9ef>null</span>) <span style=color:#75715e>// &#39;object&#39;
+</span><span style=color:#75715e></span><span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#66d9ef>typeof</span> []) <span style=color:#75715e>// &#39;object&#39;
+</span><span style=color:#75715e></span><span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#66d9ef>typeof</span> {}) <span style=color:#75715e>// &#39;object&#39;
+</span><span style=color:#75715e></span><span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#66d9ef>typeof</span> <span style=color:#a6e22e>console</span>) <span style=color:#75715e>// &#39;object&#39;
+</span><span style=color:#75715e></span><span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#66d9ef>typeof</span> <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>) <span style=color:#75715e>// &#39;function&#39;
+</span></code></pre></div><p>PS. typeof null 返回object是JS存在的一个悠久的Bug
+<strong>引用类型用typeof判断的话，除了function会判断ok，其余都是object，无法判断出来</strong>
+**
+总结：<strong>判断基本数据类型可以使用typeof， 但要注意null返回object</strong></p><h3 id=2-instanceof>2. instanceof</h3><p>MDN: <strong><code>instanceof</code></strong> <strong>运算符</strong>用于检测构造函数的 <code>prototype</code> 属性是否出现在某个实例对象的原型链上。
+<strong>Syntax：</strong></p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#75715e>// object 某个实例对象
+</span><span style=color:#75715e>// constructor 某个构造函数
+</span><span style=color:#75715e></span><span style=color:#a6e22e>object</span> <span style=color:#66d9ef>instanceof</span> <span style=color:#a6e22e>constructor</span>
+</code></pre></div><p>通俗一点就是： 判断new出的实例对象是否是当前构造函数生成的对象</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#66d9ef>function</span> <span style=color:#a6e22e>Car</span>(<span style=color:#a6e22e>make</span>, <span style=color:#a6e22e>model</span>, <span style=color:#a6e22e>year</span>) {
+  <span style=color:#66d9ef>this</span>.<span style=color:#a6e22e>make</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>make</span>;
+  <span style=color:#66d9ef>this</span>.<span style=color:#a6e22e>model</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>model</span>;
+  <span style=color:#66d9ef>this</span>.<span style=color:#a6e22e>year</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>year</span>;
+}
+<span style=color:#66d9ef>const</span> <span style=color:#a6e22e>auto</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>Car</span>(<span style=color:#e6db74>&#39;Honda&#39;</span>, <span style=color:#e6db74>&#39;Accord&#39;</span>, <span style=color:#ae81ff>1998</span>);
+
+<span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>auto</span> <span style=color:#66d9ef>instanceof</span> <span style=color:#a6e22e>Car</span>);
+<span style=color:#75715e>// expected output: true
+</span><span style=color:#75715e></span>
+<span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>auto</span> <span style=color:#66d9ef>instanceof</span> Object);
+<span style=color:#75715e>// expected output: true
+</span></code></pre></div><p>MDN:</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#75715e>// 定义构造函数
+</span><span style=color:#75715e></span><span style=color:#66d9ef>function</span> <span style=color:#a6e22e>C</span>(){}
+<span style=color:#66d9ef>function</span> <span style=color:#a6e22e>D</span>(){}
+
+<span style=color:#66d9ef>var</span> <span style=color:#a6e22e>o</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>C</span>();
+
+<span style=color:#a6e22e>o</span> <span style=color:#66d9ef>instanceof</span> <span style=color:#a6e22e>C</span>; <span style=color:#75715e>// true，因为 Object.getPrototypeOf(o) === C.prototype
+</span><span style=color:#75715e></span><span style=color:#a6e22e>o</span> <span style=color:#66d9ef>instanceof</span> <span style=color:#a6e22e>D</span>; <span style=color:#75715e>// false，因为 D.prototype 不在 o 的原型链上
+</span><span style=color:#75715e></span>
+<span style=color:#f92672>---</span>
+<span style=color:#a6e22e>o</span> <span style=color:#66d9ef>instanceof</span> Object; <span style=color:#75715e>// true，因为 Object.prototype.isPrototypeOf(o) 返回 true
+</span><span style=color:#75715e></span><span style=color:#a6e22e>C</span>.<span style=color:#a6e22e>prototype</span> <span style=color:#66d9ef>instanceof</span> Object <span style=color:#75715e>// true，同上
+</span><span style=color:#75715e></span>
+<span style=color:#a6e22e>C</span>.<span style=color:#a6e22e>prototype</span> <span style=color:#f92672>=</span> {};
+<span style=color:#66d9ef>var</span> <span style=color:#a6e22e>o2</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>C</span>();
+
+<span style=color:#a6e22e>o2</span> <span style=color:#66d9ef>instanceof</span> <span style=color:#a6e22e>C</span>; <span style=color:#75715e>// true
+</span><span style=color:#75715e></span>
+<span style=color:#a6e22e>o</span> <span style=color:#66d9ef>instanceof</span> <span style=color:#a6e22e>C</span>; <span style=color:#75715e>// false，C.prototype 指向了一个空对象,这个空对象不在 o 的原型链上.
+</span><span style=color:#75715e></span>
+<span style=color:#f92672>---</span>
+<span style=color:#a6e22e>D</span>.<span style=color:#a6e22e>prototype</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>C</span>(); <span style=color:#75715e>// 继承
+</span><span style=color:#75715e></span><span style=color:#66d9ef>var</span> <span style=color:#a6e22e>o3</span> <span style=color:#f92672>=</span> <span style=color:#66d9ef>new</span> <span style=color:#a6e22e>D</span>();
+<span style=color:#a6e22e>o3</span> <span style=color:#66d9ef>instanceof</span> <span style=color:#a6e22e>D</span>; <span style=color:#75715e>// true
+</span><span style=color:#75715e></span><span style=color:#a6e22e>o3</span> <span style=color:#66d9ef>instanceof</span> <span style=color:#a6e22e>C</span>; <span style=color:#75715e>// true 因为 C.prototype 现在在 o3 的原型链上
+</span></code></pre></div><h3 id=instanceof实现原理>instanceof实现原理</h3><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#66d9ef>function</span> <span style=color:#a6e22e>myInstanceof</span>(<span style=color:#a6e22e>left</span>, <span style=color:#a6e22e>right</span>) {
+  <span style=color:#75715e>// 这里先用typeof来判断基础数据类型，如果是，直接返回false
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>if</span>(<span style=color:#66d9ef>typeof</span> <span style=color:#a6e22e>left</span> <span style=color:#f92672>!==</span> <span style=color:#e6db74>&#39;object&#39;</span> <span style=color:#f92672>||</span> <span style=color:#a6e22e>left</span> <span style=color:#f92672>===</span> <span style=color:#66d9ef>null</span>) <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>false</span>;
+  <span style=color:#75715e>// getProtypeOf是Object对象自带的API，能够拿到参数的原型对象
+</span><span style=color:#75715e></span>  <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>proto</span> <span style=color:#f92672>=</span> Object.<span style=color:#a6e22e>getPrototypeOf</span>(<span style=color:#a6e22e>left</span>);
+  <span style=color:#66d9ef>while</span>(<span style=color:#66d9ef>true</span>) {                  <span style=color:#75715e>//循环往下寻找，直到找到相同的原型对象
+</span><span style=color:#75715e></span>    <span style=color:#66d9ef>if</span>(<span style=color:#a6e22e>proto</span> <span style=color:#f92672>===</span> <span style=color:#66d9ef>null</span>) <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>false</span>;
+    <span style=color:#66d9ef>if</span>(<span style=color:#a6e22e>proto</span> <span style=color:#f92672>===</span> <span style=color:#a6e22e>right</span>.<span style=color:#a6e22e>prototype</span>) <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>true</span>;<span style=color:#75715e>//找到相同原型对象，返回true
+</span><span style=color:#75715e></span>    <span style=color:#a6e22e>proto</span> <span style=color:#f92672>=</span> Object.<span style=color:#a6e22e>getPrototypeof</span>(<span style=color:#a6e22e>proto</span>);
+    }
+}
+<span style=color:#75715e>// 验证一下自己实现的myInstanceof是否OK
+</span><span style=color:#75715e></span><span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>myInstanceof</span>(<span style=color:#66d9ef>new</span> Number(<span style=color:#ae81ff>123</span>), Number));    <span style=color:#75715e>// true
+</span><span style=color:#75715e></span><span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>myInstanceof</span>(<span style=color:#ae81ff>123</span>, Number));                <span style=color:#75715e>// false
+</span></code></pre></div><p>更好理解的版本写法：</p><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#66d9ef>function</span> <span style=color:#a6e22e>my_instance_of</span>(<span style=color:#a6e22e>leftVaule</span>, <span style=color:#a6e22e>rightVaule</span>) {
+    <span style=color:#66d9ef>if</span>(<span style=color:#66d9ef>typeof</span> <span style=color:#a6e22e>leftVaule</span> <span style=color:#f92672>!==</span> <span style=color:#e6db74>&#39;object&#39;</span> <span style=color:#f92672>||</span> <span style=color:#a6e22e>leftVaule</span> <span style=color:#f92672>===</span> <span style=color:#66d9ef>null</span>) <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>false</span>;
+    <span style=color:#66d9ef>let</span> <span style=color:#a6e22e>rightProto</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>rightVaule</span>.<span style=color:#a6e22e>prototype</span>,
+        <span style=color:#a6e22e>leftProto</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>leftVaule</span>.<span style=color:#a6e22e>__proto__</span>;
+    <span style=color:#66d9ef>while</span> (<span style=color:#66d9ef>true</span>) {
+        <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>leftProto</span> <span style=color:#f92672>===</span> <span style=color:#66d9ef>null</span>) {
+            <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>false</span>;
+        }
+        <span style=color:#66d9ef>if</span> (<span style=color:#a6e22e>leftProto</span> <span style=color:#f92672>===</span> <span style=color:#a6e22e>rightProto</span>) {
+            <span style=color:#66d9ef>return</span> <span style=color:#66d9ef>true</span>;
+        }
+        <span style=color:#a6e22e>leftProto</span> <span style=color:#f92672>=</span> <span style=color:#a6e22e>leftProto</span>.<span style=color:#a6e22e>__proto__</span>
+    }
+}
+</code></pre></div><hr><h2 id=reference>Reference：</h2><ol><li><a href=https://juejin.cn/post/6844903613584654344>浅谈 instanceof 和 typeof 的实现原理</a> - 原版本</li><li><a href=https://juejin.cn/post/6844904199700873223>聊一聊typeof instanceof 实现原理</a> - 抄袭上文</li></ol></article></section><div class="section narrow"><div class=footer-hr></div><div class=footer-container><div class=footer-text>© 2021 Zxd's Blog</div><div class=social-icon-outer><div class=social-icon-container></div></div></div></div></div><script src=/js/prism.js></script></body></html>
