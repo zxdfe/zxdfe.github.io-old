@@ -1,53 +1,4 @@
-<html><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="ie=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><link rel=icon href=/images/sun.ico><link rel=stylesheet href=/scss/global.min.4ef81f6d2c60e02adef8b6561af7716f53a29e028e9cb6db104140a555e5edef.css><link rel=stylesheet href=/css/prism.css><link href="https://fonts.googleapis.com/css?family=Merriweather&display=swap" rel=stylesheet><title>EventLoop事件循环 | Zxd's Blog</title><meta name=description content="为什么JavaScript是单线程的? JavaScript是一门单线程非阻塞的脚本语言, 作为浏览器脚本语言,JavaScript的主要用途是与用户互动，以及操作DOM。
-这决定了它只能是单线程，就是同一时间只能做一件事情，否则会带来很复杂的同步问题。比如，假定JavaScript同时有两个线程，一个线程在某个DOM节点上添加内容，另一个线程删除了这个节点，这时浏览器就不知道以哪个为准了.
-任务队列 (Event Queue) 单线程就意味着，所有任务需要排队，前一个任务结束，才会执行后一个任务。如果前一个任务耗时很长，后一个任务就不得不一直等着。但这样就太浪费资源了.
-怎么解决呢? JS主线程挂起处于等待中的任务, 先运行后面的任务, 再在适当的时候执行这些挂起的任务.
-于是，所有任务可以分成两种，一种是同步任务（synchronous），另一种是异步任务（asynchronous）。
-同步任务: 立即执行的任务, 同步任务一般会直接进入到主线程中执行. 只有前一个任务执行完毕，才能执行后一个任务； 异步任务: 异步执行的任务,不进入主线程、而进入&#34;任务队列&#34;（task queue）的任务，如, Ajax网络请求,seTtimeout等定时函数, 异步任务会通过任务队列的机制(先进先出的机制)来进行协调.
-事件和回调函数 &ldquo;任务队列&#34;是一个事件的队列（也可以理解成消息的队列），IO设备完成一项任务，就在&#34;任务队列&#34;中添加一个事件，表示相关的异步任务可以进入&#34;执行栈&#34;了。主线程读取&#34;任务队列&rdquo;，就是读取里面有哪些事件。
-&ldquo;任务队列&#34;中的事件，除了IO设备的事件以外，还包括一些用户产生的事件（比如鼠标点击、页面滚动等等）。只要指定过回调函数，这些事件发生时就会进入&#34;任务队列&rdquo;，等待主线程读取。
-所谓&#34;回调函数&#34;（callback），就是那些会被主线程挂起来的代码。异步任务必须指定回调函数，当主线程开始执行异步任务，就是执行对应的回调函数。
-&ldquo;任务队列&#34;是一个先进先出的数据结构，排在前面的事件，优先被主线程读取。主线程的读取过程基本上是自动的，只要执行栈一清空，&ldquo;任务队列&#34;上第一位的事件就自动进入主线程。但是，由于存在后文提到的&#34;定时器&#34;功能，主线程首先要检查一下执行时间，某些事件只有到了规定的时间，才能返回主线程。
-事件循环 Event Loop 主线程从&#34;任务队列&#34;中读取事件，这个过程是循环不断的，所以整个的这种运行机制又称为Event Loop（事件循环）
-同步和异步任务分别进入不同的执行环境，同步的进入主线程，即主执行栈，异步的进入任务队列。主线程内的任务执行完毕为空后，会去任务队列读取对应的任务，推入主线程执行。 上述过程的不断重复就是我们说的 Event Loop (事件循环)。
-在事件循环中，每进行一次循环操作称为tick
-http://latentflip.com/loupe/ 栈是一种结构化的内存，遵循LIFO（先进后出）的原则 队列也是一种结构化的内存，遵循FIFO（先进先出）的原则
-宏任务:
- script( 整体代码)、为什么?? setTimeout、 setInterval、 I/O、 UI Render setImmediate(Node.js 环境)  微任务:
- promise.then() || catch() Async/Await(实际就是promise) MutaionObserver() process.nextTick(Node.js 环境)  执行一个宏任务&ndash;>清空微任务&ndash;>UI Render ==> 执行一个宏任务&ndash;>清空微任务&ndash;>UI Render (UI Render不一定执行, 是否有UI变动)"><meta property="og:title" content="EventLoop事件循环 | Zxd's Blog"><meta property="og:site_name" content="Zxd's Blog"><meta property="og:description" content="为什么JavaScript是单线程的? JavaScript是一门单线程非阻塞的脚本语言, 作为浏览器脚本语言,JavaScript的主要用途是与用户互动，以及操作DOM。
-这决定了它只能是单线程，就是同一时间只能做一件事情，否则会带来很复杂的同步问题。比如，假定JavaScript同时有两个线程，一个线程在某个DOM节点上添加内容，另一个线程删除了这个节点，这时浏览器就不知道以哪个为准了.
-任务队列 (Event Queue) 单线程就意味着，所有任务需要排队，前一个任务结束，才会执行后一个任务。如果前一个任务耗时很长，后一个任务就不得不一直等着。但这样就太浪费资源了.
-怎么解决呢? JS主线程挂起处于等待中的任务, 先运行后面的任务, 再在适当的时候执行这些挂起的任务.
-于是，所有任务可以分成两种，一种是同步任务（synchronous），另一种是异步任务（asynchronous）。
-同步任务: 立即执行的任务, 同步任务一般会直接进入到主线程中执行. 只有前一个任务执行完毕，才能执行后一个任务； 异步任务: 异步执行的任务,不进入主线程、而进入&#34;任务队列&#34;（task queue）的任务，如, Ajax网络请求,seTtimeout等定时函数, 异步任务会通过任务队列的机制(先进先出的机制)来进行协调.
-事件和回调函数 &ldquo;任务队列&#34;是一个事件的队列（也可以理解成消息的队列），IO设备完成一项任务，就在&#34;任务队列&#34;中添加一个事件，表示相关的异步任务可以进入&#34;执行栈&#34;了。主线程读取&#34;任务队列&rdquo;，就是读取里面有哪些事件。
-&ldquo;任务队列&#34;中的事件，除了IO设备的事件以外，还包括一些用户产生的事件（比如鼠标点击、页面滚动等等）。只要指定过回调函数，这些事件发生时就会进入&#34;任务队列&rdquo;，等待主线程读取。
-所谓&#34;回调函数&#34;（callback），就是那些会被主线程挂起来的代码。异步任务必须指定回调函数，当主线程开始执行异步任务，就是执行对应的回调函数。
-&ldquo;任务队列&#34;是一个先进先出的数据结构，排在前面的事件，优先被主线程读取。主线程的读取过程基本上是自动的，只要执行栈一清空，&ldquo;任务队列&#34;上第一位的事件就自动进入主线程。但是，由于存在后文提到的&#34;定时器&#34;功能，主线程首先要检查一下执行时间，某些事件只有到了规定的时间，才能返回主线程。
-事件循环 Event Loop 主线程从&#34;任务队列&#34;中读取事件，这个过程是循环不断的，所以整个的这种运行机制又称为Event Loop（事件循环）
-同步和异步任务分别进入不同的执行环境，同步的进入主线程，即主执行栈，异步的进入任务队列。主线程内的任务执行完毕为空后，会去任务队列读取对应的任务，推入主线程执行。 上述过程的不断重复就是我们说的 Event Loop (事件循环)。
-在事件循环中，每进行一次循环操作称为tick
-http://latentflip.com/loupe/ 栈是一种结构化的内存，遵循LIFO（先进后出）的原则 队列也是一种结构化的内存，遵循FIFO（先进先出）的原则
-宏任务:
- script( 整体代码)、为什么?? setTimeout、 setInterval、 I/O、 UI Render setImmediate(Node.js 环境)  微任务:
- promise.then() || catch() Async/Await(实际就是promise) MutaionObserver() process.nextTick(Node.js 环境)  执行一个宏任务&ndash;>清空微任务&ndash;>UI Render ==> 执行一个宏任务&ndash;>清空微任务&ndash;>UI Render (UI Render不一定执行, 是否有UI变动)"><meta property="og:url" content="http://localhost:1313/posts/2021-02-28-eventloop%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF%E7%9B%B8%E5%85%B3/"><meta property="og:type" content="website"><meta property="og:locale" content="en_US"><meta property="og:image" content="http://localhost:1313/uploads/default.jpg"><meta name=twitter:card content="summary_large_image"><meta name=twitter:title content="EventLoop事件循环 | Zxd's Blog"><link rel=canonical href=http://localhost:1313/posts/2021-02-28-eventloop%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF%E7%9B%B8%E5%85%B3/><meta name=twitter:description content="为什么JavaScript是单线程的? JavaScript是一门单线程非阻塞的脚本语言, 作为浏览器脚本语言,JavaScript的主要用途是与用户互动，以及操作DOM。
-这决定了它只能是单线程，就是同一时间只能做一件事情，否则会带来很复杂的同步问题。比如，假定JavaScript同时有两个线程，一个线程在某个DOM节点上添加内容，另一个线程删除了这个节点，这时浏览器就不知道以哪个为准了.
-任务队列 (Event Queue) 单线程就意味着，所有任务需要排队，前一个任务结束，才会执行后一个任务。如果前一个任务耗时很长，后一个任务就不得不一直等着。但这样就太浪费资源了.
-怎么解决呢? JS主线程挂起处于等待中的任务, 先运行后面的任务, 再在适当的时候执行这些挂起的任务.
-于是，所有任务可以分成两种，一种是同步任务（synchronous），另一种是异步任务（asynchronous）。
-同步任务: 立即执行的任务, 同步任务一般会直接进入到主线程中执行. 只有前一个任务执行完毕，才能执行后一个任务； 异步任务: 异步执行的任务,不进入主线程、而进入&#34;任务队列&#34;（task queue）的任务，如, Ajax网络请求,seTtimeout等定时函数, 异步任务会通过任务队列的机制(先进先出的机制)来进行协调.
-事件和回调函数 &ldquo;任务队列&#34;是一个事件的队列（也可以理解成消息的队列），IO设备完成一项任务，就在&#34;任务队列&#34;中添加一个事件，表示相关的异步任务可以进入&#34;执行栈&#34;了。主线程读取&#34;任务队列&rdquo;，就是读取里面有哪些事件。
-&ldquo;任务队列&#34;中的事件，除了IO设备的事件以外，还包括一些用户产生的事件（比如鼠标点击、页面滚动等等）。只要指定过回调函数，这些事件发生时就会进入&#34;任务队列&rdquo;，等待主线程读取。
-所谓&#34;回调函数&#34;（callback），就是那些会被主线程挂起来的代码。异步任务必须指定回调函数，当主线程开始执行异步任务，就是执行对应的回调函数。
-&ldquo;任务队列&#34;是一个先进先出的数据结构，排在前面的事件，优先被主线程读取。主线程的读取过程基本上是自动的，只要执行栈一清空，&ldquo;任务队列&#34;上第一位的事件就自动进入主线程。但是，由于存在后文提到的&#34;定时器&#34;功能，主线程首先要检查一下执行时间，某些事件只有到了规定的时间，才能返回主线程。
-事件循环 Event Loop 主线程从&#34;任务队列&#34;中读取事件，这个过程是循环不断的，所以整个的这种运行机制又称为Event Loop（事件循环）
-同步和异步任务分别进入不同的执行环境，同步的进入主线程，即主执行栈，异步的进入任务队列。主线程内的任务执行完毕为空后，会去任务队列读取对应的任务，推入主线程执行。 上述过程的不断重复就是我们说的 Event Loop (事件循环)。
-在事件循环中，每进行一次循环操作称为tick
-http://latentflip.com/loupe/ 栈是一种结构化的内存，遵循LIFO（先进后出）的原则 队列也是一种结构化的内存，遵循FIFO（先进先出）的原则
-宏任务:
- script( 整体代码)、为什么?? setTimeout、 setInterval、 I/O、 UI Render setImmediate(Node.js 环境)  微任务:
- promise.then() || catch() Async/Await(实际就是promise) MutaionObserver() process.nextTick(Node.js 环境)  执行一个宏任务&ndash;>清空微任务&ndash;>UI Render ==> 执行一个宏任务&ndash;>清空微任务&ndash;>UI Render (UI Render不一定执行, 是否有UI变动)"><meta name=twitter:image content="http://localhost:1313/uploads/default.jpg"><meta property="article:published_time" content="2021-02-28T23:11:23+00:00"><meta property="article:updated_time" content="2021-02-28T23:11:23+00:00"></head><body><script src=/js/initColors.js></script><div class=layout-styled><section class="section fixed-header"><div class=nav-container><a class=back-home href=/><div id=logo-desktop><span class=arrow>←</span>
-<span>Home</span></div></a><div class=nav-controls></div></div></section><section class="section narrow"><section id=articleHero class=narrow><div class=article-hero><header class=article-header><h1 class=article-hero-heading>EventLoop事件循环</h1></header></div></section><article id=articleContent class=post-content><h2 id=为什么javascript是单线程的>为什么JavaScript是单线程的?</h2><p>JavaScript是一门单线程非阻塞的脚本语言, 作为浏览器脚本语言,JavaScript的主要用途是与用户互动，以及操作DOM。</p><p>这决定了它只能是单线程，就是同一时间只能做一件事情，否则会带来很复杂的同步问题。比如，假定JavaScript同时有两个线程，一个线程在某个DOM节点上添加内容，另一个线程删除了这个节点，这时浏览器就不知道以哪个为准了.</p><h2 id=任务队列-event-queue>任务队列 (<strong>Event Queue</strong>)</h2><p>单线程就意味着，所有任务需要排队，前一个任务结束，才会执行后一个任务。如果前一个任务耗时很长，后一个任务就不得不一直等着。但这样就太浪费资源了.</p><p>怎么解决呢? JS主线程挂起处于等待中的任务, 先运行后面的任务, 再在适当的时候执行这些挂起的任务.</p><p>于是，所有任务可以分成两种，一种是同步任务（synchronous），另一种是异步任务（asynchronous）。</p><p><code>同步任务</code>: 立即执行的任务, 同步任务一般会直接进入到主线程中执行. 只有前一个任务执行完毕，才能执行后一个任务；
+<!doctype html><html lang=en><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge,chrome=1"><title>EventLoop事件循环 - Zxd's Blog</title><meta name=renderer content="webkit"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><meta http-equiv=cache-control content="no-transform"><meta http-equiv=cache-control content="no-siteapp"><meta name=theme-color content="#f8f5ec"><meta name=msapplication-navbutton-color content="#f8f5ec"><meta name=apple-mobile-web-app-capable content="yes"><meta name=apple-mobile-web-app-status-bar-style content="#f8f5ec"><meta name=author content="zxd"><meta name=description content="为什么JavaScript是单线程的? JavaScript是一门单线程非阻塞的脚本语言, 作为浏览器脚本语言,JavaScript的主要用途是"><meta name=keywords content="Hugo,theme,Zxd"><meta name=generator content="Hugo 0.81.0 with theme even"><link rel=canonical href=http://localhost:1313/posts/2021-02-28-eventloop%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF%E7%9B%B8%E5%85%B3/><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=manifest href=/manifest.json><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link href=/sass/main.min.2e81bbed97b8b282c1aeb57488cc71c8d8c8ec559f3931531bd396bf31e0d4dd.css rel=stylesheet><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin=anonymous><meta property="og:title" content="EventLoop事件循环"><meta property="og:description" content="为什么JavaScript是单线程的? JavaScript是一门单线程非阻塞的脚本语言, 作为浏览器脚本语言,JavaScript的主要用途是"><meta property="og:type" content="article"><meta property="og:url" content="http://localhost:1313/posts/2021-02-28-eventloop%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF%E7%9B%B8%E5%85%B3/"><meta property="article:section" content="posts"><meta property="article:published_time" content="2021-02-28T23:11:23+00:00"><meta property="article:modified_time" content="2021-02-28T23:11:23+00:00"><meta itemprop=name content="EventLoop事件循环"><meta itemprop=description content="为什么JavaScript是单线程的? JavaScript是一门单线程非阻塞的脚本语言, 作为浏览器脚本语言,JavaScript的主要用途是"><meta itemprop=datePublished content="2021-02-28T23:11:23+00:00"><meta itemprop=dateModified content="2021-02-28T23:11:23+00:00"><meta itemprop=wordCount content="2376"><meta itemprop=keywords content><meta name=twitter:card content="summary"><meta name=twitter:title content="EventLoop事件循环"><meta name=twitter:description content="为什么JavaScript是单线程的? JavaScript是一门单线程非阻塞的脚本语言, 作为浏览器脚本语言,JavaScript的主要用途是"><!--[if lte IE 9]><script src=https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js></script><![endif]--><!--[if lt IE 9]><script src=https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js></script><script src=https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js></script><![endif]--></head><body><div id=mobile-navbar class=mobile-navbar><div class=mobile-header-logo><a href=/ class=logo>zxd</a></div><div class=mobile-navbar-icon><span></span><span></span><span></span></div></div><nav id=mobile-menu class="mobile-menu slideout-menu"><ul class=mobile-menu-list><a href=/><li class=mobile-menu-item>Home</li></a><a href=/posts/><li class=mobile-menu-item>Archives</li></a><a href=/tags/><li class=mobile-menu-item>Tags</li></a><a href=/categories/><li class=mobile-menu-item>Categories</li></a></ul></nav><div class=container id=mobile-panel><header id=header class=header><div class=logo-wrapper><a href=/ class=logo>zxd</a></div><nav class=site-navbar><ul id=menu class=menu><li class=menu-item><a class=menu-item-link href=/>Home</a></li><li class=menu-item><a class=menu-item-link href=/posts/>Archives</a></li><li class=menu-item><a class=menu-item-link href=/tags/>Tags</a></li><li class=menu-item><a class=menu-item-link href=/categories/>Categories</a></li></ul></nav></header><main id=main class=main><div class=content-wrapper><div id=content class=content><article class=post><div class=post-content><h2 id=为什么javascript是单线程的>为什么JavaScript是单线程的?</h2><p>JavaScript是一门单线程非阻塞的脚本语言, 作为浏览器脚本语言,JavaScript的主要用途是与用户互动，以及操作DOM。</p><p>这决定了它只能是单线程，就是同一时间只能做一件事情，否则会带来很复杂的同步问题。比如，假定JavaScript同时有两个线程，一个线程在某个DOM节点上添加内容，另一个线程删除了这个节点，这时浏览器就不知道以哪个为准了.</p><h2 id=任务队列-event-queue>任务队列 (<strong>Event Queue</strong>)</h2><p>单线程就意味着，所有任务需要排队，前一个任务结束，才会执行后一个任务。如果前一个任务耗时很长，后一个任务就不得不一直等着。但这样就太浪费资源了.</p><p>怎么解决呢? JS主线程挂起处于等待中的任务, 先运行后面的任务, 再在适当的时候执行这些挂起的任务.</p><p>于是，所有任务可以分成两种，一种是同步任务（synchronous），另一种是异步任务（asynchronous）。</p><p><code>同步任务</code>: 立即执行的任务, 同步任务一般会直接进入到主线程中执行. 只有前一个任务执行完毕，才能执行后一个任务；
 <code>异步任务</code>: 异步执行的任务,不进入主线程、而进入"任务队列"（task queue）的任务，如, Ajax网络请求,seTtimeout等定时函数, 异步任务会通过任务队列的机制(先进先出的机制)来进行协调.</p><p><img src="https://cdn.nlark.com/yuque/0/2021/png/302528/1614587877626-3f9d770f-8ee8-4811-ab0e-ffc029b40220.png#align=left&display=inline&height=457&margin=%5Bobject%20Object%5D&name=image.png&originHeight=914&originWidth=776&size=544464&status=done&style=none&width=388" alt=image.png></p><h2 id=事件和回调函数>事件和回调函数</h2><p>&ldquo;任务队列"是一个事件的队列（也可以理解成消息的队列），IO设备完成一项任务，就在"任务队列"中添加一个事件，表示相关的异步任务可以进入"执行栈"了。主线程读取"任务队列&rdquo;，就是读取里面有哪些事件。</p><p>&ldquo;任务队列"中的事件，除了IO设备的事件以外，还包括一些用户产生的事件（比如鼠标点击、页面滚动等等）。只要指定过回调函数，这些事件发生时就会进入"任务队列&rdquo;，等待主线程读取。</p><p>所谓"回调函数"（callback），就是那些会被主线程挂起来的代码。异步任务必须指定回调函数，当主线程开始执行异步任务，就是执行对应的回调函数。</p><p>&ldquo;任务队列"是一个先进先出的数据结构，排在前面的事件，优先被主线程读取。主线程的读取过程基本上是自动的，只要执行栈一清空，&ldquo;任务队列"上第一位的事件就自动进入主线程。但是，由于存在后文提到的"定时器"功能，主线程首先要检查一下执行时间，某些事件只有到了规定的时间，才能返回主线程。</p><h2 id=事件循环-event-loop>事件循环 Event Loop</h2><p>主线程从"任务队列"中读取事件，这个过程是循环不断的，所以整个的这种运行机制又称为Event Loop（事件循环）</p><p>同步和异步任务分别进入不同的执行环境，同步的进入主线程，即主执行栈，异步的进入任务队列。主线程内的任务执行完毕为空后，会去任务队列读取对应的任务，推入主线程执行。 上述过程的不断重复就是我们说的 Event Loop (事件循环)。</p><p>在事件循环中，每进行一次循环操作称为tick</p><p><a href=http://latentflip.com/loupe/>http://latentflip.com/loupe/</a>
 栈是一种结构化的内存，遵循LIFO（先进后出）的原则
 队列也是一种结构化的内存，遵循FIFO（先进先出）的原则</p><p><strong>宏任务:</strong></p><ul><li>script( 整体代码)、为什么??</li><li>setTimeout、</li><li>setInterval、</li><li>I/O、</li><li>UI Render</li><li>setImmediate(Node.js 环境)</li></ul><p><strong>微任务:</strong></p><ul><li>promise.then() || catch()</li><li>Async/Await(实际就是promise)</li><li>MutaionObserver()</li><li>process.nextTick(Node.js 环境)</li></ul><p>执行一个宏任务&ndash;>清空微任务&ndash;>UI Render ==> 执行一个宏任务&ndash;>清空微任务&ndash;>UI Render
@@ -57,68 +8,134 @@ http://latentflip.com/loupe/ 栈是一种结构化的内存，遵循LIFO（先�
 （2）解析后的代码，调用Node API。
 （3）<a href=https://github.com/joyent/libuv>libuv库</a>负责Node API的执行。它将不同的任务分配给不同的线程，形成一个Event Loop（事件循环），以异步的方式将任务的执行结果返回给V8引擎。
 （4）V8引擎再将结果返回给用户。
-:::</p><h4 id=js>JS</h4><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-js data-lang=js><span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#ae81ff>0</span>);
+:::</p><h4 id=js>JS</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-js data-lang=js><span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=mi>0</span><span class=p>);</span>
 
-<span style=color:#a6e22e>setTimeout</span>(<span style=color:#66d9ef>function</span> () {
-    <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#ae81ff>1</span>);
-});
+<span class=nx>setTimeout</span><span class=p>(</span><span class=kd>function</span> <span class=p>()</span> <span class=p>{</span>
+    <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=mi>1</span><span class=p>);</span>
+<span class=p>});</span>
 
-<span style=color:#66d9ef>new</span> Promise(<span style=color:#66d9ef>function</span>(<span style=color:#a6e22e>resolve</span>,<span style=color:#a6e22e>reject</span>){
-    <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#ae81ff>2</span>)
-    <span style=color:#a6e22e>resolve</span>(<span style=color:#ae81ff>3</span>) 
-}).<span style=color:#a6e22e>then</span>(<span style=color:#66d9ef>function</span>(<span style=color:#a6e22e>val</span>){
-    <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#a6e22e>val</span>);
-})
+<span class=k>new</span> <span class=nb>Promise</span><span class=p>(</span><span class=kd>function</span><span class=p>(</span><span class=nx>resolve</span><span class=p>,</span><span class=nx>reject</span><span class=p>){</span>
+    <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=mi>2</span><span class=p>)</span>
+    <span class=nx>resolve</span><span class=p>(</span><span class=mi>3</span><span class=p>)</span> 
+<span class=p>}).</span><span class=nx>then</span><span class=p>(</span><span class=kd>function</span><span class=p>(</span><span class=nx>val</span><span class=p>){</span>
+    <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=nx>val</span><span class=p>);</span>
+<span class=p>})</span>
 
-<span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#ae81ff>4</span>);
+<span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=mi>4</span><span class=p>);</span>
 
-<span style=color:#75715e>// 0--&gt; 2 --&gt; 4 --&gt; 3 --&gt; 1   // resolve(3) --&gt; then() val==3, 如果不resolve,then不执行
-</span></code></pre></div><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#66d9ef>async</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>async1</span>(){
-	<span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#e6db74>&#39;async1 start&#39;</span>)
-  <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>async2</span>()           <span style=color:#75715e>// await async2()中, `async`可以看作放在promise里面, await async2后面的代码,可以看作放在then()里面
-</span><span style=color:#75715e></span>  <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#e6db74>&#39;async1 end&#39;</span>);
-}
-<span style=color:#66d9ef>async</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>async2</span>(){  <span style=color:#75715e>//微任务
-</span><span style=color:#75715e></span>  <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#e6db74>&#39;async2&#39;</span>);
-}
+<span class=c1>// 0--&gt; 2 --&gt; 4 --&gt; 3 --&gt; 1   // resolve(3) --&gt; then() val==3, 如果不resolve,then不执行
+</span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-javascript data-lang=javascript><span class=kr>async</span> <span class=kd>function</span> <span class=nx>async1</span><span class=p>(){</span>
+	<span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=s1>&#39;async1 start&#39;</span><span class=p>)</span>
+  <span class=kr>await</span> <span class=nx>async2</span><span class=p>()</span>           <span class=c1>// await async2()中, `async`可以看作放在promise里面, await async2后面的代码,可以看作放在then()里面
+</span><span class=c1></span>  <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=s1>&#39;async1 end&#39;</span><span class=p>);</span>
+<span class=p>}</span>
+<span class=kr>async</span> <span class=kd>function</span> <span class=nx>async2</span><span class=p>(){</span>  <span class=c1>//微任务
+</span><span class=c1></span>  <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=s1>&#39;async2&#39;</span><span class=p>);</span>
+<span class=p>}</span>
 
-<span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#e6db74>&#39;script start&#39;</span>)
+<span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=s1>&#39;script start&#39;</span><span class=p>)</span>
 
-<span style=color:#a6e22e>setTimeout</span>(<span style=color:#66d9ef>function</span>(){ <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#e6db74>&#39;setTimeout&#39;</span>)},<span style=color:#ae81ff>0</span>);
-<span style=color:#a6e22e>async1</span>()
+<span class=nx>setTimeout</span><span class=p>(</span><span class=kd>function</span><span class=p>(){</span> <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=s1>&#39;setTimeout&#39;</span><span class=p>)},</span><span class=mi>0</span><span class=p>);</span>
+<span class=nx>async1</span><span class=p>()</span>
 
-<span style=color:#66d9ef>new</span> Promise(<span style=color:#a6e22e>resolve</span> =&gt; {
-  <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#e6db74>&#39;Promise&#39;</span>); 
-  <span style=color:#a6e22e>resolve</span>(); <span style=color:#75715e>// undefined
-</span><span style=color:#75715e></span>}).<span style=color:#a6e22e>then</span>(() =&gt; {
-  <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#e6db74>&#39;promise1&#39;</span>) <span style=color:#75715e>//微任务
-</span><span style=color:#75715e></span>}).<span style=color:#a6e22e>then</span>(() =&gt; {
-  <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#e6db74>&#39;promise2&#39;</span>) <span style=color:#75715e>//微任务
-</span><span style=color:#75715e></span>})
-<span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#e6db74>&#39;script end&#39;</span>)
+<span class=k>new</span> <span class=nb>Promise</span><span class=p>(</span><span class=nx>resolve</span> <span class=p>=&gt;</span> <span class=p>{</span>
+  <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=s1>&#39;Promise&#39;</span><span class=p>);</span> 
+  <span class=nx>resolve</span><span class=p>();</span> <span class=c1>// undefined
+</span><span class=c1></span><span class=p>}).</span><span class=nx>then</span><span class=p>(()</span> <span class=p>=&gt;</span> <span class=p>{</span>
+  <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=s1>&#39;promise1&#39;</span><span class=p>)</span> <span class=c1>//微任务
+</span><span class=c1></span><span class=p>}).</span><span class=nx>then</span><span class=p>(()</span> <span class=p>=&gt;</span> <span class=p>{</span>
+  <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=s1>&#39;promise2&#39;</span><span class=p>)</span> <span class=c1>//微任务
+</span><span class=c1></span><span class=p>})</span>
+<span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=s1>&#39;script end&#39;</span><span class=p>)</span>
 
-<span style=color:#75715e>// script start -&gt;async1 start-&gt; async2-&gt;promise-&gt;script end-&gt;async1 end -&gt; promise1 -&gt; promise2 -&gt; setTimeout
-</span></code></pre></div><div class=highlight><pre style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-javascript data-lang=javascript><span style=color:#66d9ef>async</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>async1</span>(){
-  <span style=color:#66d9ef>await</span> <span style=color:#a6e22e>async2</span>()
-  <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#e6db74>&#39;async1 end&#39;</span>);
-}
-<span style=color:#66d9ef>async</span> <span style=color:#66d9ef>function</span> <span style=color:#a6e22e>async2</span>(){  <span style=color:#75715e>//微任务
-</span><span style=color:#75715e></span>  <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#e6db74>&#39;async2 end&#39;</span>);
-}
+<span class=c1>// script start -&gt;async1 start-&gt; async2-&gt;promise-&gt;script end-&gt;async1 end -&gt; promise1 -&gt; promise2 -&gt; setTimeout
+</span></code></pre></td></tr></table></div></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-javascript data-lang=javascript><span class=kr>async</span> <span class=kd>function</span> <span class=nx>async1</span><span class=p>(){</span>
+  <span class=kr>await</span> <span class=nx>async2</span><span class=p>()</span>
+  <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=s1>&#39;async1 end&#39;</span><span class=p>);</span>
+<span class=p>}</span>
+<span class=kr>async</span> <span class=kd>function</span> <span class=nx>async2</span><span class=p>(){</span>  <span class=c1>//微任务
+</span><span class=c1></span>  <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=s1>&#39;async2 end&#39;</span><span class=p>);</span>
+<span class=p>}</span>
 
-<span style=color:#a6e22e>async1</span>(); <span style=color:#75715e>//宏任务
-</span><span style=color:#75715e></span>
-<span style=color:#a6e22e>setTimeout</span>(<span style=color:#66d9ef>function</span>(){ <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#e6db74>&#39;setTimeout&#39;</span>)},<span style=color:#ae81ff>0</span>); <span style=color:#75715e>//宏任务
-</span><span style=color:#75715e></span>
-<span style=color:#66d9ef>new</span> Promise(<span style=color:#a6e22e>resolve</span> =&gt; {
-  <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#e6db74>&#39;Promise&#39;</span>); 
-  <span style=color:#a6e22e>resolve</span>();
-}).<span style=color:#a6e22e>then</span>(() =&gt; {
-  <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#e6db74>&#39;promise1&#39;</span>) <span style=color:#75715e>//微任务
-</span><span style=color:#75715e></span>}).<span style=color:#a6e22e>then</span>(() =&gt; {
-  <span style=color:#a6e22e>console</span>.<span style=color:#a6e22e>log</span>(<span style=color:#e6db74>&#39;promise2&#39;</span>) <span style=color:#75715e>//微任务
-</span><span style=color:#75715e></span>})
+<span class=nx>async1</span><span class=p>();</span> <span class=c1>//宏任务
+</span><span class=c1></span>
+<span class=nx>setTimeout</span><span class=p>(</span><span class=kd>function</span><span class=p>(){</span> <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=s1>&#39;setTimeout&#39;</span><span class=p>)},</span><span class=mi>0</span><span class=p>);</span> <span class=c1>//宏任务
+</span><span class=c1></span>
+<span class=k>new</span> <span class=nb>Promise</span><span class=p>(</span><span class=nx>resolve</span> <span class=p>=&gt;</span> <span class=p>{</span>
+  <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=s1>&#39;Promise&#39;</span><span class=p>);</span> 
+  <span class=nx>resolve</span><span class=p>();</span>
+<span class=p>}).</span><span class=nx>then</span><span class=p>(()</span> <span class=p>=&gt;</span> <span class=p>{</span>
+  <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=s1>&#39;promise1&#39;</span><span class=p>)</span> <span class=c1>//微任务
+</span><span class=c1></span><span class=p>}).</span><span class=nx>then</span><span class=p>(()</span> <span class=p>=&gt;</span> <span class=p>{</span>
+  <span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=s1>&#39;promise2&#39;</span><span class=p>)</span> <span class=c1>//微任务
+</span><span class=c1></span><span class=p>})</span>
 
-<span style=color:#75715e>// 我的：Promise -&gt; async1 end -&gt; async2 end -&gt; promise1 -&gt; promise2 -&gt; setTimeout
-</span><span style=color:#75715e>// 正确：async2 end -&gt; Promise -&gt; async1 end -&gt;  promise1 -&gt; promise2 -&gt; setTimeout
-</span></code></pre></div><hr><h2 id=参考>参考</h2><ul><li><a href=https://zhuanlan.zhihu.com/p/26229293>深入浅出Javascript事件循环机制</a></li><li><a href=http://www.ruanyifeng.com/blog/2014/10/event-loop.html>JavaScript 运行机制详解：再谈Event Loop</a></li><li><a href=https://juejin.cn/post/6844903577052250119>JS事件循环</a></li><li><a href=https://www.cnblogs.com/dong-xu/p/7000163.html>深入理解 JavaScript 事件循环 event loop</a></li><li>[译] <a href=https://www.cnblogs.com/dong-xu/p/7000139.html>深入理解 JavaScript 事件循环 task and microtask</a></li><li><a href=https://www.cnblogs.com/yugege/p/9598265.html>深入理解JavaScript事件循环机制</a></li><li><a href=https://zhuanlan.zhihu.com/p/87684858>【JS】深入理解事件循环,这一篇就够了</a></li><li><a href=https://developer.mozilla.org/zh-CN/docs/Web/API/HTML_DOM_API/Microtask_guide#%E4%BB%BB%E5%8A%A1_vs_%E5%BE%AE%E4%BB%BB%E5%8A%A1>在 JavaScript 中通过 queueMicrotask() 使用微任务</a></li><li><a href=https://juejin.cn/post/6844903983287549965>浏览器事件循环原理</a></li><li><a href=https://juejin.cn/post/6844903711106400264>JavaScript 异步与事件循环</a></li><li><a href=https://juejin.cn/post/6884987711074091016>事件循环机制Event loop</a></li><li><a href=https://juejin.cn/post/6844903887099412488>JavaScript 事件循环机制</a></li><li><a href=https://juejin.cn/post/6844903657264136200#heading-9>微任务、宏任务与Event-Loop</a></li></ul><hr><ul><li><a href=https://zhuanlan.zhihu.com/p/71168084>Call Stack（调用栈）是什么？</a></li><li><a href=https://developer.mozilla.org/zh-CN/docs/Glossary/Call_stack>Call stack（调用栈）</a></li><li><a href=https://www.html.cn/archives/10216>https://www.html.cn/archives/10216</a></li><li><a href=https://www.jianshu.com/p/735ee3d12a43>深入理解Javascript之Callstack&EventLoop</a></li></ul><hr><ul><li><a href="https://segmentfault.com/q/1010000023206213?utm_source=tag-newest">javascript中script整体代码属于宏任务怎么理解</a></li><li><a href=https://www.jianshu.com/p/bfc3e319a96b>https://www.jianshu.com/p/bfc3e319a96b</a>                                           </li></ul></article></section><div class="section narrow"><div class=footer-hr></div><div class=footer-container><div class=footer-text>© 2021 Zxd's Blog</div><div class=social-icon-outer><div class=social-icon-container></div></div></div></div></div><script src=/js/prism.js></script></body></html>
+<span class=c1>// 我的：Promise -&gt; async1 end -&gt; async2 end -&gt; promise1 -&gt; promise2 -&gt; setTimeout
+</span><span class=c1>// 正确：async2 end -&gt; Promise -&gt; async1 end -&gt;  promise1 -&gt; promise2 -&gt; setTimeout
+</span></code></pre></td></tr></table></div></div><hr><h2 id=参考>参考</h2><ul><li><a href=https://zhuanlan.zhihu.com/p/26229293>深入浅出Javascript事件循环机制</a></li><li><a href=http://www.ruanyifeng.com/blog/2014/10/event-loop.html>JavaScript 运行机制详解：再谈Event Loop</a></li><li><a href=https://juejin.cn/post/6844903577052250119>JS事件循环</a></li><li><a href=https://www.cnblogs.com/dong-xu/p/7000163.html>深入理解 JavaScript 事件循环 event loop</a></li><li>[译] <a href=https://www.cnblogs.com/dong-xu/p/7000139.html>深入理解 JavaScript 事件循环 task and microtask</a></li><li><a href=https://www.cnblogs.com/yugege/p/9598265.html>深入理解JavaScript事件循环机制</a></li><li><a href=https://zhuanlan.zhihu.com/p/87684858>【JS】深入理解事件循环,这一篇就够了</a></li><li><a href=https://developer.mozilla.org/zh-CN/docs/Web/API/HTML_DOM_API/Microtask_guide#%E4%BB%BB%E5%8A%A1_vs_%E5%BE%AE%E4%BB%BB%E5%8A%A1>在 JavaScript 中通过 queueMicrotask() 使用微任务</a></li><li><a href=https://juejin.cn/post/6844903983287549965>浏览器事件循环原理</a></li><li><a href=https://juejin.cn/post/6844903711106400264>JavaScript 异步与事件循环</a></li><li><a href=https://juejin.cn/post/6884987711074091016>事件循环机制Event loop</a></li><li><a href=https://juejin.cn/post/6844903887099412488>JavaScript 事件循环机制</a></li><li><a href=https://juejin.cn/post/6844903657264136200#heading-9>微任务、宏任务与Event-Loop</a></li></ul><hr><ul><li><a href=https://zhuanlan.zhihu.com/p/71168084>Call Stack（调用栈）是什么？</a></li><li><a href=https://developer.mozilla.org/zh-CN/docs/Glossary/Call_stack>Call stack（调用栈）</a></li><li><a href=https://www.html.cn/archives/10216>https://www.html.cn/archives/10216</a></li><li><a href=https://www.jianshu.com/p/735ee3d12a43>深入理解Javascript之Callstack&EventLoop</a></li></ul><hr><ul><li><a href="https://segmentfault.com/q/1010000023206213?utm_source=tag-newest">javascript中script整体代码属于宏任务怎么理解</a></li><li><a href=https://www.jianshu.com/p/bfc3e319a96b>https://www.jianshu.com/p/bfc3e319a96b</a>                                           </li></ul></div></article></div></div></main><footer id=footer class=footer><div class=copyright><span class=copyright-year>&copy;
+2017 -
+2021<span class=heart><i class="iconfont icon-heart"></i></span><span>zxd</span></span></div></footer><div class=back-to-top id=back-to-top><i class="iconfont icon-up"></i></div></div><script src=https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin=anonymous></script><script src=https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin=anonymous></script><script src=https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin=anonymous></script><script type=text/javascript src=/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js></script></body></html>
