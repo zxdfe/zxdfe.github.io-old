@@ -1,11 +1,13 @@
-<!doctype html><html lang=en><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge,chrome=1"><title>Promises/A+规范 & 实现Promises/A+ - Zxd's Blog</title><meta name=renderer content="webkit"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><meta http-equiv=cache-control content="no-transform"><meta http-equiv=cache-control content="no-siteapp"><meta name=theme-color content="#f8f5ec"><meta name=msapplication-navbutton-color content="#f8f5ec"><meta name=apple-mobile-web-app-capable content="yes"><meta name=apple-mobile-web-app-status-bar-style content="#f8f5ec"><meta name=author content="zxd"><meta name=description content="Terminology “promise” is an object or function with a then method whose behavior conforms to this specification. “thenable” is an object or function that defines a then method. “value” is any legal JavaScript value (including undefined, a thenable, or a promise). “excep"><meta name=keywords content="Hugo,theme,Zxd"><meta name=generator content="Hugo 0.81.0 with theme even"><link rel=canonical href=http://localhost:1313/post/2021-04-03-promisea+%E8%A7%84%E8%8C%83/><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=manifest href=/manifest.json><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link href=https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css rel=stylesheet><link href=/sass/main.min.f0290c84ec5043f463946c9151a58b644789a8fa40971f5251d7903cc92d6c68.css rel=stylesheet><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin=anonymous><meta property="og:title" content="Promises/A+规范 & 实现Promises/A+"><meta property="og:description" content="Terminology “promise” is an object or function with a then method whose behavior conforms to this specification. “thenable” is an object or function that defines a then method. “value” is any legal JavaScript value (including undefined, a thenable, or a promise). “excep"><meta property="og:type" content="article"><meta property="og:url" content="http://localhost:1313/post/2021-04-03-promisea+%E8%A7%84%E8%8C%83/"><meta property="article:section" content="post"><meta property="article:published_time" content="2021-04-03T20:05:13+08:00"><meta property="article:modified_time" content="2021-04-03T20:05:13+08:00"><meta itemprop=name content="Promises/A+规范 & 实现Promises/A+"><meta itemprop=description content="Terminology “promise” is an object or function with a then method whose behavior conforms to this specification. “thenable” is an object or function that defines a then method. “value” is any legal JavaScript value (including undefined, a thenable, or a promise). “excep"><meta itemprop=datePublished content="2021-04-03T20:05:13+08:00"><meta itemprop=dateModified content="2021-04-03T20:05:13+08:00"><meta itemprop=wordCount content="4272"><meta itemprop=keywords content="Promises/A+,"><meta name=twitter:card content="summary"><meta name=twitter:title content="Promises/A+规范 & 实现Promises/A+"><meta name=twitter:description content="Terminology “promise” is an object or function with a then method whose behavior conforms to this specification. “thenable” is an object or function that defines a then method. “value” is any legal JavaScript value (including undefined, a thenable, or a promise). “excep"><!--[if lte IE 9]><script src=https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js></script><![endif]--><!--[if lt IE 9]><script src=https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js></script><script src=https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js></script><![endif]--></head><body><div id=mobile-navbar class=mobile-navbar><div class=mobile-header-logo><a href=/ class=logo>zxd's blog</a></div><div class=mobile-navbar-icon><span></span><span></span><span></span></div></div><nav id=mobile-menu class="mobile-menu slideout-menu"><ul class=mobile-menu-list><a href=/><li class=mobile-menu-item>Home</li></a><a href=/post/><li class=mobile-menu-item>Archives</li></a><a href=/tags/><li class=mobile-menu-item>Tags</li></a></ul></nav><div class=container id=mobile-panel><header id=header class=header><div class=logo-wrapper><a href=/ class=logo>zxd's blog</a></div><nav class=site-navbar><ul id=menu class=menu><li class=menu-item><a class=menu-item-link href=/>Home</a></li><li class=menu-item><a class=menu-item-link href=/post/>Archives</a></li><li class=menu-item><a class=menu-item-link href=/tags/>Tags</a></li></ul></nav></header><main id=main class=main><div class=content-wrapper><div id=content class=content><article class=post><header class=post-header><h1 class=post-title>Promises/A+规范 & 实现Promises/A+</h1><div class=post-meta><span class=post-time>2021-04-03</span>
-<span class=more-meta>4272 words</span>
-<span class=more-meta>9 mins read</span></div></header><div class=post-toc id=post-toc><div class="post-toc-content always-active"><nav id=TableOfContents><ul><li><ul><li><a href=#terminology>Terminology</a></li><li><a href=#promise-states>Promise States</a></li><li><a href=#then>then</a></li><li><a href=#the-promise-resolution-procedure>The Promise Resolution Procedure</a></li><li><a href=#resolvepromise-x>[[Resolve]](promise, x)</a></li><li><a href=#notes>Notes</a></li><li><a href=#tips>Tips</a></li><li><a href=#一步步实现一个promise>一步步实现一个Promise</a></li><li><a href=#acknowledgments>Acknowledgments</a></li></ul></li></ul></nav></div></div><div class=post-content><h2 id=terminology>Terminology</h2><ol><li>“promise” is an object or function with a then method whose behavior conforms to this specification.</li><li>“thenable” is an object or function that defines a then method.</li><li>“value” is any legal JavaScript value (including undefined, a thenable, or a promise).</li><li>“exception” is a value that is thrown using the throw statement.</li><li>“reason” is a value that indicates why a promise was rejected.</li></ol><hr><ol><li><code>promise</code>是一个拥有 then⽅法的对象或者是函数，其行为遵循本规范</li><li><code>thenable</code>是一个定义了then方法的对象或者函数</li><li><code>value</code> 是任意类型的JavaScript值(包括undefined, thenabel或promise)<ol><li>是promise状态成功时的值，也就是resolve的参数</li></ol></li><li><code>exception</code> 是由 throw 抛出的异常值</li><li><code>reason</code> 是promise状态失败时的值,也就是reject的参数,表示拒绝的原因</li></ol><h2 id=promise-states>Promise States</h2><p>A promise must be in one of three states: pending, fulfilled, or rejected.</p><ol><li>When <code>pending</code>, a promise:<ol><li>may transition to either the fulfilled or rejected state.</li></ol></li><li>When <code>fulfilled</code>, a promise:<ol><li>must not transition to any other state.</li><li>must have a <code>value</code>, which <code>must not change</code>.</li></ol></li><li>When <code>rejected</code>, a promise:<ol><li>must not transition to any other state.</li><li>must have a <code>reason</code>, which <code>must not change</code>.</li></ol></li></ol><ul><li>Here, “must not change” means immutable identity (i.e. ===), but does not imply deep immutability.</li></ul><hr><p>有三种状态, 他们之间的关系</p><ol><li><p>pending</p><ol><li>初始状态,可改变</li><li>在resolve和reject前都处于这个状态</li><li>通过resolve -> fulfilled状态</li><li>通过reject -> rejected状态</li></ol></li><li><p>fulfilled</p><ol><li>最终态, 不可变</li><li>一个promise被resolve之后会变成这个状态</li><li>必须拥有一个value</li></ol></li><li><p>rejected</p><ol><li>最终态,不可变</li><li>一个promise被reject之后会变成这个状态</li><li>必须拥有reason</li></ol></li></ol><p><strong>总结:</strong></p><ul><li><code>pending -> resolve(value) -> fulfilled</code></li><li><code>pending -> reject(reason) -> rejected</code></li></ul><hr><h2 id=then>then</h2><p>A promise 必须提供一个then方法, 用来访问当前或最终的<code>value</code>或<code>reason</code>.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+<!doctype html><html lang=en><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge,chrome=1"><title>Promises/A+规范 & 实现Promises/A+ - Zxd's Blog</title><meta name=renderer content="webkit"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><meta http-equiv=cache-control content="no-transform"><meta http-equiv=cache-control content="no-siteapp"><meta name=theme-color content="#f8f5ec"><meta name=msapplication-navbutton-color content="#f8f5ec"><meta name=apple-mobile-web-app-capable content="yes"><meta name=apple-mobile-web-app-status-bar-style content="#f8f5ec"><meta name=author content="zxd"><meta name=description content="Terminology “promise” is an object or function with a then method whose behavior conforms to this specification. “thenable” is an object or function that defines a then method. “value” is any legal JavaScript value (including undefined, a thenable, or a promise). “excep"><meta name=keywords content="Hugo,theme,Zxd"><meta name=generator content="Hugo 0.81.0 with theme even"><link rel=canonical href=http://localhost:1313/post/2021-04-03-promisea+%E8%A7%84%E8%8C%83/><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=manifest href=/manifest.json><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link href=https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css rel=stylesheet><link href=/sass/main.min.f0290c84ec5043f463946c9151a58b644789a8fa40971f5251d7903cc92d6c68.css rel=stylesheet><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin=anonymous><meta property="og:title" content="Promises/A+规范 & 实现Promises/A+"><meta property="og:description" content="Terminology “promise” is an object or function with a then method whose behavior conforms to this specification. “thenable” is an object or function that defines a then method. “value” is any legal JavaScript value (including undefined, a thenable, or a promise). “excep"><meta property="og:type" content="article"><meta property="og:url" content="http://localhost:1313/post/2021-04-03-promisea+%E8%A7%84%E8%8C%83/"><meta property="article:section" content="post"><meta property="article:published_time" content="2021-04-03T20:05:13+08:00"><meta property="article:modified_time" content="2021-04-03T20:05:13+08:00"><meta itemprop=name content="Promises/A+规范 & 实现Promises/A+"><meta itemprop=description content="Terminology “promise” is an object or function with a then method whose behavior conforms to this specification. “thenable” is an object or function that defines a then method. “value” is any legal JavaScript value (including undefined, a thenable, or a promise). “excep"><meta itemprop=datePublished content="2021-04-03T20:05:13+08:00"><meta itemprop=dateModified content="2021-04-03T20:05:13+08:00"><meta itemprop=wordCount content="4964"><meta itemprop=keywords content="Promises/A+,"><meta name=twitter:card content="summary"><meta name=twitter:title content="Promises/A+规范 & 实现Promises/A+"><meta name=twitter:description content="Terminology “promise” is an object or function with a then method whose behavior conforms to this specification. “thenable” is an object or function that defines a then method. “value” is any legal JavaScript value (including undefined, a thenable, or a promise). “excep"><!--[if lte IE 9]><script src=https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js></script><![endif]--><!--[if lt IE 9]><script src=https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js></script><script src=https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js></script><![endif]--></head><body><div id=mobile-navbar class=mobile-navbar><div class=mobile-header-logo><a href=/ class=logo>zxd's blog</a></div><div class=mobile-navbar-icon><span></span><span></span><span></span></div></div><nav id=mobile-menu class="mobile-menu slideout-menu"><ul class=mobile-menu-list><a href=/><li class=mobile-menu-item>Home</li></a><a href=/post/><li class=mobile-menu-item>Archives</li></a><a href=/tags/><li class=mobile-menu-item>Tags</li></a></ul></nav><div class=container id=mobile-panel><header id=header class=header><div class=logo-wrapper><a href=/ class=logo>zxd's blog</a></div><nav class=site-navbar><ul id=menu class=menu><li class=menu-item><a class=menu-item-link href=/>Home</a></li><li class=menu-item><a class=menu-item-link href=/post/>Archives</a></li><li class=menu-item><a class=menu-item-link href=/tags/>Tags</a></li></ul></nav></header><main id=main class=main><div class=content-wrapper><div id=content class=content><article class=post><header class=post-header><h1 class=post-title>Promises/A+规范 & 实现Promises/A+</h1><div class=post-meta><span class=post-time>2021-04-03</span>
+<span class=more-meta>4964 words</span>
+<span class=more-meta>10 mins read</span></div></header><div class=post-toc id=post-toc><div class="post-toc-content always-active"><nav id=TableOfContents><ul><li><ul><li><a href=#terminology>Terminology</a></li><li><a href=#promise-states>Promise States</a></li><li><a href=#then>then</a></li><li><a href=#the-promise-resolution-procedure>The Promise Resolution Procedure</a></li><li><a href=#resolvepromise-x>[[Resolve]](promise, x)</a></li><li><a href=#notes>Notes</a></li><li><a href=#tips>Tips</a></li><li><a href=#一步步实现一个promise>一步步实现一个Promise</a></li><li><a href=#测试promisea>测试PromiseA+</a></li><li><a href=#httpsgtd-imgs-mdoss-cn-beijingaliyuncscomimgs20210405174107gif><img src=https://gtd-imgs-md.oss-cn-beijing.aliyuncs.com/imgs/20210405174107.gif alt></a></li><li><a href=#promise中api>Promise中API</a></li><li><a href=#acknowledgments>Acknowledgments</a></li></ul></li></ul></nav></div></div><div class=post-content><h2 id=terminology>Terminology</h2><ol><li>“promise” is an object or function with a then method whose behavior conforms to this specification.</li><li>“thenable” is an object or function that defines a then method.</li><li>“value” is any legal JavaScript value (including undefined, a thenable, or a promise).</li><li>“exception” is a value that is thrown using the throw statement.</li><li>“reason” is a value that indicates why a promise was rejected.</li></ol><hr><ol><li><code>promise</code>是一个拥有 then⽅法的对象或者是函数，其行为遵循本规范</li><li><code>thenable</code>是一个定义了then方法的对象或者函数</li><li><code>value</code> 是任意类型的JavaScript值(包括undefined, thenabel或promise)<ol><li>是promise状态成功时的值，也就是resolve的参数</li></ol></li><li><code>exception</code> 是由 throw 抛出的异常值</li><li><code>reason</code> 是promise状态失败时的值,也就是reject的参数,表示拒绝的原因</li></ol><h2 id=promise-states>Promise States</h2><p>A promise must be in one of three states: pending, fulfilled, or rejected.</p><ol><li>When <code>pending</code>, a promise:<ol><li>may transition to either the fulfilled or rejected state.</li></ol></li><li>When <code>fulfilled</code>, a promise:<ol><li>must not transition to any other state.</li><li>must have a <code>value</code>, which <code>must not change</code>.</li></ol></li><li>When <code>rejected</code>, a promise:<ol><li>must not transition to any other state.</li><li>must have a <code>reason</code>, which <code>must not change</code>.</li></ol></li></ol><ul><li>Here, “must not change” means immutable identity (i.e. ===), but does not imply deep immutability.</li></ul><hr><p>有三种状态, 他们之间的关系</p><ol><li><p>pending</p><ol><li>初始状态,可改变</li><li>在resolve和reject前都处于这个状态</li><li>通过resolve -> fulfilled状态</li><li>通过reject -> rejected状态</li></ol></li><li><p>fulfilled</p><ol><li>最终态, 不可变</li><li>一个promise被resolve之后会变成这个状态</li><li>必须拥有一个value</li></ol></li><li><p>rejected</p><ol><li>最终态,不可变</li><li>一个promise被reject之后会变成这个状态</li><li>必须拥有reason</li></ol></li></ol><p><strong>总结:</strong></p><ul><li><code>pending -> resolve(value) -> fulfilled</code></li><li><code>pending -> reject(reason) -> rejected</code></li></ul><hr><h2 id=then>then</h2><p>A promise 必须提供一个then方法, 用来访问当前或最终的<code>value</code>或<code>reason</code>.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
 </span></code></pre></td><td class=lntd><pre class=chroma><code class=language-js data-lang=js><span class=nx>promise</span><span class=p>.</span><span class=nx>then</span><span class=p>(</span><span class=nx>onFulfilled</span><span class=p>,</span> <span class=nx>onRejected</span><span class=p>)</span>
 </code></pre></td></tr></table></div></div><ol><li><p><code>onFulfilled</code>和<code>onRejected</code> 都是可选参数</p><ol><li>onFulfilled必须是函数类型, 如果传入的不是函数, 应该被忽略</li><li>onRejected必须是函数类型, 如果传入的不是函数, 应该被忽略</li></ol></li><li><p>如果onFulfilled是一个函数</p><ol><li>在promise状态由pending变成fulfilled之后, 应该调用onFulfilled, 参数是value.(onFulfilled执行时机?)<ul><li>换句话说,onFulfiled必须在promise is fulfilled之后调用, value值作为它的第一个参数</li></ul></li><li>在promise变成fulfilled之前, 不应该调用onFulfilled.</li><li>只能调用一次 (怎么实现只调用一次?)</li></ol></li><li><p>如果onRejected是一个函数</p><ol><li>在promise变成 rejected 时, 调用onRejected, 参数是reason.</li><li>在promise变成 rejected 之前, 不应该调用 onRejected.</li><li>只能被调用一次</li></ol></li><li><p>onFulfilled 和 onRejected 应该是微任务阶段执行. (此处参考规范)</p><ul><li>实现promise的时候, 如何去生成微任务?</li></ul></li><li><p>onFulfilled 和 onRejected 必须作为函数被调用(没有this值)</p><ul><li>must be called as functions (i.e. with no this value)</li></ul></li><li><p>同一个promise上的then方法可以被调用多次</p><ol><li>promise状态 变成 fulfilled 后, 所有相应的<code>onFulfilled</code>回调都必须按照他们原始调用then的顺序执行<ul><li>即<code>promise.then(onFulfilled, onRejected).then(onFulfilled1)</code>, 按照 .then 的顺序执行</li></ul></li><li>promise状态 变成 rejected 后, 所有相应的<code>onRejected</code>回调都必须按照他们原始调用then的顺序执行<ul><li>所以在实现的时候需要⼀个数组来存放多个<code>onRejected</code>的回调</li></ul></li></ol></li><li><p>then必须返回一个promise</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
 </span></code></pre></td><td class=lntd><pre class=chroma><code class=language-js data-lang=js><span class=kr>const</span> <span class=nx>promise2</span> <span class=o>=</span> <span class=nx>promise1</span><span class=p>.</span><span class=nx>then</span><span class=p>(</span><span class=nx>onFulfilled</span><span class=p>,</span> <span class=nx>onRejected</span><span class=p>)</span>
-</code></pre></td></tr></table></div></div><ol><li>如果<code>onFulfilled</code> 或 <code>onRejected</code> 执行结果为x(return a value x), 调用<code>[[Resolve]](promise2, x)</code><ul><li><code>[[Resolve]] -> resolvePromise方法</code></li></ul></li><li>如果 onFulfilled 或者 onRejected 执⾏时抛出异常e, promise2必须以e作为reason被rejected</li><li>如果 onFulfilled 不是一个函数,并且promise1 is fulfilled(已完成), promise2 必须用promise1的相同的value触发fulfilled</li><li>如果 onRejected 不是一个函数, 并且promise1 is rejected(被拒绝), promise2 必须用promise1的相同的reason 触发rejected</li></ol></li></ol><hr><h2 id=the-promise-resolution-procedure>The Promise Resolution Procedure</h2><p>promise处理过程是一个抽象操作，它以一个promise和一个值作为输入，我们表示为<code>[[Resolve]](promise, x)</code>.</p><p>如果<code>x</code>有<code>then</code>方法(<code>thenable</code>),并且看上去像一个Promise,<code>[[Resolve]]</code>解决程序尝试使<code>promise</code>接受<code>x</code>的状态(make promise adopt the state of x); 否则, 用<code>x</code>的值来执行<code>promise.</code> (it fulfills promise with the value x.)</p><p>这种对<code>thenables</code>的处理使得Promis的实现更具通用性: 只要暴露一个遵循Promise/A+规范的then方法即可.</p><h2 id=resolvepromise-x>[[Resolve]](promise, x)</h2><p>需要执行以下步骤:</p><ol><li>如果<code>promise</code>和<code>x</code>指向同一对象(<code>refer to the same object</code>),以<code>TypeError</code>作为reason拒绝promise.(<code>reject promise with a TypeError as the reason.</code>)</li><li>如果<code>x</code>是一个<code>promise</code>,采用它的状态:<ol><li>如果<code>x</code>处于等待状态,<code>promise</code>需保持为等待状态,直到<code>x</code>已完成或被拒绝(<code> is fulfilled or rejected</code>)</li><li>如果<code>x</code>处于执行态, 用相同的值执行<code>promise</code> (<code>If/when x is fulfilled, fulfill promise with the same value</code>)</li><li>如果<code>x</code>处于拒绝态, 用相同的reason拒绝<code>promise</code></li></ol></li><li>否则,如果<code>x</code>是一个对象或函数: (不常见)<ol><li>Let <code>then</code> be <code>x.then</code> [3.5]</li><li>如果取<code>x.then</code>的值时(retrieving)抛出异常<code>e</code>(exception e), 则以<code>e</code>为<code>reason</code>拒绝<code>promise</code></li><li>如果<code>then</code>是函数,让<code>x</code>做为<code>this</code>调用它,<code>then</code>方法传递两个回调函数作为参数,第一个参数叫做<code>resolvePromise</code>，第二个参数叫做<code>rejectPromise</code><ul><li>当<code>resolvePromise</code>以值<code>y</code>为参数被调用, 运行<code>[[Resolve]](promise, y)</code></li><li>当<code>rejectPromise</code>以拒因(reason) <code>r</code>为参数被调用时,以<code>r</code>拒绝<code>promise</code></li><li>如果 <code>resolvePromise</code> 和 <code>rejectPromise</code> 均被调⽤，或者被同⼀参数调⽤了多次，则优先采⽤⾸次调⽤并忽略其他的调⽤</li><li>如果调⽤ <code>then</code> ⽅法抛出了异常 <code>e</code><ol><li>如果 resolvePromise 或 rejectPromise 已经被调⽤，则忽略</li><li>否则, 以<code>e</code>作为reason拒绝promise (<code>reject promise with </code>e<code> as the reason.</code>)</li></ol></li></ul></li><li>如果<code>then</code>不是函数,以 <code>x</code> 为参数将 promise 变为已完成状态 (<code>fulfill promise with x</code>)</li></ol></li><li>如果<code>x</code>不是对象或函数, 以 <code>x</code> 为参数将 <code>promise</code> 变为已完成状态 (<code>fulfill promise with x</code>). - <strong>重要且常见!</strong></li></ol><p>如果<code>promise</code>用一个循环的<code>thenable链</code>解决,由于<code>[[Resolve]](promise, thenalbe)</code>的递归特性，最终将导致<code>[[Resolve]](promise, thenable)</code>被再次调用,上述算法将会导致无限递归, 鼓励(但不是必须)实现检测这种递归,并以<code>TypeError</code>作为拒绝<code>promise</code>的理由.</p><h2 id=notes>Notes</h2><p>3.5 这个过程首先存储对 x.then 的引用，然后测试该引用，然后调用该引用,从而避免对 x.then 属性的多次访问;这种预防措施对于确保访问属性的一致性非常重要，<code>访问属性的值</code>可能在检索之间(between retrievals 读取)发生变化</p><h2 id=tips>Tips</h2><p>以上, 按着我的理解, 将Promises/A+规范基本完整的翻译了一遍, 除了一些Notes注解部分未翻译, 大家可以参考规范自行翻译.
-下面, 我们来自己实现一个<code>Promises/A+</code>.</p><hr><h2 id=一步步实现一个promise>一步步实现一个Promise</h2><ol><li>const promise = new Promise() 代表 Promise是一个构造函数或者class</li><li>定义三种状态.</li><li>初始化状态</li><li>resolve 和 reject 方法</li><li>对于实例化promise时的入参处理<ol><li>入参是一个函数, 接收 resolve reject 两个参数</li><li>初始化promise的时候, 就要同步执行这个函数, 并且有任何的报错都要通过reject抛出去</li></ol></li><li>then 方法<ol><li>then 接收两个参数, onFulfilled 和 onRejected</li><li>检查并处理参数, 如果参数不是函数, 就忽略</li><li>根据当前promise的状态, 调用不用的函数</li><li>首先我们要拿到所有的回调, 新建两个数组, 分别存储成功和失败的回调, 调用then的时候, 如果还是pending就存入数组.</li><li>在status发生变化的时候, 执行回调, 用到getter setter, 监听status</li></ol></li><li>then 的返回值</li></ol><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>  1
+</code></pre></td></tr></table></div></div><ol><li>如果<code>onFulfilled</code> 或 <code>onRejected</code> 执行结果为x(return a value x), 调用<code>[[Resolve]](promise2, x)</code><ul><li><code>[[Resolve]] -> resolvePromise方法</code></li></ul></li><li>如果 onFulfilled 或者 onRejected 执⾏时抛出异常e, promise2必须以e作为reason被rejected</li><li>如果 onFulfilled 不是一个函数,并且promise1 is fulfilled(已完成), promise2 必须用promise1的相同的value触发fulfilled</li><li>如果 onRejected 不是一个函数, 并且promise1 is rejected(被拒绝), promise2 必须用promise1的相同的reason 触发rejected</li></ol></li></ol><hr><h2 id=the-promise-resolution-procedure>The Promise Resolution Procedure</h2><p>promise处理过程是一个抽象操作，它以一个promise和一个值作为输入，我们表示为<code>[[Resolve]](promise, x)</code>.</p><p>如果<code>x</code>有<code>then</code>方法(<code>thenable</code>),并且看上去像一个Promise,<code>[[Resolve]]</code>解决程序尝试使<code>promise</code>接受<code>x</code>的状态(make promise adopt the state of x); 否则, 用<code>x</code>的值来执行<code>promise.</code> (it fulfills promise with the value x.)</p><p>这种对<code>thenables</code>的处理使得Promis的实现更具通用性: 只要暴露一个遵循Promise/A+规范的then方法即可.</p><h2 id=resolvepromise-x>[[Resolve]](promise, x)</h2><p>需要执行以下步骤:</p><ol><li>如果<code>promise</code>和<code>x</code>指向同一对象(<code>refer to the same object</code>),以<code>TypeError</code>作为reason拒绝promise.(<code>reject promise with a TypeError as the reason.</code>)</li><li>如果<code>x</code>是一个<code>promise</code>,采用它的状态:<ol><li>如果<code>x</code>处于等待状态,<code>promise</code>需保持为等待状态,直到<code>x</code>已完成或被拒绝(<code> is fulfilled or rejected</code>)</li><li>如果<code>x</code>处于执行态, 用相同的值执行<code>promise</code> (<code>If/when x is fulfilled, fulfill promise with the same value</code>)</li><li>如果<code>x</code>处于拒绝态, 用相同的reason拒绝<code>promise</code></li></ol></li><li>否则,如果<code>x</code>是一个对象或函数: (不常见)<ol><li>Let <code>then</code> be <code>x.then</code> [3.5]</li><li>如果取<code>x.then</code>的值时(retrieving)抛出异常<code>e</code>(exception e), 则以<code>e</code>为<code>reason</code>拒绝<code>promise</code></li><li>如果<code>then</code>是函数,让<code>x</code>做为<code>this</code>调用它,<code>then</code>方法传递两个回调函数作为参数,第一个参数叫做<code>resolvePromise</code>，第二个参数叫做<code>rejectPromise</code><ul><li>当<code>resolvePromise</code>以值<code>y</code>为参数被调用, 运行<code>[[Resolve]](promise, y)</code></li><li>当<code>rejectPromise</code>以拒因(reason) <code>r</code>为参数被调用时,以<code>r</code>拒绝<code>promise</code></li><li>如果 <code>resolvePromise</code> 和 <code>rejectPromise</code> 均被调⽤，或者被同⼀参数调⽤了多次，则优先采⽤⾸次调⽤并忽略其他的调⽤</li><li>如果调⽤ <code>then</code> ⽅法抛出了异常 <code>e</code><ol><li>如果 resolvePromise 或 rejectPromise 已经被调⽤，则忽略</li><li>否则, 以<code>e</code>作为reason拒绝promise (<code>reject promise with </code>e<code> as the reason.</code>)</li></ol></li></ul></li><li>如果<code>then</code>不是函数,以 <code>x</code> 为参数将 promise 变为已完成状态 (<code>fulfill promise with x</code>)</li></ol></li><li>如果<code>x</code>不是对象或函数, 以 <code>x</code> 为参数将 <code>promise</code> 变为已完成状态 (<code>fulfill promise with x</code>). - <strong>重要且常见!</strong></li></ol><p>如果<code>promise</code>用一个循环的<code>thenable链</code>解决,由于<code>[[Resolve]](promise, thenalbe)</code>的递归特性，最终将导致<code>[[Resolve]](promise, thenable)</code>被再次调用,上述算法将会导致无限递归, 鼓励(但不是必须)实现检测这种递归,并以<code>TypeError</code>作为拒绝<code>promise</code>的理由.</p><h2 id=notes>Notes</h2><p>3.5 这个过程首先存储对 x.then 的引用，然后测试该引用，然后调用该引用,从而避免对 x.then 属性的多次访问;这种预防措施对于确保访问属性的一致性非常重要，<code>访问属性的值</code>可能在检索之间(between retrievals 读取)发生变化</p><h2 id=tips>Tips</h2><p>以上, 按着我的理解, 将Promises/A+规范基本整体翻译了一遍, 除了一些Notes注解部分未翻译, 大家可以参考规范自行翻译.
+下面, 我们来自己实现一个<code>Promises/A+</code>.</p><hr><h2 id=一步步实现一个promise>一步步实现一个Promise</h2><ol><li>const promise = new Promise() 代表 Promise是一个构造函数或者class</li><li>定义三种状态.</li><li>初始化状态</li><li>resolve 和 reject 方法<ol><li>这两个方法要更改status, 从pending变成fulfilled / rejected</li><li>入参分别是 value / reason</li></ol></li><li>对于实例化promise时的入参处理<ol><li>入参是一个函数, 接收 resolve reject 两个参数</li><li>初始化promise的时候, 就要同步执行这个函数, 并且有任何的报错都要通过reject抛出去</li></ol></li><li>then 方法<div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-js data-lang=js><span class=kr>const</span> <span class=nx>promise2</span> <span class=o>=</span> <span class=nx>promise1</span><span class=p>.</span><span class=nx>then</span><span class=p>(</span><span class=nx>onFulfilled</span><span class=p>,</span> <span class=nx>onRejected</span><span class=p>)</span>
+</code></pre></td></tr></table></div></div><ol><li>then 接收两个可选参数, onFulfilled 和 onRejected</li><li>检查并处理参数, 如果参数不是函数, 就忽略</li><li>根据当前promise的状态, 调用不同的函数</li><li>首先我们要拿到所有的回调, 新建两个数组, 分别存储成功和失败的回调, 调用then的时候, 如果还是pending就存入数组.</li><li>在status发生变化的时候, 执行回调, 用到getter setter, 监听status的变化, 在发生变化的时候来做对应的操作.</li></ol></li><li>then 的返回值<ol><li>如果 onFulfilled 或者 onRejected 抛出一个异常 e ，那么新的promise2必须reject e</li><li>返回值必须是一个promise</li><li>如果 onFulfilled 不是函数, 且 promise1 成功执行, 那么promise2必须返回同样的状态(成功执行)和value.</li><li>如果 onRejected 不是函数, 且promise1 拒绝执行, promise2必须返回同样的状态(拒绝)和reason.</li><li>如果 onFulfilled 或者 onRejected 返回一个值 x, 运行resolvePromise方法</li></ol></li></ol><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>  1
 </span><span class=lnt>  2
 </span><span class=lnt>  3
 </span><span class=lnt>  4
@@ -220,77 +222,56 @@
 </span><span class=lnt>213
 </span><span class=lnt>214
 </span><span class=lnt>215
-</span><span class=lnt>216
-</span><span class=lnt>217
-</span><span class=lnt>218
-</span><span class=lnt>219
-</span><span class=lnt>220
-</span><span class=lnt>221
-</span><span class=lnt>222
-</span><span class=lnt>223
-</span><span class=lnt>224
-</span><span class=lnt>225
-</span><span class=lnt>226
-</span><span class=lnt>227
-</span><span class=lnt>228
-</span><span class=lnt>229
-</span><span class=lnt>230
-</span><span class=lnt>231
-</span><span class=lnt>232
-</span><span class=lnt>233
-</span><span class=lnt>234
-</span><span class=lnt>235
-</span><span class=lnt>236
-</span><span class=lnt>237
-</span><span class=lnt>238
-</span><span class=lnt>239
-</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-js data-lang=js><span class=kr>const</span> <span class=nx>PENDING</span> <span class=o>=</span> <span class=s1>&#39;pending&#39;</span><span class=p>;</span>
-<span class=kr>const</span> <span class=nx>FULFILLED</span> <span class=o>=</span> <span class=s1>&#39;fulfilled&#39;</span><span class=p>;</span>
-<span class=kr>const</span> <span class=nx>REJECTED</span> <span class=o>=</span> <span class=s1>&#39;rejected&#39;</span><span class=p>;</span>
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-js data-lang=js><span class=kr>const</span> <span class=nx>PENDING</span> <span class=o>=</span> <span class=s1>&#39;pending&#39;</span>
+<span class=kr>const</span> <span class=nx>FULFILLED</span> <span class=o>=</span> <span class=s1>&#39;fulfilled&#39;</span>
+<span class=kr>const</span> <span class=nx>REJECTED</span> <span class=o>=</span> <span class=s1>&#39;rejected&#39;</span>
 
-<span class=kr>class</span> <span class=nx>MPromise</span> <span class=p>{</span>
+<span class=kr>class</span> <span class=nx>MyPromise</span> <span class=p>{</span>
 
-    <span class=nx>FULFILLED_CALLBACK_LIST</span> <span class=o>=</span> <span class=p>[];</span>  <span class=c1>// 实例属性
-</span><span class=c1></span>    <span class=nx>REJECTED_CALLBACK_LIST</span> <span class=o>=</span> <span class=p>[];</span>
-    <span class=nx>_status</span> <span class=o>=</span> <span class=nx>PENDING</span><span class=p>;</span>
-    <span class=nx>constructor</span><span class=p>(</span><span class=nx>fn</span><span class=p>)</span> <span class=p>{</span>
-        <span class=c1>// 初始状态为pending
-</span><span class=c1></span>        <span class=k>this</span><span class=p>.</span><span class=nx>status</span> <span class=o>=</span> <span class=nx>PENDING</span><span class=p>;</span>  <span class=c1>// 实例属性
-</span><span class=c1></span>        <span class=k>this</span><span class=p>.</span><span class=nx>value</span> <span class=o>=</span> <span class=kc>null</span><span class=p>;</span>
-        <span class=k>this</span><span class=p>.</span><span class=nx>reason</span> <span class=o>=</span> <span class=kc>null</span><span class=p>;</span>
-        <span class=k>try</span> <span class=p>{</span>
-            <span class=nx>fn</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=nx>resolve</span><span class=p>.</span><span class=nx>bind</span><span class=p>(</span><span class=k>this</span><span class=p>),</span> <span class=k>this</span><span class=p>.</span><span class=nx>reject</span><span class=p>.</span><span class=nx>bind</span><span class=p>(</span><span class=k>this</span><span class=p>));</span>
+    <span class=nx>onFulfilledCallbacks</span> <span class=o>=</span> <span class=p>[]</span> <span class=c1>// 实例属性
+</span><span class=c1></span>    <span class=nx>onRejectedCallbacks</span> <span class=o>=</span> <span class=p>[]</span>
+    <span class=c1>// _status = PENDING
+</span><span class=c1></span>    <span class=nx>constructor</span><span class=p>(</span><span class=nx>executor</span><span class=p>){</span>
+        <span class=k>this</span><span class=p>.</span><span class=nx>status</span> <span class=o>=</span> <span class=nx>PENDING</span>
+        <span class=k>this</span><span class=p>.</span><span class=nx>value</span> <span class=o>=</span> <span class=kc>undefined</span>
+        <span class=k>this</span><span class=p>.</span><span class=nx>reason</span> <span class=o>=</span> <span class=kc>undefined</span>
+        <span class=c1>// this.onFulfilledCallbacks = []  写上面和这里是一样的
+</span><span class=c1></span>        <span class=c1>// this.onRejectedCallbacks = [] // 实例属性
+</span><span class=c1></span>        <span class=k>try</span> <span class=p>{</span>
+            <span class=nx>executor</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=nx>resolve</span><span class=p>.</span><span class=nx>bind</span><span class=p>(</span><span class=k>this</span><span class=p>),</span><span class=k>this</span><span class=p>.</span><span class=nx>reject</span><span class=p>.</span><span class=nx>bind</span><span class=p>(</span><span class=k>this</span><span class=p>))</span>
         <span class=p>}</span> <span class=k>catch</span> <span class=p>(</span><span class=nx>e</span><span class=p>)</span> <span class=p>{</span>
-            <span class=k>this</span><span class=p>.</span><span class=nx>reject</span><span class=p>(</span><span class=nx>e</span><span class=p>);</span>
+            <span class=k>this</span><span class=p>.</span><span class=nx>reject</span><span class=p>(</span><span class=nx>e</span><span class=p>)</span>
         <span class=p>}</span>
     <span class=p>}</span>
 
-    <span class=nx>get</span> <span class=nx>status</span><span class=p>()</span> <span class=p>{</span>
-        <span class=k>return</span> <span class=k>this</span><span class=p>.</span><span class=nx>_status</span><span class=p>;</span>
-    <span class=p>}</span>
-
-    <span class=nx>set</span> <span class=nx>status</span><span class=p>(</span><span class=nx>newStatus</span><span class=p>)</span> <span class=p>{</span>
-        <span class=k>this</span><span class=p>.</span><span class=nx>_status</span> <span class=o>=</span> <span class=nx>newStatus</span><span class=p>;</span>
-        <span class=k>switch</span> <span class=p>(</span><span class=nx>newStatus</span><span class=p>)</span> <span class=p>{</span>
-            <span class=k>case</span> <span class=nx>FULFILLED</span><span class=o>:</span> <span class=p>{</span>
-                <span class=k>this</span><span class=p>.</span><span class=nx>FULFILLED_CALLBACK_LIST</span><span class=p>.</span><span class=nx>forEach</span><span class=p>(</span><span class=nx>callback</span> <span class=p>=&gt;</span> <span class=p>{</span>
-                    <span class=nx>callback</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=nx>value</span><span class=p>);</span>
-                <span class=p>});</span>
-                <span class=k>break</span><span class=p>;</span>
-            <span class=p>}</span>
-            <span class=k>case</span> <span class=nx>REJECTED</span><span class=o>:</span> <span class=p>{</span>
-                <span class=k>this</span><span class=p>.</span><span class=nx>REJECTED_CALLBACK_LIST</span><span class=p>.</span><span class=nx>forEach</span><span class=p>(</span><span class=nx>callback</span> <span class=p>=&gt;</span> <span class=p>{</span>
-                    <span class=nx>callback</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=nx>reason</span><span class=p>);</span>
-                <span class=p>});</span>
-                <span class=k>break</span><span class=p>;</span>
-            <span class=p>}</span>
-        <span class=p>}</span>
-    <span class=p>}</span>
-
+    <span class=c1>// 利用getter, setter监听status改变  其实可以不用这里监听
+</span><span class=c1></span>    <span class=c1>// get status() {
+</span><span class=c1></span>    <span class=c1>//     return this._status
+</span><span class=c1></span>    <span class=c1>// }
+</span><span class=c1></span>
+    <span class=c1>// set status(newStatus) {
+</span><span class=c1></span>    <span class=c1>//     this._status = newStatus
+</span><span class=c1></span>    <span class=c1>//     switch (newStatus) {
+</span><span class=c1></span>    <span class=c1>//         case FULFILLED: {
+</span><span class=c1></span>    <span class=c1>//             this.FULFILLED_CALLBACK_LIST.forEach(callback =&gt; {
+</span><span class=c1></span>    <span class=c1>//                 callback(this.value);
+</span><span class=c1></span>    <span class=c1>//             });
+</span><span class=c1></span>    <span class=c1>//             break;
+</span><span class=c1></span>    <span class=c1>//         }
+</span><span class=c1></span>    <span class=c1>//         case REJECTED: {
+</span><span class=c1></span>    <span class=c1>//             this.REJECTED_CALLBACK_LIST.forEach(callback =&gt; {
+</span><span class=c1></span>    <span class=c1>//                 callback(this.reason);
+</span><span class=c1></span>    <span class=c1>//             });
+</span><span class=c1></span>    <span class=c1>//             break;
+</span><span class=c1></span>    <span class=c1>//         }
+</span><span class=c1></span>    <span class=c1>//     }
+</span><span class=c1></span>    <span class=c1>// }
+</span><span class=c1></span>
     <span class=nx>resolve</span><span class=p>(</span><span class=nx>value</span><span class=p>)</span> <span class=p>{</span>
         <span class=k>if</span> <span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=nx>status</span> <span class=o>===</span> <span class=nx>PENDING</span><span class=p>)</span> <span class=p>{</span>
             <span class=k>this</span><span class=p>.</span><span class=nx>value</span> <span class=o>=</span> <span class=nx>value</span><span class=p>;</span>
             <span class=k>this</span><span class=p>.</span><span class=nx>status</span> <span class=o>=</span> <span class=nx>FULFILLED</span><span class=p>;</span>
+            <span class=k>this</span><span class=p>.</span><span class=nx>onFulfilledCallbacks</span><span class=p>.</span><span class=nx>forEach</span><span class=p>(</span><span class=nx>cb</span><span class=p>=&gt;</span><span class=nx>cb</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=nx>value</span><span class=p>));</span>
         <span class=p>}</span>
     <span class=p>}</span>
 
@@ -298,192 +279,217 @@
         <span class=k>if</span> <span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=nx>status</span> <span class=o>===</span> <span class=nx>PENDING</span><span class=p>)</span> <span class=p>{</span>
             <span class=k>this</span><span class=p>.</span><span class=nx>reason</span> <span class=o>=</span> <span class=nx>reason</span><span class=p>;</span>
             <span class=k>this</span><span class=p>.</span><span class=nx>status</span> <span class=o>=</span> <span class=nx>REJECTED</span><span class=p>;</span>
+            <span class=k>this</span><span class=p>.</span><span class=nx>onRejectedCallbacks</span><span class=p>.</span><span class=nx>forEach</span><span class=p>(</span><span class=nx>cb</span><span class=p>=&gt;</span><span class=nx>cb</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=nx>reason</span><span class=p>));</span>
         <span class=p>}</span>
     <span class=p>}</span>
 
     <span class=nx>then</span><span class=p>(</span><span class=nx>onFulfilled</span><span class=p>,</span> <span class=nx>onRejected</span><span class=p>)</span> <span class=p>{</span>
-        <span class=kr>const</span> <span class=nx>fulFilledFn</span> <span class=o>=</span> <span class=k>this</span><span class=p>.</span><span class=nx>isFunction</span><span class=p>(</span><span class=nx>onFulfilled</span><span class=p>)</span> <span class=o>?</span> <span class=nx>onFulfilled</span> <span class=o>:</span> <span class=p>(</span><span class=nx>value</span><span class=p>)</span> <span class=p>=&gt;</span> <span class=p>{</span>
-            <span class=k>return</span> <span class=nx>value</span><span class=p>;</span>
+        <span class=kr>const</span> <span class=nx>realOnFulfilled</span> <span class=o>=</span> <span class=k>this</span><span class=p>.</span><span class=nx>isFunction</span><span class=p>(</span><span class=nx>onFulfilled</span><span class=p>)</span> <span class=o>?</span> <span class=nx>onFulfilled</span> <span class=o>:</span> <span class=nx>value</span> <span class=p>=&gt;</span> <span class=nx>value</span>
+        <span class=kr>const</span> <span class=nx>realOnRejected</span> <span class=o>=</span> <span class=k>this</span><span class=p>.</span><span class=nx>isFunction</span><span class=p>(</span><span class=nx>onRejected</span><span class=p>)</span> <span class=o>?</span> <span class=nx>onRejected</span> <span class=o>:</span> <span class=nx>reason</span> <span class=p>=&gt;</span> <span class=p>{</span><span class=k>throw</span> <span class=nx>reason</span><span class=p>}</span>
+        <span class=c1>// 为了链式调用这里直接创建一个 MyPromise，并在后面 return 出去
+</span><span class=c1></span>        <span class=kr>const</span> <span class=nx>promise2</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>MyPromise</span><span class=p>((</span><span class=nx>resolve</span><span class=p>,</span><span class=nx>reject</span><span class=p>)=&gt;{</span>
+             <span class=c1>// fulfilled处理
+</span><span class=c1></span>             <span class=kr>const</span> <span class=nx>fulfilledMicrotask</span> <span class=o>=</span> <span class=p>()</span> <span class=p>=&gt;</span> <span class=p>{</span>
+                 <span class=c1>// 创建一个微任务等待 promise2 完成初始化
+</span><span class=c1></span>                 <span class=nx>queueMicrotask</span><span class=p>(()</span> <span class=p>=&gt;</span> <span class=p>{</span>
+                     <span class=k>try</span> <span class=p>{</span>
+                         <span class=c1>// 获取成功回调函数的执行结果
+</span><span class=c1></span>                         <span class=kr>const</span> <span class=nx>x</span> <span class=o>=</span> <span class=nx>realOnFulfilled</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=nx>value</span><span class=p>);</span>
+                         <span class=c1>// 传入 resolvePromise 集中处理
+</span><span class=c1></span>                         <span class=k>this</span><span class=p>.</span><span class=nx>resolvePromise</span><span class=p>(</span><span class=nx>promise2</span><span class=p>,</span> <span class=nx>x</span><span class=p>,</span> <span class=nx>resolve</span><span class=p>,</span> <span class=nx>reject</span><span class=p>);</span>
+                     <span class=p>}</span> <span class=k>catch</span> <span class=p>(</span><span class=nx>e</span><span class=p>)</span> <span class=p>{</span>
+                         <span class=nx>reject</span><span class=p>(</span><span class=nx>e</span><span class=p>)</span>
+                     <span class=p>}</span>
+                 <span class=p>})</span>
+             <span class=p>}</span>
+             <span class=c1>// rejected处理
+</span><span class=c1></span>             <span class=kr>const</span> <span class=nx>rejectedMicrotask</span> <span class=o>=</span> <span class=p>()</span> <span class=p>=&gt;</span> <span class=p>{</span>
+                 <span class=nx>queueMicrotask</span><span class=p>(()</span> <span class=p>=&gt;</span> <span class=p>{</span>
+                     <span class=k>try</span> <span class=p>{</span>
+                         <span class=c1>// 调用失败回调，并且把原因返回
+</span><span class=c1></span>                         <span class=kr>const</span> <span class=nx>x</span> <span class=o>=</span> <span class=nx>realOnRejected</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=nx>reason</span><span class=p>);</span>
+                         <span class=k>this</span><span class=p>.</span><span class=nx>resolvePromise</span><span class=p>(</span><span class=nx>promise2</span><span class=p>,</span> <span class=nx>x</span><span class=p>,</span> <span class=nx>resolve</span><span class=p>,</span> <span class=nx>reject</span><span class=p>);</span>
+                     <span class=p>}</span> <span class=k>catch</span> <span class=p>(</span><span class=nx>e</span><span class=p>)</span> <span class=p>{</span>
+                         <span class=nx>reject</span><span class=p>(</span><span class=nx>e</span><span class=p>);</span>
+                     <span class=p>}</span>
+                 <span class=p>})</span>
+             <span class=p>}</span>
+             <span class=c1>// 判断状态
+</span><span class=c1></span>             <span class=k>switch</span> <span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=nx>status</span><span class=p>)</span> <span class=p>{</span>
+                 <span class=k>case</span> <span class=nx>FULFILLED</span><span class=o>:</span> <span class=p>{</span>
+                     <span class=nx>fulfilledMicrotask</span><span class=p>();</span><span class=k>break</span><span class=p>;</span>
+                 <span class=p>}</span>
+                 <span class=k>case</span> <span class=nx>REJECTED</span><span class=o>:</span> <span class=p>{</span>
+                     <span class=nx>rejectedMicrotask</span><span class=p>();</span><span class=k>break</span><span class=p>;</span>
+                 <span class=p>}</span>
+                 <span class=k>case</span> <span class=nx>PENDING</span><span class=o>:</span> <span class=p>{</span>
+                     <span class=k>this</span><span class=p>.</span><span class=nx>onFulfilledCallbacks</span><span class=p>.</span><span class=nx>push</span><span class=p>(</span><span class=nx>fulfilledMicrotask</span><span class=p>)</span>
+                     <span class=k>this</span><span class=p>.</span><span class=nx>onRejectedCallbacks</span><span class=p>.</span><span class=nx>push</span><span class=p>(</span><span class=nx>rejectedMicrotask</span><span class=p>)</span>
+                 <span class=p>}</span>
+             <span class=p>}</span>
+             
+         <span class=p>})</span>
+         <span class=c1>// then 返回promise2 实现链式调用
+</span><span class=c1></span>         <span class=k>return</span> <span class=nx>promise2</span>
+    <span class=p>}</span>  <span class=c1>// end then
+</span><span class=c1></span>
+    <span class=nx>resolvePromise</span><span class=p>(</span><span class=nx>promise2</span><span class=p>,</span> <span class=nx>x</span><span class=p>,</span> <span class=nx>resolve</span><span class=p>,</span> <span class=nx>reject</span><span class=p>){</span>
+        <span class=cm>/* 2.3.1 */</span>
+        <span class=k>if</span> <span class=p>(</span><span class=nx>promise2</span> <span class=o>===</span> <span class=nx>x</span><span class=p>)</span> <span class=p>{</span>
+            <span class=k>return</span> <span class=nx>reject</span><span class=p>(</span><span class=k>new</span> <span class=nx>TypeError</span><span class=p>(</span><span class=s1>&#39;Chaining cycle detected for promise #&lt;Promise&gt;&#39;</span><span class=p>));</span>
         <span class=p>}</span>
-        <span class=kr>const</span> <span class=nx>rejectedFn</span> <span class=o>=</span> <span class=k>this</span><span class=p>.</span><span class=nx>isFunction</span><span class=p>(</span><span class=nx>onRejected</span><span class=p>)</span> <span class=o>?</span> <span class=nx>onRejected</span> <span class=o>:</span> <span class=p>(</span><span class=nx>reason</span><span class=p>)</span> <span class=p>=&gt;</span> <span class=p>{</span>
-            <span class=k>throw</span> <span class=nx>reason</span><span class=p>;</span>
-        <span class=p>};</span>
-
-        <span class=kr>const</span> <span class=nx>fulFilledFnWithCatch</span> <span class=o>=</span> <span class=p>(</span><span class=nx>resolve</span><span class=p>,</span> <span class=nx>reject</span><span class=p>,</span> <span class=nx>newPromise</span><span class=p>)</span> <span class=p>=&gt;</span> <span class=p>{</span>
-            <span class=nx>queueMicrotask</span><span class=p>(()</span> <span class=p>=&gt;</span> <span class=p>{</span>
-                <span class=k>try</span> <span class=p>{</span>
-                    <span class=k>if</span> <span class=p>(</span><span class=o>!</span><span class=k>this</span><span class=p>.</span><span class=nx>isFunction</span><span class=p>(</span><span class=nx>onFulfilled</span><span class=p>))</span> <span class=p>{</span>
-                        <span class=nx>resolve</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=nx>value</span><span class=p>);</span>
-                    <span class=p>}</span> <span class=k>else</span> <span class=p>{</span>
-                        <span class=kr>const</span> <span class=nx>x</span> <span class=o>=</span> <span class=nx>fulFilledFn</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=nx>value</span><span class=p>);</span>
-                        <span class=k>this</span><span class=p>.</span><span class=nx>resolvePromise</span><span class=p>(</span><span class=nx>newPromise</span><span class=p>,</span> <span class=nx>x</span><span class=p>,</span> <span class=nx>resolve</span><span class=p>,</span> <span class=nx>reject</span><span class=p>);</span>
-                    <span class=p>}</span>
-                <span class=p>}</span> <span class=k>catch</span> <span class=p>(</span><span class=nx>e</span><span class=p>)</span> <span class=p>{</span>
-                    <span class=nx>reject</span><span class=p>(</span><span class=nx>e</span><span class=p>)</span>
-                <span class=p>}</span>
-            <span class=p>})</span>
-        <span class=p>};</span>
-
-        <span class=kr>const</span> <span class=nx>rejectedFnWithCatch</span> <span class=o>=</span> <span class=p>(</span><span class=nx>resolve</span><span class=p>,</span> <span class=nx>reject</span><span class=p>,</span> <span class=nx>newPromise</span><span class=p>)</span> <span class=p>=&gt;</span> <span class=p>{</span>
-            <span class=nx>queueMicrotask</span><span class=p>(()</span> <span class=p>=&gt;</span> <span class=p>{</span>
-                <span class=k>try</span> <span class=p>{</span>
-                    <span class=k>if</span> <span class=p>(</span><span class=o>!</span><span class=k>this</span><span class=p>.</span><span class=nx>isFunction</span><span class=p>(</span><span class=nx>onRejected</span><span class=p>))</span> <span class=p>{</span>
-                        <span class=nx>reject</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=nx>reason</span><span class=p>);</span>
-                    <span class=p>}</span> <span class=k>else</span> <span class=p>{</span>
-                        <span class=kr>const</span> <span class=nx>x</span> <span class=o>=</span> <span class=nx>rejectedFn</span><span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=nx>reason</span><span class=p>);</span>
-                        <span class=k>this</span><span class=p>.</span><span class=nx>resolvePromise</span><span class=p>(</span><span class=nx>newPromise</span><span class=p>,</span> <span class=nx>x</span><span class=p>,</span> <span class=nx>resolve</span><span class=p>,</span> <span class=nx>reject</span><span class=p>);</span>
-                    <span class=p>}</span>
-                <span class=p>}</span> <span class=k>catch</span> <span class=p>(</span><span class=nx>e</span><span class=p>)</span> <span class=p>{</span>
-                    <span class=nx>reject</span><span class=p>(</span><span class=nx>e</span><span class=p>);</span>
-                <span class=p>}</span>
-            <span class=p>})</span>
-        <span class=p>}</span>
-
-        <span class=k>switch</span> <span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=nx>status</span><span class=p>)</span> <span class=p>{</span>
-            <span class=k>case</span> <span class=nx>FULFILLED</span><span class=o>:</span> <span class=p>{</span>
-                <span class=kr>const</span> <span class=nx>newPromise</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>MPromise</span><span class=p>((</span><span class=nx>resolve</span><span class=p>,</span> <span class=nx>reject</span><span class=p>)</span> <span class=p>=&gt;</span> <span class=nx>fulFilledFnWithCatch</span><span class=p>(</span><span class=nx>resolve</span><span class=p>,</span> <span class=nx>reject</span><span class=p>,</span> <span class=nx>newPromise</span><span class=p>));</span>
-                <span class=k>return</span> <span class=nx>newPromise</span><span class=p>;</span>
-            <span class=p>}</span>
-            <span class=k>case</span> <span class=nx>REJECTED</span><span class=o>:</span> <span class=p>{</span>
-                <span class=kr>const</span> <span class=nx>newPromise</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>MPromise</span><span class=p>((</span><span class=nx>resolve</span><span class=p>,</span> <span class=nx>reject</span><span class=p>)</span> <span class=p>=&gt;</span> <span class=nx>rejectedFnWithCatch</span><span class=p>(</span><span class=nx>resolve</span><span class=p>,</span> <span class=nx>reject</span><span class=p>,</span> <span class=nx>newPromise</span><span class=p>));</span>
-                <span class=k>return</span> <span class=nx>newPromise</span><span class=p>;</span>
-            <span class=p>}</span>
-            <span class=k>case</span> <span class=nx>PENDING</span><span class=o>:</span> <span class=p>{</span>
-                <span class=kr>const</span> <span class=nx>newPromise</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>MPromise</span><span class=p>((</span><span class=nx>resolve</span><span class=p>,</span> <span class=nx>reject</span><span class=p>)</span> <span class=p>=&gt;</span> <span class=p>{</span>
-                    <span class=k>this</span><span class=p>.</span><span class=nx>FULFILLED_CALLBACK_LIST</span><span class=p>.</span><span class=nx>push</span><span class=p>(()</span> <span class=p>=&gt;</span> <span class=nx>fulFilledFnWithCatch</span><span class=p>(</span><span class=nx>resolve</span><span class=p>,</span> <span class=nx>reject</span><span class=p>,</span> <span class=nx>newPromise</span><span class=p>));</span>
-                    <span class=k>this</span><span class=p>.</span><span class=nx>REJECTED_CALLBACK_LIST</span><span class=p>.</span><span class=nx>push</span><span class=p>(()</span> <span class=p>=&gt;</span> <span class=nx>rejectedFnWithCatch</span><span class=p>(</span><span class=nx>resolve</span><span class=p>,</span> <span class=nx>reject</span><span class=p>,</span> <span class=nx>newPromise</span><span class=p>));</span>
-                <span class=p>});</span>
-                <span class=k>return</span> <span class=nx>newPromise</span><span class=p>;</span>
-            <span class=p>}</span>
-        <span class=p>}</span>
-    <span class=p>}</span>
-
-    <span class=nx>resolvePromise</span><span class=p>(</span><span class=nx>newPromise</span><span class=p>,</span> <span class=nx>x</span><span class=p>,</span> <span class=nx>resolve</span><span class=p>,</span> <span class=nx>reject</span><span class=p>)</span> <span class=p>{</span>
-        <span class=c1>// 如果 newPromise 和 x 指向同一对象，以 TypeError 为据因拒绝执行 newPromise
-</span><span class=c1></span>        <span class=c1>// 这是为了防止死循环
-</span><span class=c1></span>        <span class=k>if</span> <span class=p>(</span><span class=nx>newPromise</span> <span class=o>===</span> <span class=nx>x</span><span class=p>)</span> <span class=p>{</span>
-            <span class=k>return</span> <span class=nx>reject</span><span class=p>(</span><span class=k>new</span> <span class=nx>TypeError</span><span class=p>(</span><span class=s1>&#39;The promise and the return value are the same&#39;</span><span class=p>));</span>
-        <span class=p>}</span>
-
-        <span class=k>if</span> <span class=p>(</span><span class=nx>x</span> <span class=k>instanceof</span> <span class=nx>MPromise</span><span class=p>)</span> <span class=p>{</span>
+        <span class=cm>/* 2.3.2 */</span>
+        <span class=k>if</span> <span class=p>(</span><span class=nx>x</span> <span class=k>instanceof</span> <span class=nx>MyPromise</span><span class=p>)</span> <span class=p>{</span>
             <span class=c1>// 如果 x 为 Promise ，则使 newPromise 接受 x 的状态
 </span><span class=c1></span>            <span class=c1>// 也就是继续执行x，如果执行的时候拿到一个y，还要继续解析y
 </span><span class=c1></span>            <span class=nx>x</span><span class=p>.</span><span class=nx>then</span><span class=p>((</span><span class=nx>y</span><span class=p>)</span> <span class=p>=&gt;</span> <span class=p>{</span>
-                <span class=nx>resolvePromise</span><span class=p>(</span><span class=nx>newPromise</span><span class=p>,</span> <span class=nx>y</span><span class=p>,</span> <span class=nx>resolve</span><span class=p>,</span> <span class=nx>reject</span><span class=p>);</span>
+                <span class=k>this</span><span class=p>.</span><span class=nx>resolvePromise</span><span class=p>(</span><span class=nx>promise2</span><span class=p>,</span> <span class=nx>y</span><span class=p>,</span> <span class=nx>resolve</span><span class=p>,</span> <span class=nx>reject</span><span class=p>);</span>
             <span class=p>},</span> <span class=nx>reject</span><span class=p>);</span>
-        <span class=p>}</span> <span class=k>else</span> <span class=k>if</span> <span class=p>(</span><span class=k>typeof</span> <span class=nx>x</span> <span class=o>===</span> <span class=s1>&#39;object&#39;</span> <span class=o>||</span> <span class=k>this</span><span class=p>.</span><span class=nx>isFunction</span><span class=p>(</span><span class=nx>x</span><span class=p>))</span> <span class=p>{</span>
-            <span class=c1>// 如果 x 为对象或者函数
-</span><span class=c1></span>            <span class=k>if</span> <span class=p>(</span><span class=nx>x</span> <span class=o>===</span> <span class=kc>null</span><span class=p>)</span> <span class=p>{</span>
-                <span class=c1>// null也会被判断为对象
-</span><span class=c1></span>                <span class=k>return</span> <span class=nx>resolve</span><span class=p>(</span><span class=nx>x</span><span class=p>);</span>
-            <span class=p>}</span>
+        <span class=p>}</span>
+        <span class=cm>/* 2.3.3 */</span>
+        <span class=k>if</span> <span class=p>(</span><span class=nx>x</span><span class=o>!=</span><span class=kc>null</span><span class=o>&amp;&amp;</span><span class=p>(</span><span class=k>typeof</span> <span class=nx>x</span> <span class=o>===</span> <span class=s1>&#39;object&#39;</span> <span class=o>||</span> <span class=k>typeof</span> <span class=nx>x</span> <span class=o>===</span> <span class=s1>&#39;function&#39;</span><span class=p>))</span> <span class=p>{</span>  
 
             <span class=kd>let</span> <span class=nx>then</span> <span class=o>=</span> <span class=kc>null</span><span class=p>;</span>
-
             <span class=k>try</span> <span class=p>{</span>
-                <span class=c1>// 把 x.then 赋值给 then 
-</span><span class=c1></span>                <span class=nx>then</span> <span class=o>=</span> <span class=nx>x</span><span class=p>.</span><span class=nx>then</span><span class=p>;</span>
-            <span class=p>}</span> <span class=k>catch</span> <span class=p>(</span><span class=nx>error</span><span class=p>)</span> <span class=p>{</span>
-                <span class=c1>// 如果取 x.then 的值时抛出错误 e ，则以 e 为据因拒绝 promise
-</span><span class=c1></span>                <span class=k>return</span> <span class=nx>reject</span><span class=p>(</span><span class=nx>error</span><span class=p>);</span>
+                <span class=cm>/* 2.3.3.1 */</span>
+                <span class=nx>then</span> <span class=o>=</span> <span class=nx>x</span><span class=p>.</span><span class=nx>then</span><span class=p>;</span> <span class=c1>// 把 x.then 赋值给 then
+</span><span class=c1></span>            <span class=p>}</span> <span class=k>catch</span> <span class=p>(</span><span class=nx>e</span><span class=p>)</span> <span class=p>{</span>
+                <span class=cm>/* 2.3.3.2 */</span>
+                <span class=k>return</span> <span class=nx>reject</span><span class=p>(</span><span class=nx>e</span><span class=p>);</span>
             <span class=p>}</span>
-
-            <span class=c1>// 如果 then 是函数
-</span><span class=c1></span>            <span class=k>if</span> <span class=p>(</span><span class=k>this</span><span class=p>.</span><span class=nx>isFunction</span><span class=p>(</span><span class=nx>then</span><span class=p>))</span> <span class=p>{</span>
-                <span class=kd>let</span> <span class=nx>called</span> <span class=o>=</span> <span class=kc>false</span><span class=p>;</span>
-                <span class=c1>// 将 x 作为函数的作用域 this 调用
+    
+            <span class=cm>/* 2.3.3.3 */</span>
+            <span class=k>if</span> <span class=p>(</span><span class=k>typeof</span> <span class=nx>then</span> <span class=o>===</span> <span class=s1>&#39;function&#39;</span><span class=p>)</span> <span class=p>{</span>
+                <span class=kd>let</span> <span class=nx>called</span> <span class=o>=</span> <span class=kc>false</span><span class=p>;</span> <span class=c1>// 标记是否调用过
+</span><span class=c1></span>                <span class=c1>// 将 x 作为函数的作用域 this 调用
 </span><span class=c1></span>                <span class=c1>// 传递两个回调函数作为参数，第一个参数叫做 resolvePromise ，第二个参数叫做 rejectPromise
 </span><span class=c1></span>                <span class=k>try</span> <span class=p>{</span>
                     <span class=nx>then</span><span class=p>.</span><span class=nx>call</span><span class=p>(</span>
                         <span class=nx>x</span><span class=p>,</span>
                         <span class=c1>// 如果 resolvePromise 以值 y 为参数被调用，则运行 resolvePromise
 </span><span class=c1></span>                        <span class=p>(</span><span class=nx>y</span><span class=p>)</span> <span class=p>=&gt;</span> <span class=p>{</span>
+                            <span class=cm>/* 2.3.3.3.1 */</span> 
                             <span class=c1>// 需要有一个变量called来保证只调用一次.
 </span><span class=c1></span>                            <span class=k>if</span> <span class=p>(</span><span class=nx>called</span><span class=p>)</span> <span class=k>return</span><span class=p>;</span>
-                            <span class=nx>called</span> <span class=o>=</span> <span class=kc>true</span><span class=p>;</span>
-                            <span class=k>this</span><span class=p>.</span><span class=nx>resolvePromise</span><span class=p>(</span><span class=nx>promise</span><span class=p>,</span> <span class=nx>y</span><span class=p>,</span> <span class=nx>resolve</span><span class=p>,</span> <span class=nx>reject</span><span class=p>);</span>
+                            <span class=nx>called</span> <span class=o>=</span> <span class=kc>true</span><span class=p>;</span> <span class=cm>/* 2.3.3.3.3 */</span> 
+                            <span class=k>this</span><span class=p>.</span><span class=nx>resolvePromise</span><span class=p>(</span><span class=nx>promise2</span><span class=p>,</span> <span class=nx>y</span><span class=p>,</span> <span class=nx>resolve</span><span class=p>,</span> <span class=nx>reject</span><span class=p>);</span>
                         <span class=p>},</span>
                         <span class=c1>// 如果 rejectPromise 以据因 r 为参数被调用，则以据因 r 拒绝 promise
 </span><span class=c1></span>                        <span class=p>(</span><span class=nx>r</span><span class=p>)</span> <span class=p>=&gt;</span> <span class=p>{</span>
+                            <span class=cm>/* 2.3.3.3.2 */</span> 
                             <span class=k>if</span> <span class=p>(</span><span class=nx>called</span><span class=p>)</span> <span class=k>return</span><span class=p>;</span>
-                            <span class=nx>called</span> <span class=o>=</span> <span class=kc>true</span><span class=p>;</span>
+                            <span class=nx>called</span> <span class=o>=</span> <span class=kc>true</span><span class=p>;</span> <span class=cm>/* 2.3.3.3.3 */</span> 
                             <span class=nx>reject</span><span class=p>(</span><span class=nx>r</span><span class=p>);</span>
-                        <span class=p>});</span>
-                <span class=p>}</span> <span class=k>catch</span> <span class=p>(</span><span class=nx>error</span><span class=p>)</span> <span class=p>{</span>
+                        <span class=p>})</span>
+                <span class=cm>/* 2.3.3.3.4 */</span>     
+                <span class=p>}</span> <span class=k>catch</span> <span class=p>(</span><span class=nx>e</span><span class=p>)</span> <span class=p>{</span>
                     <span class=c1>// 如果调用 then 方法抛出了异常 e：
 </span><span class=c1></span>                    <span class=k>if</span> <span class=p>(</span><span class=nx>called</span><span class=p>)</span> <span class=k>return</span><span class=p>;</span>
-
                     <span class=c1>// 否则以 e 为据因拒绝 promise
-</span><span class=c1></span>                    <span class=nx>reject</span><span class=p>(</span><span class=nx>error</span><span class=p>);</span>
+</span><span class=c1></span>                    <span class=nx>reject</span><span class=p>(</span><span class=nx>e</span><span class=p>);</span>
                 <span class=p>}</span>
             <span class=p>}</span> <span class=k>else</span> <span class=p>{</span>
+                <span class=cm>/* 2.3.3.4*/</span>
                 <span class=c1>// 如果 then 不是函数，以 x 为参数执行 promise
 </span><span class=c1></span>                <span class=nx>resolve</span><span class=p>(</span><span class=nx>x</span><span class=p>);</span>
             <span class=p>}</span>
-        <span class=p>}</span> <span class=k>else</span> <span class=p>{</span>
+        <span class=p>}</span>
+        <span class=cm>/* 2.3.4 */</span>
+        <span class=k>if</span> <span class=p>(</span><span class=k>typeof</span> <span class=nx>x</span> <span class=o>!==</span> <span class=s1>&#39;object&#39;</span> <span class=o>&amp;&amp;</span> <span class=k>typeof</span> <span class=nx>x</span> <span class=o>!==</span><span class=s1>&#39;function&#39;</span> <span class=o>||</span> <span class=nx>x</span> <span class=o>===</span> <span class=kc>null</span><span class=p>){</span>
             <span class=c1>// 如果 x 不为对象或者函数，以 x 为参数执行 promise
-</span><span class=c1></span>            <span class=nx>resolve</span><span class=p>(</span><span class=nx>x</span><span class=p>);</span>
+</span><span class=c1></span>            <span class=nx>resolve</span><span class=p>(</span><span class=nx>x</span><span class=p>)</span>
         <span class=p>}</span>
-    <span class=p>}</span>
-
-    <span class=k>catch</span> <span class=p>(</span><span class=nx>onRejected</span><span class=p>)</span> <span class=p>{</span>
-        <span class=k>return</span> <span class=k>this</span><span class=p>.</span><span class=nx>then</span><span class=p>(</span><span class=kc>null</span><span class=p>,</span> <span class=nx>onRejected</span><span class=p>);</span>
-    <span class=p>}</span>
-
-    <span class=nx>isFunction</span><span class=p>(</span><span class=nx>param</span><span class=p>)</span> <span class=p>{</span>
-        <span class=k>return</span> <span class=k>typeof</span> <span class=nx>param</span> <span class=o>===</span> <span class=s1>&#39;function&#39;</span><span class=p>;</span>
-    <span class=p>}</span>
-
-    <span class=kr>static</span> <span class=nx>resolve</span><span class=p>(</span><span class=nx>value</span><span class=p>)</span> <span class=p>{</span>
-        <span class=k>if</span> <span class=p>(</span><span class=nx>value</span> <span class=k>instanceof</span> <span class=nx>MPromise</span><span class=p>)</span> <span class=p>{</span>
-            <span class=k>return</span> <span class=nx>value</span><span class=p>;</span>
+    <span class=p>}</span> 
+    <span class=c1>// resolve 静态方法
+</span><span class=c1></span>    <span class=kr>static</span> <span class=nx>resolve</span> <span class=p>(</span><span class=nx>parameter</span><span class=p>)</span> <span class=p>{</span>
+        <span class=c1>// 如果传入 MyPromise 就直接返回
+</span><span class=c1></span>        <span class=k>if</span> <span class=p>(</span><span class=nx>parameter</span> <span class=k>instanceof</span> <span class=nx>MyPromise</span><span class=p>)</span> <span class=p>{</span>
+            <span class=k>return</span> <span class=nx>parameter</span>
         <span class=p>}</span>
 
-        <span class=k>return</span> <span class=k>new</span> <span class=nx>MPromise</span><span class=p>((</span><span class=nx>resolve</span><span class=p>)</span> <span class=p>=&gt;</span> <span class=p>{</span>
-            <span class=nx>resolve</span><span class=p>(</span><span class=nx>value</span><span class=p>);</span>
-        <span class=p>});</span>
+        <span class=c1>// 转成常规方式
+</span><span class=c1></span>        <span class=k>return</span> <span class=k>new</span> <span class=nx>MyPromise</span><span class=p>(</span><span class=nx>resolve</span> <span class=p>=&gt;</span>  <span class=p>{</span>
+            <span class=nx>resolve</span><span class=p>(</span><span class=nx>parameter</span><span class=p>)</span>
+        <span class=p>})</span>
     <span class=p>}</span>
-
-    <span class=kr>static</span> <span class=nx>reject</span><span class=p>(</span><span class=nx>reason</span><span class=p>)</span> <span class=p>{</span>
-        <span class=k>return</span> <span class=k>new</span> <span class=nx>MPromise</span><span class=p>((</span><span class=nx>resolve</span><span class=p>,</span> <span class=nx>reject</span><span class=p>)</span> <span class=p>=&gt;</span> <span class=p>{</span>
-            <span class=nx>reject</span><span class=p>(</span><span class=nx>reason</span><span class=p>);</span>
-        <span class=p>});</span>
+    <span class=c1>// reject 静态方法
+</span><span class=c1></span>    <span class=kr>static</span> <span class=nx>reject</span> <span class=p>(</span><span class=nx>reason</span><span class=p>)</span> <span class=p>{</span>
+        <span class=k>return</span> <span class=k>new</span> <span class=nx>MyPromise</span><span class=p>((</span><span class=nx>resolve</span><span class=p>,</span> <span class=nx>reject</span><span class=p>)</span> <span class=p>=&gt;</span> <span class=p>{</span>
+            <span class=nx>reject</span><span class=p>(</span><span class=nx>reason</span><span class=p>)</span>
+        <span class=p>})</span>
     <span class=p>}</span>
-
-    <span class=kr>static</span> <span class=nx>race</span><span class=p>(</span><span class=nx>promiseList</span><span class=p>)</span> <span class=p>{</span>
-        <span class=k>return</span> <span class=k>new</span> <span class=nx>MPromise</span><span class=p>((</span><span class=nx>resolve</span><span class=p>,</span> <span class=nx>reject</span><span class=p>)</span> <span class=p>=&gt;</span> <span class=p>{</span>
-            <span class=kr>const</span> <span class=nx>length</span> <span class=o>=</span> <span class=nx>promiseList</span><span class=p>.</span><span class=nx>length</span><span class=p>;</span>
-
-            <span class=k>if</span> <span class=p>(</span><span class=nx>length</span> <span class=o>===</span> <span class=mi>0</span><span class=p>)</span> <span class=p>{</span>
-                <span class=k>return</span> <span class=nx>resolve</span><span class=p>();</span>
-            <span class=p>}</span> <span class=k>else</span> <span class=p>{</span>
-                <span class=k>for</span> <span class=p>(</span><span class=kd>let</span> <span class=nx>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=nx>i</span> <span class=o>&lt;</span> <span class=nx>length</span><span class=p>;</span> <span class=nx>i</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
-                    <span class=nx>MPromise</span><span class=p>.</span><span class=nx>resolve</span><span class=p>(</span><span class=nx>promiseList</span><span class=p>[</span><span class=nx>i</span><span class=p>]).</span><span class=nx>then</span><span class=p>(</span>
-                        <span class=p>(</span><span class=nx>value</span><span class=p>)</span> <span class=p>=&gt;</span> <span class=p>{</span>
-                            <span class=k>return</span> <span class=nx>resolve</span><span class=p>(</span><span class=nx>value</span><span class=p>);</span>
-                        <span class=p>},</span>
-                        <span class=p>(</span><span class=nx>reason</span><span class=p>)</span> <span class=p>=&gt;</span> <span class=p>{</span>
-                            <span class=k>return</span> <span class=nx>reject</span><span class=p>(</span><span class=nx>reason</span><span class=p>);</span>
-                        <span class=p>});</span>
-                <span class=p>}</span>
-            <span class=p>}</span>
-        <span class=p>});</span>
-
+    <span class=c1>// 工具函数, 判断function
+</span><span class=c1></span>    <span class=nx>isFunction</span><span class=p>(</span><span class=nx>value</span><span class=p>)</span> <span class=p>{</span>
+        <span class=k>return</span> <span class=k>typeof</span> <span class=nx>value</span> <span class=o>===</span> <span class=s1>&#39;function&#39;</span><span class=p>;</span>
     <span class=p>}</span>
 <span class=p>}</span>
 
-<span class=kr>const</span> <span class=nx>test</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>MPromise</span><span class=p>((</span><span class=nx>resolve</span><span class=p>,</span> <span class=nx>reject</span><span class=p>)</span> <span class=p>=&gt;</span> <span class=p>{</span>
-    <span class=nx>setTimeout</span><span class=p>(()</span> <span class=p>=&gt;</span> <span class=p>{</span>
-        <span class=nx>resolve</span><span class=p>(</span><span class=mi>111</span><span class=p>);</span>
-    <span class=p>},</span> <span class=mi>1000</span><span class=p>);</span>
-<span class=p>}).</span><span class=nx>then</span><span class=p>(</span><span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>);</span>
 
-<span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=nx>test</span><span class=p>);</span>
+<span class=c1>// 测试
+</span><span class=c1>// npm install promises-aplus-tests -D
+</span><span class=c1></span><span class=nx>MyPromise</span><span class=p>.</span><span class=nx>deferred</span> <span class=o>=</span> <span class=kd>function</span><span class=p>()</span> <span class=p>{</span>
+    <span class=kd>let</span> <span class=nx>result</span> <span class=o>=</span> <span class=p>{}</span>
+    <span class=nx>result</span><span class=p>.</span><span class=nx>promise</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>MyPromise</span><span class=p>(</span><span class=kd>function</span><span class=p>(</span><span class=nx>resolve</span><span class=p>,</span><span class=nx>reject</span><span class=p>){</span>
+        <span class=nx>result</span><span class=p>.</span><span class=nx>resolve</span> <span class=o>=</span> <span class=nx>resolve</span>
+        <span class=nx>result</span><span class=p>.</span><span class=nx>reject</span> <span class=o>=</span> <span class=nx>reject</span>
+    <span class=p>})</span>
+    <span class=k>return</span> <span class=nx>result</span>
+<span class=p>}</span>
 
+<span class=nx>module</span><span class=p>.</span><span class=nx>exports</span> <span class=o>=</span> <span class=nx>MyPromise</span>
+</code></pre></td></tr></table></div></div><hr><h2 id=测试promisea>测试PromiseA+</h2><ol><li>安装</li></ol><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-bash data-lang=bash>npm install promises-aplus-tests -D
+</code></pre></td></tr></table></div></div><ol start=2><li>代码中加入deferred</li></ol><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-js data-lang=js><span class=nx>MyPromise</span><span class=p>.</span><span class=nx>deferred</span> <span class=o>=</span> <span class=kd>function</span><span class=p>()</span> <span class=p>{</span>
+    <span class=kd>let</span> <span class=nx>result</span> <span class=o>=</span> <span class=p>{}</span>
+    <span class=nx>result</span><span class=p>.</span><span class=nx>promise</span> <span class=o>=</span> <span class=k>new</span> <span class=nx>MyPromise</span><span class=p>(</span><span class=kd>function</span><span class=p>(</span><span class=nx>resolve</span><span class=p>,</span><span class=nx>reject</span><span class=p>){</span>
+        <span class=nx>result</span><span class=p>.</span><span class=nx>resolve</span> <span class=o>=</span> <span class=nx>resolve</span>
+        <span class=nx>result</span><span class=p>.</span><span class=nx>reject</span> <span class=o>=</span> <span class=nx>reject</span>
+    <span class=p>})</span>
+    <span class=k>return</span> <span class=nx>result</span>
+<span class=p>}</span>
 
-<span class=nx>console</span><span class=p>.</span><span class=nx>dir</span><span class=p>(</span><span class=nx>test</span><span class=p>)</span>
-<span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=nx>MPromise</span><span class=p>.</span><span class=nx>FULFILLED_CALLBACK_LIST</span><span class=p>)</span>
-</code></pre></td></tr></table></div></div><h2 id=acknowledgments>Acknowledgments</h2><ol><li><a href=https://promisesaplus.com/>PromiseA+官方</a></li><li><a href=https://zhuanlan.zhihu.com/p/143204897>PromiseA+译</a></li><li><a href=https://github.com/then/promise>github-then/promise</a></li><li><a href=https://github.com/stefanpenner/es6-promise>github-es6-promise</a></li><li><a href="https://juejin.cn/post/6945319439772434469?utm_source=gold_browser_extension#heading-26">从一道让我失眠的 Promise 面试题开始，深入分析 Promise 实现细节</a></li><li><a href=https://juejin.cn/post/6844903625769091079>史上最详细手写promise</a></li><li><a href=https://juejin.cn/post/6844903665686282253>Promise实现原理</a></li><li><a href=https://zsy-x.blog.csdn.net/article/details/108716833>待删 实现一个promise</a></li><li><a href=https://www.jianshu.com/p/43de678e918a>Promise实现原理（附源码）</a></li><li><a href=https://juejin.cn/post/6844903935069650952>手写promise跑promiseA+规范</a></li><li><a href=https://www.bilibili.com/video/av795186074>bilibili-Promise</a></li><li><a href=https://zhuanlan.zhihu.com/p/180541324>promise源码</a></li></ol></div><footer class=post-footer><div class=post-tags><a href=/tags/promises/a+/>Promises/A+</a></div><nav class=post-nav><a class=next href=/post/2021-04-01-%E7%AE%97%E6%B3%95day01/><span class="next-text nav-default">算法day01</span>
+<span class=nx>module</span><span class=p>.</span><span class=nx>exports</span> <span class=o>=</span> <span class=nx>MyPromise</span>
+</code></pre></td></tr></table></div></div><ol start=3><li>package.json中配置启动命令</li></ol><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-json data-lang=json><span class=p>{</span>
+  <span class=nt>&#34;name&#34;</span><span class=p>:</span> <span class=s2>&#34;promise&#34;</span><span class=p>,</span>
+  <span class=nt>&#34;version&#34;</span><span class=p>:</span> <span class=s2>&#34;1.0.0&#34;</span><span class=p>,</span>
+  <span class=nt>&#34;description&#34;</span><span class=p>:</span> <span class=s2>&#34;my promise&#34;</span><span class=p>,</span>
+  <span class=nt>&#34;main&#34;</span><span class=p>:</span> <span class=s2>&#34;MyPromise.js&#34;</span><span class=p>,</span>
+  <span class=nt>&#34;scripts&#34;</span><span class=p>:</span> <span class=p>{</span>
+    <span class=nt>&#34;test&#34;</span><span class=p>:</span> <span class=s2>&#34;promises-aplus-tests myPromiseA+&#34;</span>
+  <span class=p>},</span>
+  <span class=nt>&#34;author&#34;</span><span class=p>:</span> <span class=s2>&#34;ITEM&#34;</span><span class=p>,</span>
+  <span class=nt>&#34;license&#34;</span><span class=p>:</span> <span class=s2>&#34;ISC&#34;</span><span class=p>,</span>
+  <span class=nt>&#34;devDependencies&#34;</span><span class=p>:</span> <span class=p>{</span>
+    <span class=nt>&#34;promises-aplus-tests&#34;</span><span class=p>:</span> <span class=s2>&#34;^2.1.2&#34;</span>
+  <span class=p>}</span>
+<span class=p>}</span>
+</code></pre></td></tr></table></div></div><ol start=4><li>开始测试</li></ol><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-bash data-lang=bash>npm run <span class=nb>test</span>
+</code></pre></td></tr></table></div></div><h2 id=httpsgtd-imgs-mdoss-cn-beijingaliyuncscomimgs20210405174107gif><img src=https://gtd-imgs-md.oss-cn-beijing.aliyuncs.com/imgs/20210405174107.gif alt></h2><h2 id=promise中api>Promise中API</h2><blockquote><p>实例方法</p></blockquote><ul><li>Promise.prototype.then()</li><li>Promise.prototype.catch()</li><li>Promise.prototype.finally()</li></ul><blockquote><p>静态方法</p></blockquote><ul><li>Promise.all()</li><li>Promise.race()</li><li>Promise.allSettled()</li><li>Promise.any()</li><li>Promise.resolve()</li><li>Promise.reject()</li></ul><p>ES6官方Promise还有其他一些API,不在Promises/A+规范里, 下一篇文章中我们再看看怎么自己实现其他一些方法</p><h2 id=acknowledgments>Acknowledgments</h2><ol><li><a href=https://promisesaplus.com/>PromiseA+官方</a></li><li><a href=https://zhuanlan.zhihu.com/p/143204897>PromiseA+译</a></li><li><a href=https://github.com/then/promise>github-then/promise</a></li><li><a href=https://github.com/stefanpenner/es6-promise>github-es6-promise</a></li><li><a href="https://juejin.cn/post/6945319439772434469?utm_source=gold_browser_extension#heading-26">从一道让我失眠的 Promise 面试题开始，深入分析 Promise 实现细节</a> good!</li><li><a href=https://juejin.cn/post/6844904116913700877#heading-0>手写一个Promise/A+,完美通过官方872测试</a> good!</li><li><a href=https://juejin.cn/post/6850037281206566919>面试官：“你能手写一个 Promise 吗”</a> good!</li><li><a href=https://juejin.cn/post/6844903796129136654#heading-25>Promise的源码实现（完美符合Promise/A+规范）</a> good!</li><li><a href=https://juejin.cn/post/6844903625769091079>BAT前端经典面试问题：史上最最最详细的手写Promise教程</a> good!</li><li><a href=https://juejin.cn/post/6844903625769091079>史上最详细手写promise</a></li><li><a href=https://juejin.cn/post/6844903665686282253>Promise实现原理</a></li><li><a href=https://zsy-x.blog.csdn.net/article/details/108716833>待删 实现一个promise</a></li><li><a href=https://www.jianshu.com/p/43de678e918a>Promise实现原理（附源码）</a></li><li><a href=https://juejin.cn/post/6844903935069650952>手写promise跑promiseA+规范</a></li><li><a href=https://www.bilibili.com/video/av795186074>bilibili-Promise</a></li><li><a href=https://zhuanlan.zhihu.com/p/180541324>promise源码</a></li><li><a href="https://segmentfault.com/a/1190000018769632?utm_source=tag-newest">promise实现 es6</a></li><li><a href="https://segmentfault.com/a/1190000018769632?utm_source=tag-newest">让你彻底掌握es6 Promise的八段代码</a></li></ol></div><footer class=post-footer><div class=post-tags><a href=/tags/promises/a+/>Promises/A+</a></div><nav class=post-nav><a class=next href=/post/2021-04-01-%E7%AE%97%E6%B3%95day01/><span class="next-text nav-default">算法day01</span>
 <span class="next-text nav-mobile">Next</span>
 <i class="fa fa-long-arrow-right"></i></a></nav></footer></article></div></div></main><footer id=footer class=footer><div class=copyright><span class=copyright-year>&copy;
 2020 -
