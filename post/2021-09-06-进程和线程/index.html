@@ -12,7 +12,9 @@
 最新的 Chrome 浏览器包括：</p><ul><li><code>1 个浏览器（Browser）主进程、</code></li><li><code>1 个 GPU 进程、</code></li><li><code>1 个网络（NetWork）进程、</code></li><li><code>多个渲染进程</code></li><li><code>多个插件进程</code></li></ul><p>仅仅打开了 1 个页面，为什么有 4 个进程？</p><ul><li>因为打开 1 个页面至少需要 1 个网络进程、1 个浏览器进程、1 个 GPU 进程以及 1 个渲染进程，共 4 个；如果打开的页面有运行插件的话，还需要再加上 1 个插件进程。</li></ul><p>多进程架构模型缺陷</p><ol><li><code>更高的资源占用。</code>因为每个进程都会包含公共基础结构的副本（如 JavaScript 运行环境），这就意味着浏览器会消耗更多的内存资源。</li><li><code>更复杂的体系架构。</code>浏览器各模块之间耦合性高、扩展性差等问题，会导致现在的架构已经很难适应新的需求了。</li></ol><h2 id=未来面向服务的架构>未来面向服务的架构</h2><p>Services Oriented Architecture，简称 SOA;
 <img src=https://gtd-imgs-md.oss-cn-beijing.aliyuncs.com/imgs/20210907003042.png#w70 alt>
 原来的各种模块会被重构成独立的服务（Service），每个服务（Service）都可以在独立的进程中运行，访问服务（Service）必须使用定义好的接口，通过 IPC 来通信，从而构建一个更内聚、松耦合、易于维护和扩展的系统，更好实现 Chrome 简单、稳定、高速、安全的目标。</p><p>理解:以前是每个页面需要若干进程完成各自的工作，现在是将各个页面通用的功能（视频、网络、渲染等）发布为系统服务，页面在需要的时候与相应的服务通信完成需要的功能。这起码把进程间的耦合从页面中分离出去了.</p><hr><p>PS : 笔记 From GeekTime <code>浏览器工作原理</code></p></div><footer class=post-footer><div class=post-tags><a href=/tags/%E6%B5%8F%E8%A7%88%E5%99%A8/>浏览器</a>
-<a href=/tags/%E8%BF%9B%E7%A8%8B/%E7%BA%BF%E7%A8%8B/>进程/线程</a></div><nav class=post-nav><a class=next href=/post/2021-05-13-%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86/><span class="next-text nav-default">垃圾收集</span>
+<a href=/tags/%E8%BF%9B%E7%A8%8B/%E7%BA%BF%E7%A8%8B/>进程/线程</a></div><nav class=post-nav><a class=prev href=/post/2021-09-17-%E4%BB%8Eurl%E8%BE%93%E5%85%A5%E5%88%B0%E5%B1%95%E7%A4%BA/><i class="fa fa-long-arrow-left"></i><span class="prev-text nav-default">从URL输入到展示</span>
+<span class="prev-text nav-mobile">Prev</span></a>
+<a class=next href=/post/2021-05-13-%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86/><span class="next-text nav-default">垃圾收集</span>
 <span class="next-text nav-mobile">Next</span>
 <i class="fa fa-long-arrow-right"></i></a></nav></footer></article></div></div></main><footer id=footer class=footer><div class=copyright><span class=copyright-year>&copy;
 2020 -
