@@ -1,0 +1,219 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge,chrome=1"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><title>C++数组 字符串 - Zxd's Blog</title><meta name=renderer content="webkit"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><meta http-equiv=cache-control content="no-transform"><meta http-equiv=cache-control content="no-siteapp"><meta name=theme-color content="#f8f5ec"><meta name=msapplication-navbutton-color content="#f8f5ec"><meta name=apple-mobile-web-app-capable content="yes"><meta name=apple-mobile-web-app-status-bar-style content="#f8f5ec"><meta name=author content="zxd"><meta name=description content="数组 声明数组 1 2 3 4 5 // type 可以是任意有效的 C++ 数据类型 // arraySize 必须是一个大于零的整数常量 type arrayName [ arraySize ]; double balance[10]; 初始化数组 1 2 3 4 5 6 7 8 9 10 11 12 13 double balance[5] = {1000.0,"><meta name=keywords content="Hugo,theme,Zxd"><meta name=generator content="Hugo 0.81.0 with theme even"><link rel=canonical href=http://localhost:1313/post/2021-09-29-c++%E6%95%B0%E7%BB%84-%E5%AD%97%E7%AC%A6%E4%B8%B2/><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=manifest href=/manifest.json><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link href=https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css rel=stylesheet><link href=/sass/main.min.8eca1510e0bf04006a123f0d7fcb8799b6e77ab2f264b44357a16e783b064b04.css rel=stylesheet><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin=anonymous><meta property="og:title" content="C++数组 字符串"><meta property="og:description" content="数组 声明数组 1 2 3 4 5 // type 可以是任意有效的 C++ 数据类型 // arraySize 必须是一个大于零的整数常量 type arrayName [ arraySize ]; double balance[10]; 初始化数组 1 2 3 4 5 6 7 8 9 10 11 12 13 double balance[5] = {1000.0,"><meta property="og:type" content="article"><meta property="og:url" content="http://localhost:1313/post/2021-09-29-c++%E6%95%B0%E7%BB%84-%E5%AD%97%E7%AC%A6%E4%B8%B2/"><meta property="article:section" content="post"><meta property="article:published_time" content="2021-09-29T15:36:59+08:00"><meta property="article:modified_time" content="2021-09-29T15:36:59+08:00"><meta itemprop=name content="C++数组 字符串"><meta itemprop=description content="数组 声明数组 1 2 3 4 5 // type 可以是任意有效的 C++ 数据类型 // arraySize 必须是一个大于零的整数常量 type arrayName [ arraySize ]; double balance[10]; 初始化数组 1 2 3 4 5 6 7 8 9 10 11 12 13 double balance[5] = {1000.0,"><meta itemprop=datePublished content="2021-09-29T15:36:59+08:00"><meta itemprop=dateModified content="2021-09-29T15:36:59+08:00"><meta itemprop=wordCount content="1526"><meta itemprop=keywords content="c++,"><meta name=twitter:card content="summary"><meta name=twitter:title content="C++数组 字符串"><meta name=twitter:description content="数组 声明数组 1 2 3 4 5 // type 可以是任意有效的 C++ 数据类型 // arraySize 必须是一个大于零的整数常量 type arrayName [ arraySize ]; double balance[10]; 初始化数组 1 2 3 4 5 6 7 8 9 10 11 12 13 double balance[5] = {1000.0,"><!--[if lte IE 9]><script src=https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js></script><![endif]--><!--[if lt IE 9]><script src=https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js></script><script src=https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js></script><![endif]--></head><body><div id=mobile-navbar class=mobile-navbar><div class=mobile-header-logo><a href=/ class=logo>zxd's blog</a></div><div class=mobile-navbar-icon><span></span><span></span><span></span></div></div><nav id=mobile-menu class="mobile-menu slideout-menu"><ul class=mobile-menu-list><a href=/><li class=mobile-menu-item>Home</li></a><a href=/post/><li class=mobile-menu-item>Archives</li></a><a href=/tags/><li class=mobile-menu-item>Tags</li></a></ul></nav><div class=container id=mobile-panel><header id=header class=header><div class=logo-wrapper><a href=/ class=logo>zxd's blog</a></div><nav class=site-navbar><ul id=menu class=menu><li class=menu-item><a class=menu-item-link href=/>Home</a></li><li class=menu-item><a class=menu-item-link href=/post/>Archives</a></li><li class=menu-item><a class=menu-item-link href=/tags/>Tags</a></li></ul></nav></header><main id=main class=main><div class=content-wrapper><div id=content class=content><article class=post><header class=post-header><h1 class=post-title>C++数组 字符串</h1><div class=post-meta><span class=post-time>2021-09-29</span>
+<span class=more-meta>1526 words</span>
+<span class=more-meta>4 mins read</span></div></header><div class=post-toc id=post-toc><div class="post-toc-content always-active"><nav id=TableOfContents><ul><li><ul><li><a href=#数组>数组</a><ul><li><a href=#声明数组>声明数组</a></li><li><a href=#初始化数组>初始化数组</a></li><li><a href=#off-by-one-error>off-by-one-error</a></li><li><a href=#二维数组>二维数组</a></li><li><a href=#动态数组vector>动态数组vector</a></li><li><a href=#vector容器初始化方式>vector容器初始化方式</a></li><li><a href=#插入-删除操作>插入 删除操作</a></li></ul></li><li><a href=#字符串>字符串</a><ul><li><a href=#字符串变量>字符串变量</a></li><li><a href=#字符串常量>字符串常量</a></li><li><a href=#0-0-与0>0, &lsquo;\0&rsquo; 与'0'</a></li><li><a href=#unicode编码>Unicode编码</a></li><li><a href=#字符串的指针表示方法>字符串的指针表示方法</a></li></ul></li></ul></li></ul></nav></div></div><div class=post-content><h2 id=数组>数组</h2><h3 id=声明数组>声明数组</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-cpp data-lang=cpp><span class=c1>// type 可以是任意有效的 C++ 数据类型
+</span><span class=c1>// arraySize 必须是一个大于零的整数常量
+</span><span class=c1></span><span class=n>type</span> <span class=n>arrayName</span> <span class=p>[</span> <span class=n>arraySize</span> <span class=p>];</span>
+
+<span class=kt>double</span> <span class=n>balance</span><span class=p>[</span><span class=mi>10</span><span class=p>];</span>
+</code></pre></td></tr></table></div></div><h3 id=初始化数组>初始化数组</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-cpp data-lang=cpp><span class=kt>double</span> <span class=n>balance</span><span class=p>[</span><span class=mi>5</span><span class=p>]</span> <span class=o>=</span> <span class=p>{</span><span class=mf>1000.0</span><span class=p>,</span> <span class=mf>2.0</span><span class=p>,</span> <span class=mf>3.4</span><span class=p>,</span> <span class=mf>7.0</span><span class=p>,</span> <span class=mf>50.0</span><span class=p>};</span>
+
+<span class=c1>// 如果省略掉了数组的大小，数组的大小则为初始化时元素的个数
+</span><span class=c1>// 切数组大小不可改变
+</span><span class=c1></span><span class=kt>double</span> <span class=n>balance</span><span class=p>[]</span> <span class=o>=</span> <span class=p>{</span><span class=mf>1000.0</span><span class=p>,</span> <span class=mf>2.0</span><span class=p>,</span> <span class=mf>3.4</span><span class=p>,</span> <span class=mf>7.0</span><span class=p>,</span> <span class=mf>50.0</span><span class=p>};</span>
+
+<span class=c1>// 不可写balance[5];初始化时长度已经固定了
+</span><span class=c1></span>  <span class=kt>double</span> <span class=n>balance</span><span class=p>[]</span> <span class=o>=</span> <span class=p>{</span><span class=mf>1000.0</span><span class=p>,</span> <span class=mf>2.0</span><span class=p>,</span> <span class=mf>3.4</span><span class=p>,</span> <span class=mf>7.0</span><span class=p>,</span> <span class=mf>50.0</span><span class=p>};</span>
+  <span class=n>balance</span><span class=p>[</span><span class=mi>4</span><span class=p>]</span> <span class=o>=</span> <span class=mi>6</span><span class=p>;</span> <span class=c1>// balance[5] 报错
+</span><span class=c1></span>    <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;=</span> <span class=mi>4</span> <span class=p>;</span> <span class=n>i</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+        <span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=n>balance</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;  &#34;</span><span class=p>;</span>
+    <span class=p>}</span>
+  <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+</code></pre></td></tr></table></div></div><h3 id=off-by-one-error>off-by-one-error</h3><ul><li>差一错误, 1到5 一共 5-1+1 五个数;</li><li>下标从0开始, 使用左闭右开区间</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-cpp data-lang=cpp><span class=kt>int</span> <span class=n>a</span><span class=p>[]</span> <span class=o>=</span> <span class=p>{</span><span class=mi>1</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>3</span><span class=p>,</span> <span class=mi>4</span><span class=p>,</span> <span class=mi>5</span><span class=p>,</span> <span class=mi>6</span><span class=p>,</span> <span class=mi>7</span><span class=p>,</span> <span class=mi>8</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=mi>0</span><span class=p>};</span>
+<span class=kt>int</span> <span class=n>len</span> <span class=o>=</span> <span class=k>sizeof</span><span class=p>(</span><span class=n>a</span><span class=p>)</span><span class=o>/</span><span class=k>sizeof</span><span class=p>(</span><span class=n>a</span><span class=p>[</span><span class=mi>0</span><span class=p>]);</span> <span class=c1>// 得到数组容量
+</span><span class=c1></span><span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=mi>10</span><span class=p>;</span> <span class=n>i</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+    <span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=n>a</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>&lt;&lt;</span> <span class=s>&#34; &#34;</span><span class=p>;</span>
+<span class=p>}</span>
+</code></pre></td></tr></table></div></div><h3 id=二维数组>二维数组</h3><ul><li>循环时应尽量满足"空间局部性";<ul><li>在一个小的时间窗口内, 访问的变量地址越接近越好</li><li>将最短的循环放在最外层, 最长的循环放在最内层, 以减少CPU跨切循环的次数;</li></ul></li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-cpp data-lang=cpp><span class=kt>int</span> <span class=n>a</span><span class=p>[</span><span class=mi>2</span><span class=p>][</span><span class=mi>4</span><span class=p>]</span> <span class=o>=</span> <span class=p>{{</span><span class=mi>1</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>3</span><span class=p>,</span> <span class=mi>4</span><span class=p>},</span> <span class=p>{</span><span class=mi>5</span><span class=p>,</span> <span class=mi>6</span><span class=p>,</span> <span class=mi>7</span><span class=p>,</span> <span class=mi>8</span><span class=p>}};</span>
+
+<span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>row</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>row</span> <span class=o>&lt;</span> <span class=mi>2</span><span class=p>;</span> <span class=n>row</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+    <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>col</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>col</span> <span class=o>&lt;</span> <span class=mi>4</span><span class=p>;</span> <span class=n>col</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+        <span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=n>a</span><span class=p>[</span><span class=n>row</span><span class=p>][</span><span class=n>col</span><span class=p>]</span> <span class=o>&lt;&lt;</span> <span class=s>&#34; &#34;</span><span class=p>;</span>
+    <span class=p>}</span>
+    <span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=n>endl</span><span class=p>;</span>
+<span class=p>}</span>
+</code></pre></td></tr></table></div></div><h3 id=动态数组vector>动态数组vector</h3><p>使用最简单的数组, 无法实现动态扩容插入元素, 因为容量有限</p><ul><li>PS. Run Code中指定 <code>g++ -std=c++11 demo.cpp</code></li><li>vscode配置 c++ <a href=https://zhuanlan.zhihu.com/p/48233069>https://zhuanlan.zhihu.com/p/48233069</a></li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-cpp data-lang=cpp><span class=kt>int</span> <span class=n>a</span><span class=p>[]</span> <span class=o>=</span> <span class=p>{</span><span class=mi>1</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>3</span><span class=p>,</span> <span class=mi>4</span><span class=p>};</span>
+<span class=n>a</span><span class=p>[</span><span class=mi>4</span><span class=p>]</span> <span class=o>=</span> <span class=mi>5</span><span class=p>;</span> <span class=c1>// ! error
+</span><span class=c1></span>
+<span class=c1>// c++ 98不允许这么指定初始化元素
+</span><span class=c1>// c++ 11允许  
+</span><span class=c1></span><span class=n>vector</span><span class=o>&lt;</span><span class=kt>int</span><span class=o>&gt;</span> <span class=n>vec</span> <span class=o>=</span> <span class=p>{</span><span class=mi>1</span><span class=p>,</span><span class=mi>2</span><span class=p>,</span><span class=mi>3</span><span class=p>,</span><span class=mi>4</span><span class=p>};</span>
+<span class=c1>// cout &lt;&lt; &#34;size is &#34; &lt;&lt; vec.size() &lt;&lt; endl;
+</span><span class=c1>// cout &lt;&lt; &#34;capacity is &#34;&lt;&lt; vec.capacity() &lt;&lt; endl;
+</span><span class=c1></span>
+<span class=n>vec</span><span class=p>.</span><span class=n>push_back</span><span class=p>(</span><span class=mi>5</span><span class=p>);</span> <span class=c1>// 尾部插入
+</span><span class=c1></span>
+<span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=o>=</span> <span class=mi>0</span><span class=p>;</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>vec</span><span class=p>.</span><span class=n>size</span><span class=p>();</span> <span class=n>i</span><span class=o>++</span><span class=p>)</span> <span class=p>{</span>
+    <span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=n>vec</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>&lt;&lt;</span> <span class=n>endl</span><span class=p>;</span>
+<span class=p>}</span>
+<span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;size is &#34;</span> <span class=o>&lt;&lt;</span> <span class=n>vec</span><span class=p>.</span><span class=n>size</span><span class=p>()</span> <span class=o>&lt;&lt;</span> <span class=n>endl</span><span class=p>;</span>
+<span class=n>cout</span> <span class=o>&lt;&lt;</span> <span class=s>&#34;capacity is &#34;</span><span class=o>&lt;&lt;</span> <span class=n>vec</span><span class=p>.</span><span class=n>capacity</span><span class=p>()</span> <span class=o>&lt;&lt;</span> <span class=n>endl</span><span class=p>;</span>
+</code></pre></td></tr></table></div></div><ul><li>vector是面向对象方式的动态数组</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-cpp data-lang=cpp><span class=cp>#include</span> <span class=cpf>&lt;vector&gt; // 使用钱需要这样</span><span class=cp>
+</span><span class=cp></span><span class=k>using</span> <span class=k>namespace</span> <span class=n>std</span><span class=p>;</span> <span class=c1>// 标准命名空间
+</span><span class=c1></span>
+<span class=kt>int</span> <span class=n>a</span><span class=p>[]</span> <span class=o>=</span> <span class=p>{</span><span class=mi>1</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>3</span><span class=p>,</span> <span class=mi>4</span><span class=p>,</span> <span class=mi>5</span><span class=p>};</span>
+<span class=c1>// 初始化vector对象
+</span><span class=c1></span><span class=n>vector</span><span class=o>&lt;</span><span class=kt>int</span><span class=o>&gt;</span> <span class=n>vec</span><span class=p>(</span><span class=n>begin</span><span class=p>(</span><span class=n>a</span><span class=p>),</span> <span class=n>end</span><span class=p>(</span><span class=n>a</span><span class=p>));</span> 
+</code></pre></td></tr></table></div></div><h3 id=vector容器初始化方式>vector容器初始化方式</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-cpp data-lang=cpp><span class=c1>//默认初始化,不带参数的构造函数初始化
+</span><span class=c1></span><span class=n>vector</span><span class=o>&lt;</span><span class=kt>int</span><span class=o>&gt;</span> <span class=n>vec_i</span><span class=p>;</span>
+ 
+<span class=c1>//带参数的构造函数初始化
+</span><span class=c1></span><span class=n>vector</span><span class=o>&lt;</span><span class=kt>int</span><span class=o>&gt;</span> <span class=n>vec_i</span><span class=p>(</span><span class=mi>10</span><span class=p>);</span> <span class=c1>//初始化10个默认值为0的元素
+</span><span class=c1></span><span class=n>vector</span><span class=o>&lt;</span><span class=kt>int</span><span class=o>&gt;</span> <span class=n>vec_i</span><span class=p>(</span><span class=mi>10</span><span class=p>,</span><span class=mi>1</span><span class=p>);</span><span class=c1>//初始化10个值为1的元素
+</span><span class=c1></span> 
+<span class=c1>//通过数组地址初始化
+</span><span class=c1></span><span class=kt>int</span> <span class=n>a</span><span class=p>[</span><span class=mi>5</span><span class=p>]</span><span class=o>=</span><span class=p>{</span><span class=mi>1</span><span class=p>,</span><span class=mi>2</span><span class=p>,</span><span class=mi>3</span><span class=p>,</span><span class=mi>4</span><span class=p>,</span><span class=mi>5</span><span class=p>}</span>
+<span class=n>vector</span><span class=o>&lt;</span><span class=kt>int</span><span class=o>&gt;</span> <span class=n>vec_i</span><span class=p>(</span><span class=n>a</span><span class=p>,</span><span class=n>a</span><span class=o>+</span><span class=mi>5</span><span class=p>);</span>
+ 
+<span class=c1>//通过同类型的vector进行初始化
+</span><span class=c1></span><span class=n>vector</span><span class=o>&lt;</span><span class=kt>int</span><span class=o>&gt;</span> <span class=n>vec_i1</span><span class=p>(</span><span class=mi>10</span><span class=p>,</span><span class=mi>1</span><span class=p>);</span>
+<span class=n>vector</span><span class=o>&lt;</span><span class=kt>int</span><span class=o>&gt;</span> <span class=n>vec_i2</span><span class=p>(</span><span class=n>vec_i1</span><span class=p>);</span>
+ 
+<span class=c1>//通过迭代器进行初始化
+</span><span class=c1></span><span class=n>vector</span><span class=o>&lt;</span><span class=kt>int</span><span class=o>&gt;</span> <span class=n>vec_i1</span><span class=p>(</span><span class=mi>10</span><span class=p>,</span><span class=mi>1</span><span class=p>)</span>
+<span class=n>vector</span><span class=o>&lt;</span><span class=kt>int</span><span class=o>&gt;</span> <span class=n>vec_i2</span><span class=p>(</span><span class=n>vec_i1</span><span class=p>.</span><span class=n>begin</span><span class=p>(),</span><span class=n>vec_i1</span><span class=p>.</span><span class=n>end</span><span class=p>()</span><span class=o>-</span><span class=mi>1</span><span class=p>)</span>
+</code></pre></td></tr></table></div></div><h3 id=插入-删除操作>插入 删除操作</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-cpp data-lang=cpp><span class=n>vector</span><span class=o>&lt;</span><span class=kt>int</span><span class=o>&gt;</span> <span class=n>vec</span> <span class=o>=</span> <span class=p>{</span><span class=mi>1</span><span class=p>,</span><span class=mi>2</span><span class=p>,</span><span class=mi>3</span><span class=p>,</span><span class=mi>4</span><span class=p>};</span>
+<span class=n>vec</span><span class=p>.</span><span class=n>push_back</span><span class=p>(</span><span class=mi>5</span><span class=p>);</span> <span class=c1>// 尾部插入
+</span><span class=c1></span>
+<span class=n>vec</span><span class=p>.</span><span class=n>insert</span><span class=p>(</span><span class=o>--</span><span class=n>vec</span><span class=p>.</span><span class=n>end</span><span class=p>(),</span> <span class=mi>4</span><span class=p>);</span> <span class=c1>// 在尾部前一个插入
+</span><span class=c1></span>
+<span class=n>vec</span><span class=p>.</span><span class=n>pop_back</span><span class=p>();</span> <span class=c1>// 尾部删除
+</span><span class=c1>// 注意vec.end() -1; 左闭右开, -1才是下标
+</span><span class=c1></span><span class=n>vec</span><span class=p>.</span><span class=n>erase</span><span class=p>(</span><span class=n>vec</span><span class=p>.</span><span class=n>end</span><span class=p>()</span><span class=o>-</span><span class=mi>1</span><span class=p>);</span> <span class=c1>// 中间删除
+</span></code></pre></td></tr></table></div></div><h2 id=字符串>字符串</h2><p>C++拥有两种字符串表现形式</p><ul><li>C 风格字符串</li><li>C++ 引入的 string 类类型</li></ul><h3 id=字符串变量>字符串变量</h3><p>字符串实际上是使用<code>空null字符 \0</code>结束的一位字符数组.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-cpp data-lang=cpp><span class=c1>// 声明和初始化创建了一个 RUNOOB 字符串
+</span><span class=c1>// 由于在数组的末尾存储了空字符, 字符数组大小比单词的字符多一个
+</span><span class=c1></span><span class=kt>char</span> <span class=n>site</span><span class=p>[</span><span class=mi>7</span><span class=p>]</span> <span class=o>=</span> <span class=p>{</span><span class=sc>&#39;R&#39;</span><span class=p>,</span> <span class=sc>&#39;U&#39;</span><span class=p>,</span> <span class=sc>&#39;N&#39;</span><span class=p>,</span> <span class=sc>&#39;O&#39;</span><span class=p>,</span> <span class=sc>&#39;O&#39;</span><span class=p>,</span> <span class=sc>&#39;B&#39;</span><span class=p>,</span> <span class=sc>&#39;\0&#39;</span><span class=p>};</span>
+
+<span class=c1>// 可写成
+</span><span class=c1></span><span class=kt>char</span> <span class=n>site</span><span class=p>[]</span> <span class=o>=</span> <span class=s>&#34;RUNOOB&#34;</span><span class=p>;</span>
+<span class=c1>// char site[] = {&#34;RUNOOB&#34;}; 也行
+</span></code></pre></td></tr></table></div></div><ul><li>不需要把 null 字符放在字符串常量的末尾。C++ 编译器会在初始化数组时，自动把 \0 放在字符串的末尾</li></ul><p><img src=https://gtd-imgs-md.oss-cn-beijing.aliyuncs.com/imgs/20210929174002.png alt></p><blockquote><p>在声明字符串变量时, 应该为这个空结束符预留一个额外元素空间</p></blockquote><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-cpp data-lang=cpp><span class=c1>// c++中双引号表示字符串, 单引号表示字符
+</span><span class=c1></span><span class=kt>char</span> <span class=n>str</span><span class=p>[</span><span class=mi>11</span><span class=p>]</span> <span class=o>=</span> <span class=p>{</span><span class=s>&#34;helloworld&#34;</span><span class=p>};</span>
+</code></pre></td></tr></table></div></div><h3 id=字符串常量>字符串常量</h3><ul><li>一对双引号括起来的字符序列 <code>"hello world"</code></li><li>字符串中每个字符作为一个数组元素存储</li></ul><h3 id=0-0-与0>0, &lsquo;\0&rsquo; 与'0'</h3><p>在计算机内部机器码表示</p><ul><li>char c1 = 0; &ndash;> 0x0020F98f 0x00</li><li>char c2 = &lsquo;\0&rsquo;; &ndash;> 0x0020F983 0x00</li><li>char c3 = &lsquo;0&rsquo;; &ndash;> 0x0020F977 0x30</li><li>30 转10进制 3<em>16+0</em>16^0 = 48</li></ul><h4 id=ascii>ASCII</h4><p><a href=https://baike.baidu.com/item/ASCII/>https://baike.baidu.com/item/ASCII/</a></p><ul><li>0x30(十进制48)对应字符 &lsquo;0&rsquo;; 0x7F (十进制127) 对应字符DEL;</li><li>0x41(十进制65)对应字符 &lsquo;A&rsquo;; 0x61(十进制97) 对应字符&rsquo;a';</li></ul><h3 id=unicode编码>Unicode编码</h3><p>最初的目的是把世界上的文字都映射到一套字符空间中</p><p>为了表示Unicode字符集, 有3种 Unicode编码方式</p><ul><li>UTF-8<ul><li>1byte来表示字符,可以兼容ASCII码;</li><li>特定存储效率高,变长(不方便内部随机访问)</li><li>无字节序问题(可作为外部编码)</li></ul></li><li>UTF-16 (2 bytes) 两字节表示一个字符;<ul><li>特点是定长(方便内部随机访问)</li><li>有字节序问题(不可作为外部编码)</li></ul></li><li>UTF-32 (4 bytes) 4字节表示一个字符<ul><li>特点是定长(方便内部随机访问)</li><li>有字节序问题(不可作为外部编码)</li></ul></li></ul><h3 id=字符串的指针表示方法>字符串的指针表示方法</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-cpp data-lang=cpp><span class=kt>char</span> <span class=o>*</span><span class=n>pStr</span> <span class=o>=</span> <span class=s>&#34;helloworld&#34;</span><span class=p>;</span>
+<span class=c1>// *定义指针变量
+</span><span class=c1>// &amp;取地址
+</span></code></pre></td></tr></table></div></div></div><footer class=post-footer><div class=post-tags><a href=/tags/c++/>c++</a></div><nav class=post-nav><a class=next href=/post/2021-09-27-c++%E4%BF%AE%E9%A5%B0%E7%AC%A6-%E8%BF%90%E7%AE%97%E7%AC%A6/><span class="next-text nav-default">C++ 修饰符 运算符</span>
+<span class="next-text nav-mobile">Next</span>
+<i class="fa fa-long-arrow-right"></i></a></nav></footer></article></div></div></main><footer id=footer class=footer><div class=copyright><span class=copyright-year>&copy;
+2020 -
+2021<span class=heart>
+<i class="fa fa-heartbeat"></i></span><span class=z-author>zxd</span></span></div></footer><div class=back-to-top id=back-to-top><i class="iconfont icon-up"></i></div></div><script src=https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin=anonymous></script><script src=https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin=anonymous></script><script src=https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin=anonymous></script><script type=text/javascript src=/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js></script><script>if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));else{const a=document.createElement("style"),b=`
+                    @media screen and (min-width: 750px){
+                            img[src*="#w90"] {
+                            width: 90% !important;
+                            }
+                            
+                            img[src*="#w80"] {
+                            width: 80% !important;
+                            }
+                            
+                            img[src*="#w70"] {
+                            width: 70% !important;
+                            }
+                            
+                            img[src*="#w60"] {
+                            width: 60% !important;
+                            }
+                            
+                            img[src*="#w50"] {
+                            width: 50% !important;
+                            }
+                            
+                            img[src*="#w40"] {
+                            width: 40% !important;
+                            }
+                            img[src*="#w30"] {
+                            width: 30% !important;
+                            }
+                        }
+                    `;try{a.appendChild(document.createTextNode(b))}catch(c){a.styleSheet.cssText=b}document.getElementsByTagName("head")[0].appendChild(a)}</script></body></html>
