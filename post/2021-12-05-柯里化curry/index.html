@@ -1,0 +1,141 @@
+<!doctype html><html lang=en><head><meta charset=utf-8><meta http-equiv=x-ua-compatible content="IE=edge,chrome=1"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><title>柯里化Curry - Zxd's Blog</title><meta name=renderer content="webkit"><meta name=viewport content="width=device-width,initial-scale=1,maximum-scale=1"><meta http-equiv=cache-control content="no-transform"><meta http-equiv=cache-control content="no-siteapp"><meta name=theme-color content="#f8f5ec"><meta name=msapplication-navbutton-color content="#f8f5ec"><meta name=apple-mobile-web-app-capable content="yes"><meta name=apple-mobile-web-app-status-bar-style content="#f8f5ec"><meta name=author content="zxd"><meta name=description content="柯里化 Curry 柯里化是一个把具有较多参数的函数转换成具有较少参数函数的过程 &amp;ndash; Kristina Brainwave 柯里化是编程语言中的一个通用的概念（不只是Js，其他很多语言也有柯"><meta name=keywords content="Hugo,theme,Zxd"><meta name=generator content="Hugo 0.81.0 with theme even"><link rel=canonical href=http://localhost:1313/post/2021-12-05-%E6%9F%AF%E9%87%8C%E5%8C%96curry/><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=manifest href=/manifest.json><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link href=https://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css rel=stylesheet><link href=/sass/main.min.8eca1510e0bf04006a123f0d7fcb8799b6e77ab2f264b44357a16e783b064b04.css rel=stylesheet><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.css integrity="sha256-7TyXnr2YU040zfSP+rEcz29ggW4j56/ujTPwjMzyqFY=" crossorigin=anonymous><meta property="og:title" content="柯里化Curry"><meta property="og:description" content="柯里化 Curry 柯里化是一个把具有较多参数的函数转换成具有较少参数函数的过程 &ndash; Kristina Brainwave 柯里化是编程语言中的一个通用的概念（不只是Js，其他很多语言也有柯"><meta property="og:type" content="article"><meta property="og:url" content="http://localhost:1313/post/2021-12-05-%E6%9F%AF%E9%87%8C%E5%8C%96curry/"><meta property="article:section" content="post"><meta property="article:published_time" content="2021-12-05T21:11:44+08:00"><meta property="article:modified_time" content="2021-12-05T21:11:44+08:00"><meta itemprop=name content="柯里化Curry"><meta itemprop=description content="柯里化 Curry 柯里化是一个把具有较多参数的函数转换成具有较少参数函数的过程 &ndash; Kristina Brainwave 柯里化是编程语言中的一个通用的概念（不只是Js，其他很多语言也有柯"><meta itemprop=datePublished content="2021-12-05T21:11:44+08:00"><meta itemprop=dateModified content="2021-12-05T21:11:44+08:00"><meta itemprop=wordCount content="1529"><meta itemprop=keywords content="JS,"><meta name=twitter:card content="summary"><meta name=twitter:title content="柯里化Curry"><meta name=twitter:description content="柯里化 Curry 柯里化是一个把具有较多参数的函数转换成具有较少参数函数的过程 &ndash; Kristina Brainwave 柯里化是编程语言中的一个通用的概念（不只是Js，其他很多语言也有柯"><!--[if lte IE 9]><script src=https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20170427/classList.min.js></script><![endif]--><!--[if lt IE 9]><script src=https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js></script><script src=https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js></script><![endif]--></head><body><div id=mobile-navbar class=mobile-navbar><div class=mobile-header-logo><a href=/ class=logo>zxd's blog</a></div><div class=mobile-navbar-icon><span></span><span></span><span></span></div></div><nav id=mobile-menu class="mobile-menu slideout-menu"><ul class=mobile-menu-list><a href=/><li class=mobile-menu-item>Home</li></a><a href=/post/><li class=mobile-menu-item>Archives</li></a><a href=/vue/><li class=mobile-menu-item>Vue</li></a><a href=/tags/><li class=mobile-menu-item>Tags</li></a></ul></nav><div class=container id=mobile-panel><header id=header class=header><div class=logo-wrapper><a href=/ class=logo>zxd's blog</a></div><nav class=site-navbar><ul id=menu class=menu><li class=menu-item><a class=menu-item-link href=/>Home</a></li><li class=menu-item><a class=menu-item-link href=/post/>Archives</a></li><li class=menu-item><a class=menu-item-link href=/vue/>Vue</a></li><li class=menu-item><a class=menu-item-link href=/tags/>Tags</a></li></ul></nav></header><main id=main class=main><div class=content-wrapper><div id=content class=content><article class=post><header class=post-header><h1 class=post-title>柯里化Curry</h1><div class=post-meta><span class=post-time>2021-12-05</span>
+<span class=more-meta>1529 words</span>
+<span class=more-meta>4 mins read</span></div></header><div class=post-toc id=post-toc><div class="post-toc-content always-active"><nav id=TableOfContents><ul><li><ul><li><a href=#柯里化-curry>柯里化 Curry</a></li><li><a href=#数学中的概念>数学中的概念</a></li><li><a href=#柯里化的应用>柯里化的应用</a></li><li><a href=#通用的柯里化函数>通用的柯里化函数</a></li></ul></li></ul></nav></div></div><div class=post-content><h2 id=柯里化-curry>柯里化 Curry</h2><p>柯里化是一个把具有较多参数的函数转换成具有较少参数函数的过程 &ndash; Kristina Brainwave</p><p>柯里化是编程语言中的一个通用的概念（不只是Js，其他很多语言也有柯里化），是指<strong>把接收多个参数的函数变换成接收单一参数的函数</strong>，嵌套返回直到所有参数都被使用并返回最终结果。更简单地说，<strong>柯里化是一个函数变换的过程，是将函数从调用方式：<code>f(a,b,c)</code>变换成调用方式：<code>f(a)(b)(c)</code>的过程</strong>。柯里化不会调用函数，它只是对函数进行转换。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-js data-lang=js><span class=kd>function</span> <span class=nx>add</span><span class=p>(</span><span class=nx>a</span><span class=p>,</span> <span class=nx>b</span><span class=p>,</span> <span class=nx>c</span><span class=p>)</span> <span class=p>{</span>
+    <span class=k>return</span> <span class=nx>a</span> <span class=o>+</span> <span class=nx>b</span> <span class=o>+</span> <span class=nx>c</span><span class=p>;</span>
+<span class=p>}</span>
+
+<span class=c1>// 执行 add 函数，一次传入三个参数即可
+</span><span class=c1></span><span class=nx>add</span><span class=p>(</span><span class=mi>1</span><span class=p>,</span> <span class=mi>2</span><span class=p>,</span> <span class=mi>3</span><span class=p>)</span> <span class=c1>// 3
+</span><span class=c1></span>
+<span class=c1>// 假设有一个 curry 函数可以做到柯里化
+</span><span class=c1></span><span class=kd>var</span> <span class=nx>addCurry</span> <span class=o>=</span> <span class=nx>curry</span><span class=p>(</span><span class=nx>add</span><span class=p>);</span>
+<span class=nx>addCurry</span><span class=p>(</span><span class=mi>1</span><span class=p>)(</span><span class=mi>2</span><span class=p>)(</span><span class=mi>3</span><span class=p>)</span> <span class=c1>// 6
+</span></code></pre></td></tr></table></div></div><p>curry 柯里化实际是把简单的问题复杂化了，但是复杂化的同时，我们在使用函数时拥有了更加多的自由度。</p><ul><li>Curry可以理解为：<strong>参数复用</strong>。本质上是<strong>降低通用性，提高适用性</strong>。</li></ul><p>柯里化其实是函数式编程的一个过程，在这个过程中我们能把一个带有多个参数的函数转换成一系列的嵌套函数。它返回一个新函数，这个新函数期望传入下一个参数</p><p>它不断地返回新函数（像我们之前讲的，这个新函数期望当前的参数），直到所有的参数都被使用。参数会一直保持 <code>alive</code>（通过闭包），当柯里化函数链中最后一个函数被返回和调用的时候，它们会用于执行。</p><p>我们把addCurry拆分一下，以便更好理解</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-js data-lang=js><span class=c1>// addCurry(1)(2)(3) // 6
+</span><span class=c1></span><span class=kd>function</span> <span class=nx>addCurry</span><span class=p>(</span><span class=nx>a</span><span class=p>){</span>
+  <span class=k>return</span> <span class=p>(</span><span class=nx>b</span><span class=p>)</span> <span class=p>=&gt;</span> <span class=p>{</span>
+    <span class=k>return</span> <span class=p>(</span><span class=nx>c</span><span class=p>)</span> <span class=p>=&gt;</span> <span class=p>{</span>
+      <span class=k>return</span> <span class=nx>a</span> <span class=o>+</span> <span class=nx>b</span> <span class=o>+</span> <span class=nx>c</span>
+    <span class=p>}</span>
+  <span class=p>}</span>
+<span class=p>}</span>
+
+<span class=kr>const</span> <span class=nx>add1</span> <span class=o>=</span> <span class=nx>addCurry</span><span class=p>(</span><span class=mi>1</span><span class=p>)</span>
+<span class=kr>const</span> <span class=nx>add2</span> <span class=o>=</span> <span class=nx>add1</span><span class=p>(</span><span class=mi>2</span><span class=p>)</span>
+<span class=kr>const</span> <span class=nx>result</span> <span class=o>=</span> <span class=nx>add2</span><span class=p>(</span><span class=mi>3</span><span class=p>)</span>
+<span class=nx>console</span><span class=p>.</span><span class=nx>log</span><span class=p>(</span><span class=nx>result</span><span class=p>)</span>  <span class=c1>// 6
+</span></code></pre></td></tr></table></div></div><p>让我们依次调用他们，首先传1给addCurry()函数</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-js data-lang=js><span class=kr>const</span> <span class=nx>add1</span> <span class=o>=</span> <span class=nx>addCurry</span><span class=p>(</span><span class=mi>1</span><span class=p>)</span>
+<span class=c1>// 返回
+</span><span class=c1></span><span class=k>return</span> <span class=p>(</span><span class=nx>b</span><span class=p>)</span> <span class=p>=&gt;</span> <span class=p>{</span>
+    <span class=k>return</span> <span class=p>(</span><span class=nx>c</span><span class=p>)</span> <span class=p>=&gt;</span> <span class=p>{</span>
+      <span class=k>return</span> <span class=nx>a</span> <span class=o>+</span> <span class=nx>b</span> <span class=o>+</span> <span class=nx>c</span>
+    <span class=p>}</span>
+<span class=p>}</span>
+<span class=c1>// add1持有上面这个函数的定义，它接受一个参数b
+</span><span class=c1></span><span class=nx>add1</span> <span class=o>=</span> <span class=p>(</span><span class=nx>b</span><span class=p>)</span> <span class=p>=&gt;</span> <span class=p>{</span>
+  <span class=k>return</span> <span class=nx>c</span> <span class=p>=&gt;</span> <span class=p>{</span>
+    <span class=k>return</span> <span class=nx>a</span> <span class=o>+</span> <span class=nx>b</span> <span class=o>+</span><span class=nx>c</span>
+  <span class=p>}</span>
+<span class=p>}</span>
+</code></pre></td></tr></table></div></div><p>我们调用add1函数，传递参数2</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-js data-lang=js><span class=kd>let</span> <span class=nx>add2</span> <span class=o>=</span> <span class=nx>add1</span><span class=p>(</span><span class=mi>2</span><span class=p>)</span>
+
+<span class=nx>add2</span> <span class=o>=</span> <span class=p>(</span><span class=nx>c</span><span class=p>)</span> <span class=p>=&gt;</span> <span class=p>{</span>
+  <span class=k>return</span> <span class=nx>a</span> <span class=o>+</span> <span class=nx>b</span> <span class=o>+</span> <span class=nx>c</span>
+<span class=p>}</span>
+
+</code></pre></td></tr></table></div></div><p>当传递参数3给add2并调用它, 它和之前传递进来的参数 a = 1 , b = 2 做了计算，返回了6</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-js data-lang=js><span class=kr>const</span> <span class=nx>result</span> <span class=o>=</span> <span class=nx>add2</span><span class=p>(</span><span class=mi>3</span><span class=p>)</span>  <span class=c1>// 6
+</span></code></pre></td></tr></table></div></div><p>这里涉及到闭包的知识，作为嵌套函数，先前传入的参数都处于alive状态，并没有被释放。</p><p><strong>被柯里化的版本将接受一个参数并且返回一个函数，这个新函数依然会接受一个参数并且返回一个新函数。这个过程会一直持续，直到最后一个参数到达并且返回最后一个函数，最后返回的函数会使用之前接受的参数和最后一个参数进行运算返回结果。</strong></p><p><strong>柯里化背后的想法是，接受一个函数并且得到一个函数，这个函数返回专用的函数</strong></p><ul><li><strong>用闭包把参数保存起来，当参数的数量足够执行函数了，就开始执行函数</strong></li></ul><h2 id=数学中的概念>数学中的概念</h2><p><a href=https://en.m.wikipedia.org/wiki/Currying>https://en.m.wikipedia.org/wiki/Currying</a></p><p><img src=https://zxd-blog-imgs.oss-cn-beijing.aliyuncs.com/imgs/20211205174100.png alt=image-20211205174100120></p><h2 id=柯里化的应用>柯里化的应用</h2><ol><li><p><strong>编写小模块的代码，可以更轻松的重用和配置，就行 npm 做的那样</strong></p></li><li><p><strong>避免频繁调用具有相同参数的函数：</strong></p></li><li><p><strong>参数复用、提前返回和延迟执行</strong></p><p>提前返回 和 延迟执行 也很好理解，因为每次调用函数时，它只接受一部分参数，并返回一个函数（提前返回），直到(延迟执行)传递所有参数为止</p></li><li><p>函数式编程</p></li></ol><h2 id=通用的柯里化函数>通用的柯里化函数</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span><span class=lnt>9
+</span></code></pre></td><td class=lntd><pre class=chroma><code class=language-js data-lang=js><span class=c1>// 测试过！ok
+</span><span class=c1></span><span class=kr>const</span> <span class=nx>curry</span> <span class=o>=</span> <span class=p>(</span><span class=nx>fn</span><span class=p>,</span> <span class=p>...</span><span class=nx>args</span><span class=p>)</span> <span class=p>=&gt;{</span>
+  <span class=c1>// 当参数与fn参数相同，则直接执行函数
+</span><span class=c1></span>	<span class=k>if</span> <span class=p>(</span><span class=nx>args</span><span class=p>.</span><span class=nx>length</span> <span class=o>&gt;=</span> <span class=nx>fn</span><span class=p>.</span><span class=nx>length</span><span class=p>)</span> <span class=k>return</span> <span class=nx>fn</span><span class=p>(...</span><span class=nx>args</span><span class=p>)</span>
+  <span class=c1>// 否则返回函数，合并参数，并继续自动柯里化
+</span><span class=c1></span>    <span class=k>return</span> <span class=p>(...</span><span class=nx>args2</span><span class=p>)</span> <span class=p>=&gt;</span> <span class=p>{</span>
+        <span class=k>return</span> <span class=nx>curry</span><span class=p>(</span><span class=nx>fn</span><span class=p>,</span> <span class=p>...</span><span class=nx>args</span><span class=p>,</span> <span class=p>...</span><span class=nx>args2</span><span class=p>);</span>
+    <span class=p>}</span>
+<span class=p>}</span>
+</code></pre></td></tr></table></div></div><p>我们在这里做了什么呢？我们的柯里化函数接受一个我们希望柯里化的函数（fn），还有一系列的参数（&mldr;args）。扩展运算符是用来收集<code>fn</code>后面的参数到<code>...args</code>中。</p><p>接下来，我们返回一个函数，这个函数同样将剩余的参数收集为<code>..._args</code>。这个函数将<code>...args</code>传入原始函数<code>fn</code>并调用它，通过使用扩展运算符将<code>..._args</code>也作为参数传入，然后，得到的值会返回给用户。</p><hr><ol><li><p><a href=https://zhuanlan.zhihu.com/p/50247174>「译」理解JavaScript的柯里化</a> 知乎</p></li><li><p><a href=https://juejin.cn/post/6844903882208837645>「前端进阶」彻底弄懂函数柯里化</a></p></li><li><p><a href=https://juejin.cn/post/6864378349512065038#heading-28>彻底搞懂闭包，柯里化，手写代码，金九银十不再丢分！</a></p></li><li><p><a href=https://zhuanlan.zhihu.com/p/120735088>一文搞懂Javascript中的函数柯里化（currying）</a></p></li><li><p><a href=https://github.com/mqyqingfeng/Blog/issues/42>JavaScript专题之函数柯里化</a></p></li></ol></div><footer class=post-footer><div class=post-tags><a href=/tags/js/>JS</a></div><nav class=post-nav><a class=next href=/post/2021-12-02-js%E6%89%A7%E8%A1%8C%E8%BF%87%E7%A8%8B/><span class="next-text nav-default">JS执行流程 作用域 闭包</span>
+<span class="next-text nav-mobile">Next</span>
+<i class="fa fa-long-arrow-right"></i></a></nav></footer></article></div></div></main><footer id=footer class=footer><div class=copyright><span class=copyright-year>&copy;
+2020 -
+2021<span class=heart>
+<i class="fa fa-heartbeat"></i></span><span class=z-author>zxd</span></span></div></footer><div class=back-to-top id=back-to-top><i class="iconfont icon-up"></i></div></div><script src=https://cdn.jsdelivr.net/npm/jquery@3.2.1/dist/jquery.min.js integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin=anonymous></script><script src=https://cdn.jsdelivr.net/npm/slideout@1.0.1/dist/slideout.min.js integrity="sha256-t+zJ/g8/KXIJMjSVQdnibt4dlaDxc9zXr/9oNPeWqdg=" crossorigin=anonymous></script><script src=https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.1.20/dist/jquery.fancybox.min.js integrity="sha256-XVLffZaxoWfGUEbdzuLi7pwaUJv1cecsQJQqGLe7axY=" crossorigin=anonymous></script><script type=text/javascript src=/js/main.min.c99b103c33d1539acf3025e1913697534542c4a5aa5af0ccc20475ed2863603b.js></script><script>if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent));else{const a=document.createElement("style"),b=`
+                    @media screen and (min-width: 750px){
+                            img[src*="#w90"] {
+                            width: 90% !important;
+                            }
+                            
+                            img[src*="#w80"] {
+                            width: 80% !important;
+                            }
+                            
+                            img[src*="#w70"] {
+                            width: 70% !important;
+                            }
+                            
+                            img[src*="#w60"] {
+                            width: 60% !important;
+                            }
+                            
+                            img[src*="#w50"] {
+                            width: 50% !important;
+                            }
+                            
+                            img[src*="#w40"] {
+                            width: 40% !important;
+                            }
+                            img[src*="#w30"] {
+                            width: 30% !important;
+                            }
+                        }
+                    `;try{a.appendChild(document.createTextNode(b))}catch(c){a.styleSheet.cssText=b}document.getElementsByTagName("head")[0].appendChild(a)}</script></body></html>
