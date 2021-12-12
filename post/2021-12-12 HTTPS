@@ -1,0 +1,260 @@
+---
+title: "HTTPS"
+date: 2021-12-12T21:24:37+08:00
+draft: true
+---
+
+## HTTP常用的请求头
+
+- accept-encoding / accept-languate
+
+- user-agent: 客户端信息
+
+- cache-control 强缓存
+
+- connection：keep-alive  保持持久连接
+
+- content-type: application/json 请求返回格式
+
+- **Referer**: `https://juejin.cn/` 
+
+  - Referer 请求头包含了当前请求页面的来源页面的地址，即**表示当前页面是通过此来源页面里的链接进入的**。
+  - 服务端一般使用 `Referer` 请求头识别访问来源，可能会以此进行统计分析、日志记录以及缓存优化等。
+  - 空Referer: 
+    - referer 它作用是指示一个请求是从哪里链接过来，那么当一个请求并不是由链接触发产生的，那么自然也就不需要指定这个请求的链接来源, 比如浏览器输入URL地址，这种请求不包含referer字段
+  - Referer作用：1. 防盗链  2. 防止恶意请求
+
+- origin：`https://juejin.cn`
+
+  - 请求首部字段 **`Origin`** 指示了请求来自于哪个站点。该字段仅指示服务器名称，并不包含任何路径信息。
+  - `Origin: https://developer.mozilla.org`   
+  - scheme请求协议  host: 服务器域名或IP地址  port 服务器正在监听的TCP端口号  可选
+
+- Cookie
+
+- Access-Control-Request-Method
+
+  - 出现于 [preflight request](https://developer.mozilla.org/zh-CN/docs/Glossary/Preflight_request) （预检请求）中，用于通知服务器在真正的请求中会采用哪种  [HTTP 方法](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Methods)。因为预检请求所使用的方法总是 [`OPTIONS`](https://developer.mozilla.org/zh-CN/docs/Web/HTTP/Methods/OPTIONS) ，与实际请求所使用的方法不一样，所以这个请求头是必要的
+
+  - ```
+    Access-Control-Request-Method: POST
+    ```
+
+#### Cookie的属性
+
+- Name、Value
+  - Cookie的名称和值，Name和Value是一个键值对。
+  - Cookie一旦创建，名称便不可更改。
+- **Domain**
+  - Cookie的有效域
+  - 决定Cookie在哪个域是有效的，也就是决定在向该域发送请求时是否携带此Cookie。
+- Path 
+  - Cookie的有效路径
+- Expires/Max-Age
+  - Cookie的有效期
+- Size
+  - Cookie的大小
+- **HttpOnly**
+  - 值为true或false，设置为true。则不允许通过document.cookie获取和更改这个值，不可见。但发送请求时依旧会携带此Cookie
+- Secure
+  - Cookie的安全属性，若为true。浏览器只会在HTTPS和SSL等安全协议中传输此Cookie，不会在http协议中传输。
+- **SameSite**
+  - 用来限制第三方Cookie，从而减少安全风险。
+  - Strict: 完全禁止第三方Cookie，跨站点时，任何情况下都不会发送Cookie
+    - 浏览器将只发送相同站点请求的 Cookie，即当前网页 URL 与请求目标 URL 完全一致。
+  - Lax: 允许部分第三方请求携带Cookie
+  - None: 
+    - 无论是否跨站都会发送 Cookie, HTTP接口不支持SameSite=none，
+    - 网站可以选择显式关闭SameSite属性，将其设为None. 前提是必须同时设置Secure属性，只在https协议下该cookie才会被发送。
+- SameParty
+- Priority
+
+https://juejin.cn/post/6844904095711494151#heading-14
+
+
+
+## HTTP 响应状态码
+
+### 1xx
+
+- **101 Switching Protocols** 
+  - 它的意思是客户端使用 Upgrade 头字段，要求在 HTTP 协议的基础上改成其他的协议继续通信，比如 WebSocket。而如果服务器也同意变更协议，就会发送状态码 101，但这之后的数据传输就不会再使用 HTTP 了。
+
+### 2xx
+
+- **204 No Content**
+  - 另一个很常见的成功状态码，它的含义与“200 OK”基本相同，但响应头后没有 body 数据。
+
+- **206 Partial Content**
+
+  - 是HTTP分块下载或断点续传的基础，部分内容。它与 200 一样，也是服务器成功处理了请求，但 body 里的数据不是资源的全部，而是其中的一部分。
+
+  - 206通常会伴随头字段 **Content-Range** ：表示响应报文里 body 数据的具体范围，供客户端确认，例如“Content-Range: bytes 0-99/2000”，意思是此次获取的是总计 2000 个字节的前 100 个字节。
+
+### 3xx
+
+- **301 Moved Permanently** 
+  - 永久重定向，含义是此次请求的资源已经不存在了，需要改用新的URI再次访问
+  - 308永久重定向，但不允许更改请求方法
+- **302  Found Moved Temporarily**
+  - 临时重定向，意思是请求的资源还在，但需要暂时用另一个 URI 来访问。
+  - 301，302都会在**响应头使用字段Location指**明后续要跳转的URI，最终效果很相似，浏览器都会重定向到新的URI
+  - 303，307也是临时重定向
+    - 303 重定向到新地址时，客户端必须使用GET方法
+    - 307 不允许修改浏览器请求方法
+- **304 Not Modified**
+  - 它用于If-Modified-Since、If-None-Match等条件请求，表示资源未修改，用于缓存控制。
+  - 它不具有通常的跳转含义，但可以理解为“重定向到已缓存的文件”（即：缓存重定向）。
+
+### 4xx
+
+- 403 Forbidden  
+  - 实际上不是客户端请求出错，而是表示服务器禁止访问资源。
+- 404 Not Found
+  - 它的原意是资源在本服务器上未找到，所以无法提供给客户端。
+  - 但现在已经被“用滥了”，只要服务器“不高兴”就可以给出个 404
+- 4xx剩下等等
+  - 其他一些404较明确地说明了错误原因，都很好理解
+  - 405 Method Not Allowed：不允许使用某些方法操作资源，例如不允许 POST 只能 GET；
+  - 406 Not Acceptable：资源无法满足客户端请求的条件，例如请求中文但只有英文
+  - 408 Request Timeout：请求超时，服务器等待了过长的时间
+  - 429 Too Many Requests：客户端发送了太多的请求，通常是由于服务器的限连策略；
+
+### 5xx
+
+5xx表示客户端请求报文正确，但服务器处理时内部发生了错误，无法返回应有的响应数据，是服务端的错误码。
+
+- 501 Not Implemented 
+  - 表示客户端请求的功能还不支持，这个错误码比 500 要“温和”一些，和“即将开业， 敬请期待”的意思差不多，不过具体什么时候“开业”就不好说了。
+- 502 Bad Gateway
+  - 通常是服务器作为网关或者代理时返回的错误码，表示服务器自身工作正常，访问后端服务器时发生了错误，但具体的错误原因也是不知道的
+- 503 Service Unavailable
+  - 表示服务器当前很忙，暂时无法响应服务，我们上网时有时候遇到的“网络服务正忙，请稍后重试”的提示信息就是状态503
+  - 503 是一个“临时”的状态，很可能过几秒钟后服务器就不那么忙了，可以继续提供服务，所以 503 响应报文里通常还会有一个“Retry-After”字段，指示客户端可以在多久以后再次尝试发送请求。
+
+## HTTP HTTPS区别
+
+1. HTTP是`明文传输`，不安全的，HTTPS是`加密传输`，更加安全。
+2. HTTP默认端口 `80`，  HTTPS 默认端口` 443`，HTTPS浏览器上会显示安全锁。
+3. HTTP不用认证证书 免费，HTTPS需要认证证书 付费
+4. HTTP是无状态的，但是HTTPS中 SSL/TLS是有状态的
+
+
+
+---
+
+- HTTP + SSL/TLS = HTTPS
+
+### HTTP可能存在的四大类安全问题
+
+- Interception：拦截
+- Spoofing：伪装
+- Falsification：篡改
+- Repudiation：否认
+
+引入 SSL/TLS 协议，它使得上面四大问题中，和传输本身密切相关的前三大问题都可 
+以得到解决（第四个问题还需要引入数字签名来解决）
+
+- SSL 指的是 Secure Socket Layer，
+- TLS 指的是 Transport Layer Security， 其实就是标准化后的SSL
+
+
+
+### 对称加密和非对称加密
+
+**对称性加密（Symmetric Cryptography）**：指的是加密和解密使用相同的密钥。这种方式相对简单，加密解密速度快，但是由于加密和解密需要使用相同的密钥，如何安全地传递密钥，往往成为一个难题。
+
+**非对称性加密（Asymmetric Cryptography）**：指的是数据加密和解密需要使用不同的密钥。
+
+通常一个被称为公钥（Public Key），另一个被称为私钥（Private Key），二者一般同时生成，但是==公钥往往可以公开和传播，而私钥不能。经过公钥加密的数据，需要用私钥才能解密==；反之亦然。这种方法较为复杂，且性能较差，好处就是由于加密和解密的密钥具有相对独立性，公钥可以放心地传播出去，不用担心安全性问题。
+
+
+
+> 原始数据 + 公钥  -> 加密数据
+>
+> 加密数据 + 私钥 -> 原始数据
+
+### TLS 连接建立原理
+
+<img src="https://zxd-blog-imgs.oss-cn-beijing.aliyuncs.com/imgs/20211212200844.png" alt="image-20211212200844409" style="zoom:50%;" />
+
+1. 客户端产生随机数A, 并携带支持的加密方法列表
+
+2. 服务端携带产生的随机数B，和选定的加密方法组合（Cipher Suite）
+
+3. 服务端紧跟着发送包含公钥的证书
+
+4. 客户端验证证书的有效性，生成随机数C； A+B+C可以生成新的密钥X （Master Secret）, 而X可继续生成真正用于后续数据加密和解密的对称密钥。因为它是在本次TLS会话中生成的，也被成为会话密钥（Session Secret）
+
+   1. 客户端随机数A  + 服务端随机数B + 客户端Pre-master Secret C  --> 会话密钥
+   2. 注意，Pre-master Secret生成方法是不固定的，根据加密具体算法不同而不同
+   3. 上述是传统RSA方式，Pre-master Secret 由客户端独立生成，加密后再通过 Client Key Exchange 发回服务端
+   4. 还有一种是 ECDHE 方式，这种方式下无论在客户端还是服务端，Pre-master Secret 需要通过 Client Key Exchange 和 Server Key Exchange 两者承载的参数联合生成
+
+5. 接着客户端告诉服务端
+
+   1. Client Key Exchange，本质上它就是上面说的这个 C，但使用了服务端通过证书发来的公钥加密；
+   2. Change Cipher Spec，客户端同意正式启用约好的加密方法和密钥了，后面的数据传输全部都使用密钥 X 来加密；
+   3. Encrypted Handshake Message，快速验证：这是客户端对于整个对话进行摘要并加密得到的串，如果经过服务端解密，和原串相等，就证明整个握手过程是成功的。
+
+6. 服务端收到消息后，用自己私钥解密上面的 Client Key Exchange，得到了 C；
+
+   1. 这样它和客户端一样，也得到了 A、B 和 C，继而到 X，以及最终的会话密钥。
+
+7. 客户端和服务端都得到了能够加密解密传输数据的对称密钥——会话密钥
+
+   
+
+> - ==TLS 是通过非对称加密技术来保证握手过程中的可靠性（公钥加密，私钥解密）==
+> - ==再通过对称加密技术来保证数据传输过程中的可靠性的==
+
+
+
+### 证书有效验证的原理
+
+证书中包含版本、发布机构、有效期、数字签名等基本内容，以及一个**公钥**。实际上，这两个服务端传回来的证书，和浏览器内置的根证书联合起来，组成了一个单向、完整的证书链：
+
+<img src="https://zxd-blog-imgs.oss-cn-beijing.aliyuncs.com/imgs/20211212204142.png" alt="image-20211212204142499" style="zoom:50%;" />
+
+上图中的第三行，就是携带着服务器公钥的证书，它是从证书发布机构（CA, Certificate Authority）申请得来的，也就是图中第二行的 GTS CA 1O1。证书在申请的时候，我们提到的服务器公钥就已经是该证书的一部分了，因此我们才说，如果证书是有效的，那么它携带的公钥就是有效的。
+
+在当时申请的时候，**证书发布机构对证书做摘要生成指纹，并使用它自己的私钥为该指纹加密，生成数字签名（Digital Signature），而这个数字签名也随证书一起发布**。这个发布机构的私钥是它内部自己管理的，不会外泄。
+
+> 指纹 + 私钥  --> 数字签名
+
+验证过程则正好是发布过程的反向，即在客户端要对这个被检测证书做两件事：
+
+- 对它用指定算法进行摘要，得到指纹 P1；
+- 使用证书发布机构的公钥对它的数字签名进行解密，得到指纹 P2
+
+> 数字签名 + 公钥  --> 指纹
+
+如果 P1 和 P2 一致，就说明证书未被篡改过，也说明这个服务端发来的证书是真实有效的，而不是仿冒的。
+
+
+
+问题来了，证书发布机构使用非对称性加密和数字签名保证了证书的有效性，那么谁来保证证书发布机构的有效性？
+		答案就是它的上一级证书发布机构。
+
+CA 是分级管理的，每一级 CA 都根据上述同样的原理，由它的上一级 CA 来加密证书和生成数字签名，来保证其真实性，从而形成一个单向的信任链。同时，标志着最高级别 CA 的根证书数量非常少，且一般在浏览器或操作系统安装的时候就被预置在里面了，因此它们是被我们完全信任的，这就使得真实性的鉴别递归有了最终出口。
+
+也就是说，递归自下而上验证的过程，如果一直正确，直至抵达了顶端——浏览器内置的根证书，就说明服务端送过来的证书是安全有效的。
+
+---
+
+
+
+主要从HTTPS解决了什么问题出发分点描述
+
+https://juejin.cn/post/6844903912932147207
+
+**了解证书颁发的流程吗**
+
+1. [20分钟助你拿下HTTP和HTTPS，巩固你的HTTP知识体系](https://juejin.cn/post/6994629873985650696)
+
+---
+
+
+
+## 实现一个发布订阅模式？
+
